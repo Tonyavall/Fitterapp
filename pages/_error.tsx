@@ -1,3 +1,4 @@
+// Note- This is only available in production
 import { NextPage } from 'next'
 
 interface Props {
