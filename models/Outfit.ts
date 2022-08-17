@@ -3,18 +3,31 @@ import { Schema } from 'mongoose'
 interface Outfit {
     image: String,
     userId: String,
+    top: object,
+    bottom: object,
+    footwear: object,
     createdAt?: String,
 }
 
 const outfitSchema = new Schema<Outfit>(
     {
-        image: {
-            type: String,
-            required: true
-        },
         userId: {
             type: String,
             required: true
+        },
+        top: {
+            type: Schema.Types.ObjectId,
+            ref: 'top',
+            required: true
+        },
+        bottom: {
+            type: Schema.Types.ObjectId,
+            ref: 'bottom',
+            required: true
+        },
+        footwear: {
+            type: Schema.Types.ObjectId,
+            ref: 'footwear'
         },
         createdAt: {
             type: Date,
