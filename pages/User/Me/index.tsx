@@ -1,11 +1,11 @@
 import { NextPage } from 'next'
 
-const UserPage: NextPage = () => {
+const User: NextPage = () => {
     return (
         <p>
-            Followers
+            User
         </p>
     )
 }
 
-export default UserPage
+export default User
