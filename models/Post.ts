@@ -1,31 +1,31 @@
 import { Schema, model } from'mongoose'
-import Reaction from './Reaction'
+import Comment from './Comment'
 
 interface Post {
-    postText: string,
-    createdAt?: Date,
-    username: string,
-    reactions: object[]
+    postBio: string,
+    userId: string,
+    comments: object[],
+    createdAt?: Date
 }
 
 const postSchema = new Schema<Post>(
     {
-        postText: {
+        postBio: {
             type: String,
             required: true,
             minLength: 1,
             maxLength: 280,
         },
+        userId: {
+            type: String,
+            required: true,
+        },
+        comments: [Comment],
         createdAt: {
             type: Date,
             default: Date.now,
             get: (date: Date) => date.toString().match(/[A-Za-z]{3}\s\d{2}\s\d{4}/)?.[0]
         },
-        username: {
-            type: String,
-            required: true,
-        },
-        reactions: [Reaction]
     },
     {
         toJSON: {
@@ -36,9 +36,9 @@ const postSchema = new Schema<Post>(
 )
 
 postSchema
-    .virtual('reactionCount')
+    .virtual('commentCount')
     .get(function() {
-        if (this.reactions) return this.reactions.length
+        if (this.comments) return this.comments.length
     })
 
 const Post = model<Post>('post', postSchema)

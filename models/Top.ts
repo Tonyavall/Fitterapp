@@ -1,19 +1,18 @@
 import { Schema } from 'mongoose'
 
-interface Reaction {
-    reactionBody: String,
-    username: String,
+interface Top {
+    image: String,
+    userId: String,
     createdAt?: String,
 }
 
-const reactionSchema = new Schema<Reaction>(
+const topSchema = new Schema<Top>(
     {
-        reactionBody: {
+        image: {
             type: String,
-            required: true,
-            maxlength: 280
+            required: true
         },
-        username: {
+        userId: {
             type: String,
             required: true
         },
@@ -32,4 +31,4 @@ const reactionSchema = new Schema<Reaction>(
     }
 )
 
-export default reactionSchema
+export default topSchema

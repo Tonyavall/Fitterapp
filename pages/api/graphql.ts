@@ -1,14 +1,10 @@
-import { createServer } from '@graphql-yoga/node'
-import gql from 'graphql-tag'
-
 import { authMiddleware } from '../../utils/auth'
+import { ApolloServer } from 'apollo-server-micro'
 
-import resolvers from 'lib/resolvers'
-import typeDefs from 'lib/schema'
+import schema from '../../apollo/schema';
 
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     context: authMiddleware,
 });
 
