@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose"
 interface User {
     username: string,
     email: string,
-    thoughts: object[],
+    posts: object[],
     friends: object[]
 }
 
@@ -24,10 +24,10 @@ const userSchema = new Schema<User>(
                 "Invalid email",
             ],
         },
-        thoughts: [
+        posts: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'thought'
+                ref: 'post'
             }
         ],
         friends: [

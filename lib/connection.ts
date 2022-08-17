@@ -1,9 +1,13 @@
 import { connect, connection } from 'mongoose'
-import 'detenv'
 
-const connectionString =
-    process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/Foodsy';
+import dotenv from 'dotenv'
+dotenv.config()
 
-connect(connectionString);
+connect(process.env.MONGODB_URI || 'mongodb://localhost/Final', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
 
 module.exports = connection;

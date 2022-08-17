@@ -1,9 +1,9 @@
 import { Schema } from 'mongoose'
 
 interface Reaction {
-    reactionBody: string,
-    username: string,
-    createdAt?: Date,
+    reactionBody: String,
+    username: String,
+    createdAt?: String,
 }
 
 const reactionSchema = new Schema<Reaction>(
