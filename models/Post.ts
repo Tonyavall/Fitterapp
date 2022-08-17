@@ -5,6 +5,7 @@ interface Post {
     postBio: string,
     userId: string,
     comments: object[],
+    likedBy: object[],
     createdAt?: Date
 }
 
@@ -21,6 +22,12 @@ const postSchema = new Schema<Post>(
             required: true,
         },
         comments: [Comment],
+        likedBy: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'user'
+            }
+        ],
         createdAt: {
             type: Date,
             default: Date.now,
@@ -39,6 +46,11 @@ postSchema
     .virtual('commentCount')
     .get(function() {
         if (this.comments) return this.comments.length
+    })
+postSchema
+    .virtual('likes')
+    .get(function() {
+        if (this.likedBy) return this.likedBy.length
     })
 
 const Post = model<Post>('post', postSchema)
