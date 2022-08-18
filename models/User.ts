@@ -9,9 +9,11 @@ interface User {
     email: string,
     firstName: string,
     lastName: string,
+    password: string,
     userImage?: string,
     posts: object[],
-    friends: object[],
+    followers: object[],
+    following: object[],
     tops: object[],
     bottoms: object[],
     footwear?: object[],
@@ -35,6 +37,11 @@ const userSchema = new Schema<User>(
                 "Invalid email",
             ],
         },
+        password: {
+            type: String,
+            required: true,
+            minlength: 5
+        },
         firstName: {
             type: String, 
             required: true,
@@ -54,7 +61,13 @@ const userSchema = new Schema<User>(
                 ref: 'post'
             }
         ],
-        friends: [
+        followers: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'user'
+            }
+        ],
+        following: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'user'
@@ -74,9 +87,14 @@ const userSchema = new Schema<User>(
 )
 
 userSchema
-    .virtual('friendCount')
+    .virtual('followerCount')
     .get(function() {
-        if (this.friends) return this.friends.length
+        if (this.followers) return this.followers.length
+    })
+userSchema
+    .virtual('followingCount')
+    .get(function() {
+        if (this.following) return this.following.length
     })
 const User = model<User>('user', userSchema)
 

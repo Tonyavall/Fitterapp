@@ -7,6 +7,7 @@ export const typeDefs = gql`
     email: String!
     firstName: String!
     lastName: String!
+    password: String!
     userImage: String
     posts: [Post]
     friends: [User]
@@ -62,7 +63,33 @@ export const typeDefs = gql`
     createdAt: String!
   }
 
+  type Auth {
+    token: ID
+    user: User
+  }
+
   type Query {
-    viewer: User
+    user: User
+  }
+
+  type Mutation {
+    # Here it returns Auth, which is the token and the user information : Auth
+    createUser(username: String!, firstName: String!, lastName: String!, email: String!, password: String!): Auth 
+    updateUser(username: String!, firstName: String!, lastName: String!, email: String!, password: String!): User 
+    login(email: String!, password: String!): Auth
+    # Social related mutations
+    # This will return the current logged in User information
+    followUser(followingId: ID!): User
+    unfollowUser(followingId: ID!): User
+    likePost(postId: ID!): Post
+    unlikePost(postId: ID!): Post
+    # Outfit related mutations
+    addTop(image: String!): User
+    addBottom(image: String!): User
+    addFootwear(image: String!): User
+    addOutfit(topId: String!, BottomId: String!, footwearId: String): User
+    # Dangerous mutations
+    deleteUser(userId: ID!)
+    deletePost(postId: ID!)
   }
 `
