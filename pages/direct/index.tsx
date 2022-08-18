@@ -1,0 +1,1 @@
+// Direct message route for talkjs API
