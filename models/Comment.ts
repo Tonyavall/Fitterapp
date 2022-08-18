@@ -8,14 +8,14 @@ interface comment {
 
 const commentSchema = new Schema<comment>(
     {
+        userId: {
+            type: String,
+            required: true
+        },
         commentBody: {
             type: String,
             required: true,
             maxlength: 280
-        },
-        userId: {
-            type: String,
-            required: true
         },
         createdAt: {
             type: Date,

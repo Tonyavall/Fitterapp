@@ -2,7 +2,7 @@ import { Schema, model } from'mongoose'
 import Comment from './Comment'
 
 interface Post {
-    postBio: string,
+    description: string,
     userId: string,
     comments: object[],
     likedBy: object[],
@@ -11,15 +11,13 @@ interface Post {
 
 const postSchema = new Schema<Post>(
     {
-        postBio: {
-            type: String,
-            required: true,
-            minLength: 1,
-            maxLength: 280,
-        },
         userId: {
             type: String,
             required: true,
+        },
+        description: {
+            type: String,
+            maxLength: 500,
         },
         comments: [Comment],
         likedBy: [
