@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-
+import { Types } from 'mongoose';
 import { NextApiRequest } from "next";
 
 const secret = 'mysecretssshhhhhhh';
@@ -31,7 +31,7 @@ export const authMiddleware = ({ req }: { req: UserDataRequest }) => {
 }
 
 export const signToken = (
-    { email, username, _id }: { email: string, username: string, _id: string }
+    { email, username, _id }: { email: string, username: string, _id: Types.ObjectId }
 ) => {
     const payload = { email, username, _id };
 

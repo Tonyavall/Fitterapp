@@ -17,6 +17,14 @@ export const typeDefs = gql`
     outfits: [Outift]
   }
 
+  input UserInput {
+    username: String
+    firstName: String
+    lastName: String
+    email: String
+    password: String
+  }
+
   type Top {
     _id: ID!
     image: String!
@@ -74,8 +82,8 @@ export const typeDefs = gql`
 
   type Mutation {
     # Here it returns Auth, which is the token and the user information : Auth
-    createUser(username: String!, firstName: String!, lastName: String!, email: String!, password: String!): Auth 
-    updateUser(username: String!, firstName: String!, lastName: String!, email: String!, password: String!): User 
+    createUser(input: UserInput!): Auth 
+    updateUser(input: UserInput): User 
     login(email: String!, password: String!): Auth
     # Social related mutations
     # This will return the current logged in User information
