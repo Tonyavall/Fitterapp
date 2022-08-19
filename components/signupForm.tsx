@@ -17,7 +17,7 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-export default function SignupForm() {
+export default function SignupForm({handleChange, handleFormSubmit, error}: any) {
     const [showPassword, setShowPassword] = useState(false);
 
     return (

@@ -1,8 +1,11 @@
+// This is where the token is SIGNED
+// The token is unpacked in the clientside when needed
+
 const jwt = require('jsonwebtoken')
 import { Types } from 'mongoose';
 import { NextApiRequest } from "next";
 
-const secret = 'mysecretssshhhhhhh';
+const secret = 'rejeanissofineong';
 const expiration = '2h';
 
 interface UserDataRequest extends NextApiRequest {

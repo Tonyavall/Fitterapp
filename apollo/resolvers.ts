@@ -51,19 +51,19 @@ export const resolvers = {
                     .findById(context.user._id)
                     .populate({
                         path: 'tops',
-                        populate: ['_id', 'image'] 
+                        populate: ['_id', 'image']
                     })
                     .populate({
                         path: 'bottoms',
-                        populate: ['_id', 'image'] 
+                        populate: ['_id', 'image']
                     })
                     .populate({
                         path: 'footwear',
-                        populate: ['_id', 'image'] 
+                        populate: ['_id', 'image']
                     })
                     .populate({
                         path: 'outfits',
-                        populate: ['_id', 'image'] 
+                        populate: ['_id', 'image']
                     })
                 return user;
             }
@@ -88,5 +88,25 @@ export const resolvers = {
             const token = signToken(user)
             return { user, token }
         },
+        login: async (
+            parent: undefined,
+            { email, password }: { email: string, password: string }
+        ) => {
+            const user = await User.findOne({ email });
+
+            if (!user) {
+                throw new AuthenticationError('Incorrect credentials');
+            }
+
+            const correctPw = await user.isCorrectPassword(password);
+
+            if (!correctPw) {
+                throw new AuthenticationError('Incorrect credentials');
+            }
+
+            const token = signToken(user);
+
+            return { token, user };
+        }
     }
 }
