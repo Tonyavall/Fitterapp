@@ -13,7 +13,7 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
-const LoginForm = () => {
+const LoginForm = ({handleChange}: any) => {
     return (
         <Flex
             minH={'100vh'}
