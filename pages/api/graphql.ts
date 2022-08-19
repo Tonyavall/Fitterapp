@@ -1,4 +1,4 @@
-import { authMiddleware } from '../../utils/auth'
+import { authMiddleware } from '../../utils/serverAuth'
 import { ApolloServer } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { typeDefs } from '../../apollo/typeDefs';

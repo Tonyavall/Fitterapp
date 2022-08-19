@@ -13,7 +13,7 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
-const LoginForm = ({handleChange}: any) => {
+const LoginForm = ({ handleChange, error, handleFormSubmit }: any) => {
     return (
         <Flex
             minH={'100vh'}
@@ -33,13 +33,14 @@ const LoginForm = ({handleChange}: any) => {
                     boxShadow={'lg'}
                     p={8}>
                     <Stack spacing={4}>
-                        <FormControl id="email">
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                        <FormControl id="email" isRequired>
+                            <FormLabel>Username</FormLabel>
+                            <Input type="email" onChange={handleChange} />
+
                         </FormControl>
-                        <FormControl id="password">
+                        <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
-                            <Input type="password" />
+                            <Input type="password" onChange={handleChange} />
                         </FormControl>
                         <Stack spacing={10}>
                             <Stack
@@ -54,9 +55,15 @@ const LoginForm = ({handleChange}: any) => {
                                 color={'white'}
                                 _hover={{
                                     bg: 'blue.500',
-                                }}>
+                                }}
+                                onClick={handleFormSubmit}>
                                 Sign in
                             </Button>
+                            {error ? (
+                                <div>
+                                    <p className="error-text">The provided credentials are incorrect</p>
+                                </div>
+                            ) : null}
                         </Stack>
                     </Stack>
                 </Box>

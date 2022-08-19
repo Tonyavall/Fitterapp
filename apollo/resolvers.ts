@@ -6,7 +6,7 @@ import { AuthenticationError } from "apollo-server-micro"
 
 import connectDb from "../lib/connection"
 
-import { signToken } from "../utils/auth"
+import { signToken } from "../utils/serverAuth"
 
 type UserInput = {
     username: string
