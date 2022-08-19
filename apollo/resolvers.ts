@@ -2,6 +2,10 @@ import User from "../models/User"
 import Post from "../models/Post"
 import { Types } from 'mongoose'
 
+import { AuthenticationError } from "apollo-server-micro"
+
+import connectDb from "../lib/connection"
+
 import { signToken } from "../utils/auth"
 
 type UserInput = {
@@ -25,8 +29,8 @@ interface currentUser {
         lastName: string
         password: string
         userImage: string
-        posts: [Post]
-        friends: [User]
+        posts: object[]
+        friends: object[]
         tops: object[]
         bottoms: object[]
         footwear: object[]
@@ -41,6 +45,7 @@ export const resolvers = {
             args: undefined,
             context: currentUser
         ) => {
+            await connectDb()
             if (context.user) {
                 const user = await User
                     .findById(context.user._id)
@@ -60,9 +65,17 @@ export const resolvers = {
                         path: 'outfits',
                         populate: ['_id', 'image'] 
                     })
-
                 return user;
             }
+            throw new AuthenticationError('You have to be logged in!')
+        },
+        users: async (
+            parent: undefined,
+            args: undefined,
+            context: undefined
+        ) => {
+            await connectDb()
+            return await User.find({});
         },
     },
     Mutation: {

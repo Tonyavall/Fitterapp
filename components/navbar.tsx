@@ -4,7 +4,7 @@ import { Box } from "@chakra-ui/react"
 const Navbar = () => {
     const navLinks = [
         {
-            name: 'Home',
+            name: 'Fitter',
             link: '/'
         },
         {
@@ -12,8 +12,20 @@ const Navbar = () => {
             link: '/profile'
         },
         {
-            name: 'Discover',
-            link: '/discover'
+            name: 'Explore',
+            link: '/explore'
+        },
+        {
+            name: 'Fits',
+            link: '/fits'
+        },
+        {
+            name: 'Store',
+            link: '/store'
+        },
+        {
+            name: 'Activity',
+            link: '/activity'
         }
     ]
 

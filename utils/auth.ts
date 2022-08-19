@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 import { Types } from 'mongoose';
 import { NextApiRequest } from "next";
+import decode, { JwtPayload } from 'jwt-decode';
 
 const secret = 'mysecretssshhhhhhh';
 const expiration = '2h';
@@ -9,10 +10,9 @@ interface UserDataRequest extends NextApiRequest {
     user: object
 }
 
-// Serverside auth
 export const authMiddleware = ({ req }: { req: UserDataRequest }) => {
     let token = req.body.token || req.query.token || req.headers.authorization;
-
+    
     if (req.headers.authorization) {
         token = token.split(' ').pop().trim();
     }
@@ -41,10 +41,6 @@ export const signToken = (
         { expiresIn: expiration }
     );
 }
-
-// Clientside auth
-
-import decode, { JwtPayload } from 'jwt-decode';
 
 class AuthService {
     getProfile() {

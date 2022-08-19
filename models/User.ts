@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose"
+import { Schema, model, models } from "mongoose"
 import Top from './Top'
 import Bottom from './Bottom'
 import Footwear from './Footwear'
 import Outfit from './Outfit'
 
-interface User {
+interface UserInput {
     username: string,
     email: string,
     firstName: string,
@@ -20,7 +20,7 @@ interface User {
     outfits?: object[]
 }
 
-const userSchema = new Schema<User>(
+const UserSchema = new Schema<UserInput>(
     {
         username: {
             type: String, 
@@ -64,13 +64,13 @@ const userSchema = new Schema<User>(
         followers: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'user'
+                ref: 'User'
             }
         ],
         following: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'user'
+                ref: 'User'
             }
         ],
         tops: [Top],
@@ -86,16 +86,15 @@ const userSchema = new Schema<User>(
     }
 )
 
-userSchema
+UserSchema
     .virtual('followerCount')
     .get(function() {
         if (this.followers) return this.followers.length
     })
-userSchema
+UserSchema
     .virtual('followingCount')
     .get(function() {
         if (this.following) return this.following.length
     })
-const User = model<User>('user', userSchema)
 
-export default User
+export default models.User || model<UserInput>('User', UserSchema)

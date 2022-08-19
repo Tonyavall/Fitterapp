@@ -14,7 +14,7 @@ export const typeDefs = gql`
     tops: [Top]
     bottoms: [Bottom]
     footwear: [Footwear]
-    outfits: [Outift]
+    outfits: [Outfit]
   }
 
   input UserInput {
@@ -78,6 +78,7 @@ export const typeDefs = gql`
 
   type Query {
     user: User
+    users: [User]
   }
 
   type Mutation {
@@ -97,7 +98,7 @@ export const typeDefs = gql`
     addFootwear(image: String!): User
     addOutfit(topId: String!, BottomId: String!, footwearId: String): User
     # Dangerous mutations
-    deleteUser(userId: ID!)
-    deletePost(postId: ID!)
+    deleteUser(userId: ID!) : User
+    deletePost(postId: ID!) : User
   }
 `

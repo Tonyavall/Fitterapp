@@ -1,10 +1,10 @@
 // Direct message route for talkjs API
-const Direct = () => {
+const Layout = () => {
     return (
         <p>
-            Direct
+            Layout
         </p>
     )
 }
 
-export default Direct
+export default Layout

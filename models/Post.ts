@@ -1,4 +1,4 @@
-import { Schema, model } from'mongoose'
+import { Schema, model, models } from'mongoose'
 import Comment from './Comment'
 
 interface Post {
@@ -51,6 +51,4 @@ postSchema
         if (this.likedBy) return this.likedBy.length
     })
 
-const Post = model<Post>('post', postSchema)
-
-export default Post
+export default models.post || model<Post>('post', postSchema)
