@@ -80,6 +80,7 @@ export const typeDefs = gql`
     user: User
     users: [User]
     homeRecentTenPosts: [Post]
+    grabRandomTwelvePosts: [Post]
   }
 
   type Mutation {

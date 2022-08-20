@@ -83,17 +83,40 @@ export const resolvers = {
             context: currentUser
         ) => {
             await connectDb()
-            const { following }: any = User
-                .find({_id: context.user._id})
-                .populate({
-                    path: 'following', 
-                    select: ['_id'] 
-                })
-            const tenPosts = Post
-                .find({_id: following})
-                .sort({createdAt: -1})
-                .limit(10)
-            return tenPosts;
+            if (context.user) {
+                const { following }: any = await User
+                    .find({ _id: context.user._id })
+                    .populate({
+                        path: 'following',
+                        select: ['_id']
+                    })
+                const tenPosts = await Post
+                    .find({ _id: following })
+                    .sort({ createdAt: -1 })
+                    .limit(10)
+                return tenPosts;
+            }
+            throw new AuthenticationError('You have to be logged in!')
+        },
+        grabRandomTwelvePosts: async (
+            parent: undefined,
+            args: undefined,
+            context: currentUser
+        ) => {
+            // I have no idea if this code even works
+            await connectDb()
+            if (context.user) {
+                const postCount: number = await Post.count()
+
+                const grabRandomPost = async () => {
+                    const random = Math.floor(Math.random() * postCount)
+                    return await Post
+                        .findOne()
+                        .skip(random)
+                }
+                return Array.apply(null, Array(12)).map(grabRandomPost)
+            }
+            throw new AuthenticationError('You have to be logged in!')
         },
     },
     Mutation: {
