@@ -77,6 +77,24 @@ export const resolvers = {
             await connectDb()
             return await User.find({});
         },
+        homeRecentTenPosts: async (
+            parent: undefined,
+            args: undefined,
+            context: currentUser
+        ) => {
+            await connectDb()
+            const { following }: any = User
+                .find({_id: context.user._id})
+                .populate({
+                    path: 'following', 
+                    select: ['_id'] 
+                })
+            const tenPosts = Post
+                .find({_id: following})
+                .sort({createdAt: -1})
+                .limit(10)
+            return tenPosts;
+        },
     },
     Mutation: {
         createUser: async (
