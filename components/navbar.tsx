@@ -1,13 +1,20 @@
 import React from "react";
-
+import Link from "next/link"
 import {
+    Avatar,
+    Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuDivider,
+    Center,
     chakra,
     Box,
     Flex,
     useColorModeValue,
     VisuallyHidden,
     HStack,
-    Button,
     useDisclosure,
     VStack,
     IconButton,
@@ -15,79 +22,43 @@ import {
     InputGroup,
     InputLeftElement,
     Input,
-    Avatar,
 } from "@chakra-ui/react";
+
 import {
     AiOutlineMenu,
     AiFillHome,
+    AiOutlineInbox,
     AiOutlineSearch,
     AiFillBell,
+    AiOutlineHome,
 } from "react-icons/ai";
-import { BsFillCameraVideoFill } from "react-icons/bs";
-
-import Link from "next/link";
-
+import { TbShirt } from "react-icons/tb"
 const Navbar = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
 
     return (
-        <React.Fragment>
-            <chakra.header
-                bg={bg}
-                w="full"
-                px={{
-                    base: 2,
-                    sm: 4,
-                }}
-                py={4}
-                shadow="md"
-            >
-                <Flex alignItems="center" justifyContent="space-between" mx="auto">
-                    <HStack display="flex" spacing={3} alignItems="center">
-                        <Box
-                            display={{
-                                base: "inline-flex",
-                                md: "none",
-                            }}
-                        >
-                            <IconButton
-                                display={{
-                                    base: "flex",
-                                    md: "none",
-                                }}
-                                aria-label="Open menu"
-                                fontSize="20px"
-                                color="gray.800"
-                                _dark={{
-                                    color: "inherit",
-                                }}
-                                variant="ghost"
-                                icon={<AiOutlineMenu />}
-                                onClick={mobileNav.onOpen}
-                            />
-                        </Box>
-                        <chakra.a
-                            href="/"
-                            title="Choc Home Page"
-                            display="flex"
-                            alignItems="center"
-                        >
-                            Fitter
-                        </chakra.a>
-                        <InputGroup>
-                            <InputLeftElement pointerEvents="none">
-                                <AiOutlineSearch />
-                            </InputLeftElement>
-                            <Input type="tel" placeholder="Search..." />
-                        </InputGroup>
-                    </HStack>
-
-                    <HStack
-                        spacing={3}
-                        display={mobileNav.isOpen ? "none" : "flex"}
-                        alignItems="center"
-                    >
+        <chakra.header
+            bg={bg}
+            w="full"
+            px={{ base: 2, sm: 4 }}
+            py={4}
+            shadow="md"
+        >
+            <Flex alignItems="center" justifyContent="space-between" mx="auto">
+                <HStack display="flex" spacing={3} alignItems="center">
+                    <Box display={{ base: "inline-flex", md: "none" }}>
+                        <IconButton
+                            display={{ base: "flex", md: "none" }}
+                            aria-label="Open menu"
+                            fontSize="20px"
+                            color="gray.800"
+                            _dark={{ color: "inherit" }}
+                            variant="ghost"
+                            icon={<AiOutlineMenu />}
+                            onClick={mobileNav.onOpen}
+                        />
+                        {/* Vertical menu for mobile */}
                         <VStack
                             pos="absolute"
                             top={0}
@@ -108,69 +79,96 @@ const Navbar = () => {
                                 justifySelf="self-start"
                                 onClick={mobileNav.onClose}
                             />
-                            <Button w="full" variant="ghost" leftIcon={<AiFillHome />}>
-                                Messages
+                            <Button w="full" variant="ghost" leftIcon={<AiOutlineHome />}>
+                                Home
                             </Button>
                             <Button
                                 w="full"
                                 variant="ghost"
-                                leftIcon={<BsFillCameraVideoFill />}
+                                colorScheme="brand"
+                                leftIcon={<AiOutlineInbox />}
+                            >
+                                Inbox
+                            </Button>
+                            <Button
+                                w="full"
+                                variant="ghost"
+                                leftIcon={<TbShirt />}
                             >
                                 Fits
                             </Button>
                         </VStack>
-                        <HStack
-                            spacing={3}
-                            display={{
-                                base: "none",
-                                md: "inline-flex",
-                            }}
-                        >
-                            <Button variant="ghost" leftIcon={<AiFillHome />} size="sm">
-                                Signout
-                            </Button>
-                            <Button variant="ghost" leftIcon={<AiFillHome />} size="sm">
-                                Messages
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                leftIcon={<BsFillCameraVideoFill />}
-                                size="sm"
-                            >
-                                Fits
-                            </Button>
-                        </HStack>
+                    </Box>
 
-                        <chakra.a
-                            p={3}
-                            color="gray.800"
-                            _dark={{
-                                color: "inherit",
-                            }}
-                            rounded="sm"
-                            _hover={{
-                                color: "gray.800",
-                                _dark: {
-                                    color: "gray.600",
-                                },
-                            }}
-                        >
-                            <AiFillBell />
-                            <VisuallyHidden>Notifications</VisuallyHidden>
-                        </chakra.a>
+                    {/* Horizontal menu */}
+                    <HStack spacing={8} display={{ base: "none", md: "inline-flex" }}>
+                        <Link href="/">
 
-                        <Link href="/tonyavall">
-                            <Avatar
-                                cursor="pointer"
-                                size="sm"
-                                name="Dan Abrahmov"
-                                src="https://bit.ly/dan-abramov"
-                            />
+                            <AiOutlineHome cursor="pointer" size={25} />
+                        </Link>
+                        <Link href="/direct">
+                            <AiOutlineInbox cursor="pointer" size={25} />
+                        </Link>
+                        <Link href="/fits">
+                            <TbShirt cursor="pointer" size={25} />
                         </Link>
                     </HStack>
-                </Flex>
-            </chakra.header>
-        </React.Fragment>
+                </HStack>
+                <HStack
+                    spacing={3}
+                    display={mobileNav.isOpen ? "none" : "flex"}
+                >
+                    <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                            <AiOutlineSearch />
+                        </InputLeftElement>
+                        <Input type="tel" placeholder="Search..." />
+                    </InputGroup>
+
+                    <chakra.a
+                        p={3}
+                        color="gray.800"
+                        _dark={{ color: "inherit" }}
+                        rounded="sm"
+                        _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
+                    >
+                        <AiFillBell />
+                        <VisuallyHidden>Notifications</VisuallyHidden>
+                    </chakra.a>
+
+                    {/* Profile avatar menu */}
+                    <Menu>
+                        <MenuButton
+                            as={Button}
+                            rounded={'full'}
+                            variant={'link'}
+                            cursor={'pointer'}
+                            minW={0}>
+                            <Avatar
+                                size={'sm'}
+                            />
+                        </MenuButton>
+                        <MenuList alignItems={'center'}>
+                            <br />
+                            <Center>
+                                <Avatar
+                                    size={'2xl'}
+                                />
+                            </Center>
+                            <br />
+                            <Center>
+                                <p>Username</p>
+                            </Center>
+                            <br />
+                            <MenuDivider />
+                            <MenuItem>Your Fits</MenuItem>
+                            <MenuItem>Account Settings</MenuItem>
+                            <MenuItem>Logout</MenuItem>
+                        </MenuList>
+                    </Menu>
+                </HStack>
+            </Flex>
+        </chakra.header>
     );
 }
 

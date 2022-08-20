@@ -33,14 +33,14 @@ const LoginForm = ({ handleChange, error, handleFormSubmit }: any) => {
                     boxShadow={'lg'}
                     p={8}>
                     <Stack spacing={4}>
-                        <FormControl id="email" isRequired>
+                        <FormControl id="username" isRequired>
                             <FormLabel>Username</FormLabel>
-                            <Input type="email" onChange={handleChange} />
+                            <Input type="username" onChange={handleChange} data-input="username"/>
 
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel>Password</FormLabel>
-                            <Input type="password" onChange={handleChange} />
+                            <Input type="password" onChange={handleChange} data-input="password"/>
                         </FormControl>
                         <Stack spacing={10}>
                             <Stack
@@ -56,7 +56,7 @@ const LoginForm = ({ handleChange, error, handleFormSubmit }: any) => {
                                 _hover={{
                                     bg: 'blue.500',
                                 }}
-                                onClick={handleFormSubmit}>
+                                onClick={(e) => handleFormSubmit(e)}>
                                 Sign in
                             </Button>
                             {error ? (

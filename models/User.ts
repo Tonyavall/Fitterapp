@@ -18,7 +18,8 @@ interface UserInput {
     tops: object[],
     bottoms: object[],
     footwear?: object[],
-    outfits?: object[]
+    outfits?: object[],
+    isAdmin: boolean
 }
 
 const UserSchema = new Schema<UserInput>(
@@ -74,6 +75,11 @@ const UserSchema = new Schema<UserInput>(
                 ref: 'User'
             }
         ],
+        isAdmin: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         tops: [Top],
         bottoms: [Bottom],
         footwear: [Footwear],

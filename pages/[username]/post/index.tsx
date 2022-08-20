@@ -1,4 +1,4 @@
-import 
+import Post from './[postId]'
 
 // This is the top
 

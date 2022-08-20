@@ -87,7 +87,7 @@ export const typeDefs = gql`
     # Here it returns Auth, which is the token and the user information : Auth
     createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!): Auth
     updateUser(email: String!, username: String!, firstName: String!, lastName: String!, password: String!): User 
-    login(email: String!, password: String!): Auth
+    login(username: String!, password: String!): Auth
     # Social related mutations
     # This will return the current logged in User information
     followUser(followingId: ID!): User

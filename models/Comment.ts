@@ -4,7 +4,7 @@ interface comment {
     commentBody: String,
     userId: String,
     userImage: String,
-    commentBody: String,
+    username: String,
     createdAt?: String,
 }
 
@@ -14,17 +14,9 @@ const commentSchema = new Schema<comment>(
             type: String,
             required: true
         },
-        userImage: {
-            type: String,
-        },
-        userImage: {
-            type: String,
-            required: true
-        },
         username: {
             type: String,
             required: true,
-            maxlength: 280
         },
         createdAt: {
             type: Date,

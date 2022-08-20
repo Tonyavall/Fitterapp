@@ -1,24 +1,26 @@
 import LoginForm from "../../components/loginForm"
 import { SyntheticEvent } from "react";
 import { useState } from "react";
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { LOGIN } from '../api/mutations'
 import Auth from '../../utils/clientAuth';
 
 const Login = () => {
-    const [formState, setFormState] = useState({ email: '', password: '' });
+    const [formState, setFormState] = useState({ username: '', password: '' });
     const [login, { error }] = useMutation(LOGIN);
 
-    const handleFormSubmit = async (event: SyntheticEvent) => {
-        event.preventDefault();
-        if (!formState.email || !formState.password) return
+    const handleFormSubmit = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        if (!formState.username || !formState.password) return
 
         try {
             const mutationResponse = await login({
-                variables: { email: formState.email, password: formState.password },
+                variables: { username: formState.username, password: formState.password },
             });
+            console.log(mutationResponse)
             const token = mutationResponse.data.login.token;
+            console.log(token)
             Auth.login(token);
         } catch (e) {
             console.log(e);
@@ -27,7 +29,8 @@ const Login = () => {
 
     const handleChange = (event: any) => {
         const userInput = event.target.value
-        const fieldType = event.target.type
+        const fieldType = event.target.dataset.input
+
         setFormState({
             ...formState,
             [fieldType]: userInput,

@@ -177,6 +177,7 @@ export const resolvers = {
                     password 
                 })
                 const token = signToken(user)
+                console.log(token)
                 return { user, token }
             } catch (error) {
                 console.log(error)
@@ -185,10 +186,12 @@ export const resolvers = {
         },
         login: async (
             parent: undefined,
-            { email, password }: { email: string, password: string }
+            { username, password }: { username: string, password: string },
+            context: currentUser
         ) => {
             await connectDb()
-            const user = await User.findOne({ email });
+            console.log(context)
+            const user = await User.findOne({ username });
 
             if (!user) {
                 throw new AuthenticationError('Incorrect credentials');

@@ -12,7 +12,7 @@ interface UserDataRequest extends NextApiRequest {
 }
 
 export const authMiddleware = ({ req }: { req: UserDataRequest }) => {
-    let token = req.body.token || req.query.token || req.headers.authorization;
+    let token = req.body?.token || req.query?.token || req.headers.authorization;
     
     if (req.headers.authorization) {
         token = token.split(' ').pop().trim();
@@ -32,9 +32,11 @@ export const authMiddleware = ({ req }: { req: UserDataRequest }) => {
 }
 
 export const signToken = (
-    { email, username, _id }: { email: string, username: string, _id: Types.ObjectId }
+    { email, username, _id, isAdmin = false }: 
+    { email: string, username: string, _id: Types.ObjectId, isAdmin: boolean }
 ) => {
-    const payload = { email, username, _id };
+    const payload = { email, username, _id, isAdmin };
+
     return jwt.sign(
         { data: payload },
         secret,
