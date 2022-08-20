@@ -4,7 +4,6 @@
 const jwt = require('jsonwebtoken')
 import { Types } from 'mongoose';
 import { NextApiRequest } from "next";
-
 const secret = 'rejeanissofineong';
 const expiration = '2h';
 
@@ -36,7 +35,6 @@ export const signToken = (
     { email, username, _id }: { email: string, username: string, _id: Types.ObjectId }
 ) => {
     const payload = { email, username, _id };
-
     return jwt.sign(
         { data: payload },
         secret,

@@ -10,19 +10,13 @@ export const typeDefs = gql`
     password: String!
     userImage: String
     posts: [Post]
-    friends: [User]
     tops: [Top]
     bottoms: [Bottom]
     footwear: [Footwear]
     outfits: [Outfit]
-  }
-
-  input UserInput {
-    username: String
-    firstName: String
-    lastName: String
-    email: String
-    password: String
+    followerCount: Int
+    followingCount: Int
+    postCount: Int
   }
 
   type Top {
@@ -62,6 +56,10 @@ export const typeDefs = gql`
     comments: [Comment]
     likedBy: [User]
     createdAt: String!
+    likes: Int
+    commentCount: Int
+    postImage: String!
+    outfit: [Outfit]
   }
 
   type Comment {
@@ -77,16 +75,18 @@ export const typeDefs = gql`
   }
 
   type Query {
-    user: User
-    users: [User]
+    findMe: User
+    findUser(username: String!): User
+    findAllUsers: [User]
     homeRecentTenPosts: [Post]
     grabRandomTwelvePosts: [Post]
+    findSinglePost(postId: ID!): Post
   }
 
   type Mutation {
     # Here it returns Auth, which is the token and the user information : Auth
-    createUser(input: UserInput!): Auth 
-    updateUser(input: UserInput): User 
+    createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!): Auth
+    updateUser(email: String!, username: String!, firstName: String!, lastName: String!, password: String!): User 
     login(email: String!, password: String!): Auth
     # Social related mutations
     # This will return the current logged in User information

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from "../api/mutations";
 import Auth from '../../utils/clientAuth';
-
+import Router from "next/router";
 const Signup = () => {
     const [formState, setFormState] = useState({
         email: '',
@@ -19,7 +19,10 @@ const Signup = () => {
 
     const handleFormSubmit = async (event: SyntheticEvent) => {
         event.preventDefault();
-        if (!formState.email || !formState.password) return
+        const fieldValues = Object.values(formState)
+        for (let i = 0; i < fieldValues.length; i++) {
+            if (fieldValues[i] === '') return
+        }
 
         try {
             const mutationResponse = await createUser({
@@ -40,7 +43,7 @@ const Signup = () => {
 
     const handleChange = (event: any) => {
         const userInput = event.target.value
-        const fieldType = event.target.type
+        const fieldType = event.target.dataset.input
         setFormState({
             ...formState,
             [fieldType]: userInput,

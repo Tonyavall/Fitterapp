@@ -3,6 +3,8 @@ import { Schema } from 'mongoose'
 interface comment {
     commentBody: String,
     userId: String,
+    userImage: String,
+    commentBody: String,
     createdAt?: String,
 }
 
@@ -12,7 +14,14 @@ const commentSchema = new Schema<comment>(
             type: String,
             required: true
         },
-        commentBody: {
+        userImage: {
+            type: String,
+        },
+        userImage: {
+            type: String,
+            required: true
+        },
+        username: {
             type: String,
             required: true,
             maxlength: 280

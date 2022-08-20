@@ -159,11 +159,14 @@ const Navbar = () => {
                             <VisuallyHidden>Notifications</VisuallyHidden>
                         </chakra.a>
 
-                        <Avatar
-                            size="sm"
-                            name="Dan Abrahmov"
-                            src="https://bit.ly/dan-abramov"
-                        />
+                        <Link href="/tonyavall">
+                            <Avatar
+                                cursor="pointer"
+                                size="sm"
+                                name="Dan Abrahmov"
+                                src="https://bit.ly/dan-abramov"
+                            />
+                        </Link>
                     </HStack>
                 </Flex>
             </chakra.header>

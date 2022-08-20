@@ -97,6 +97,11 @@ UserSchema
     .get(function () {
         if (this.following) return this.following.length
     })
+UserSchema
+    .virtual('postCount')
+    .get(function () {
+        if (this.posts) return this.posts.length
+    })
 
 UserSchema.pre('save', async function (next) {
     if (this.isNew || this.isModified('password')) {

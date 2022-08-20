@@ -43,30 +43,30 @@ export default function SignupForm({handleChange, handleFormSubmit, error}: any)
                     <Stack spacing={4}>
                         <HStack>
                             <Box>
-                                <FormControl id="firstName" isRequired>
+                                <FormControl id="firstName" onChange={handleChange} isRequired>
                                     <FormLabel>First Name</FormLabel>
-                                    <Input type="text" />
+                                    <Input type="firstName" data-input={'firstName'}/>
                                 </FormControl>
                             </Box>
                             <Box>
-                                <FormControl id="lastName">
+                                <FormControl id="lastName" onChange={handleChange} isRequired>
                                     <FormLabel>Last Name</FormLabel>
-                                    <Input type="text" />
+                                    <Input type="lastName" data-input={'lastName'}/>
                                 </FormControl>
                             </Box>
                         </HStack>
-                        <FormControl id="username" isRequired>
+                        <FormControl id="username" onChange={handleChange} isRequired>
                             <FormLabel>Username</FormLabel>
-                            <Input type="username" />
+                            <Input type="username" data-input={'username'}/>
                         </FormControl>
-                        <FormControl id="email" isRequired>
+                        <FormControl id="email" onChange={handleChange} isRequired>
                             <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                            <Input type="email" data-input={'email'}/>
                         </FormControl>
-                        <FormControl id="password" isRequired>
+                        <FormControl id="password" onChange={handleChange} isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} />
+                                <Input type={showPassword ? 'text' : 'password'} data-input={'password'}/>
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
@@ -86,7 +86,8 @@ export default function SignupForm({handleChange, handleFormSubmit, error}: any)
                                 color={'white'}
                                 _hover={{
                                     bg: 'blue.500',
-                                }}>
+                                }}
+                                onClick={handleFormSubmit}>
                                 Sign up
                             </Button>
                         </Stack>

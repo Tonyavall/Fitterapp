@@ -16,10 +16,6 @@ type UserInput = {
     password: string
 }
 
-type LoggedInUser = {
-    user: object
-}
-
 interface currentUser {
     user: {
         _id: Types.ObjectId
@@ -35,12 +31,14 @@ interface currentUser {
         bottoms: object[]
         footwear: object[]
         outfits: object[]
+        followerCount: number
+        followingCount: number
     }
 }
 
 export const resolvers = {
     Query: {
-        user: async (
+        findMe: async (
             parent: undefined,
             args: undefined,
             context: currentUser
@@ -49,27 +47,46 @@ export const resolvers = {
             if (context.user) {
                 const user = await User
                     .findById(context.user._id)
+                    .populate([
+                        {
+                            path: 'tops',
+                            populate: ['_id', 'image']
+                        },
+                        {
+                            path: 'bottoms',
+                            populate: ['_id', 'image']
+                        },
+                        {
+                            path: 'footwear',
+                            populate: ['_id', 'image']
+                        },
+                        {
+                            path: 'outfits',
+                            populate: ['_id', 'image']
+                        }
+                    ])
+                return user;
+            }
+            throw new AuthenticationError('You have to be logged in!')
+        },
+        findUser: async (
+            parent: undefined,
+            { username }: { username: string },
+            context: currentUser
+        ) => {
+            await connectDb()
+            if (context.user) {
+                const user = await User
+                    .find({ username: username })
                     .populate({
-                        path: 'tops',
-                        populate: ['_id', 'image']
-                    })
-                    .populate({
-                        path: 'bottoms',
-                        populate: ['_id', 'image']
-                    })
-                    .populate({
-                        path: 'footwear',
-                        populate: ['_id', 'image']
-                    })
-                    .populate({
-                        path: 'outfits',
+                        path: 'posts',
                         populate: ['_id', 'image']
                     })
                 return user;
             }
             throw new AuthenticationError('You have to be logged in!')
         },
-        users: async (
+        findAllUsers: async (
             parent: undefined,
             args: undefined,
             context: undefined
@@ -118,21 +135,59 @@ export const resolvers = {
             }
             throw new AuthenticationError('You have to be logged in!')
         },
+        findSinglePost: async (
+            parent: undefined,
+            { postId }: { postId: string },
+            context: currentUser
+        ) => {
+            if (context.user) {
+                return await Post
+                    .find({ _id: postId })
+                    .populate([
+                        {
+                            path: 'comment',
+                            populate: ['_id', 'image']
+                        },
+                        {
+                            path: 'footwear',
+                            populate: ['_id', 'image']
+                        },
+                        {
+                            path: 'outfits',
+                            populate: ['_id', 'image']
+                        }
+                    ])
+            }
+            throw new AuthenticationError('You have to be logged in!')
+        }
     },
     Mutation: {
         createUser: async (
             parent: undefined,
-            args: { input: UserInput },
+            { email, username, firstName, lastName, password }: UserInput,
             context: currentUser
         ) => {
-            const user = await User.create(args.input)
-            const token = signToken(user)
-            return { user, token }
+            try {
+                await connectDb()
+                const user = await User.create({ 
+                    email, 
+                    username, 
+                    firstName, 
+                    lastName, 
+                    password 
+                })
+                const token = signToken(user)
+                return { user, token }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
         },
         login: async (
             parent: undefined,
             { email, password }: { email: string, password: string }
         ) => {
+            await connectDb()
             const user = await User.findOne({ email });
 
             if (!user) {

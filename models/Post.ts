@@ -1,12 +1,15 @@
 import { Schema, model, models } from'mongoose'
 import Comment from './Comment'
+import Outfit from './Outfit'
 
 interface Post {
     description: string,
     userId: string,
     comments: object[],
     likedBy: object[],
-    createdAt?: Date
+    createdAt?: Date,
+    outfit: object[],
+    postImage: string
 }
 
 const postSchema = new Schema<Post>(
@@ -20,6 +23,11 @@ const postSchema = new Schema<Post>(
             maxLength: 500,
         },
         comments: [Comment],
+        outfit: [Outfit],
+        postImage: {
+            type: String,
+            required: true
+        },
         likedBy: [
             {
                 type: Schema.Types.ObjectId,
