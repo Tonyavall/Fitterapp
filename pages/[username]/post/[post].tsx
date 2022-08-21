@@ -14,7 +14,7 @@ const Post = () => {
         }
         setLoggedIn(false)
         Router.push('/login')
-    })
+    }, [])
 
     return (
         <Layout>

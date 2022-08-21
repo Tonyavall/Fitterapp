@@ -24,8 +24,8 @@ const Login = () => {
             });
             // NEED TO HANDLE ERROR MESSAGES FROM BACKEND HERE
             const token = mutationResponse.data.login.token;
-            setLoggedIn(true)
             Auth.login(token);
+            setLoggedIn(true)
         } catch (e) {
             console.log(e);
         }

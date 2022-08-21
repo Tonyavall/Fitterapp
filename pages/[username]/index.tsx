@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Types } from 'mongoose'
 import Layout from '../../components/layouts/article'
 import { loggedInAtom } from '../../utils/globalAtoms'
 import { useAtom } from 'jotai'
@@ -15,7 +14,7 @@ const User = () => {
         }
         setLoggedIn(false)
         Router.push('/login')
-    })
+    }, [setLoggedIn])
 
     return (
         <Layout>

@@ -14,7 +14,7 @@ const Explore = () => {
         }
         setLoggedIn(false)
         Router.push('/login')
-    })
+    }, [])
 
     return (
         <Layout>

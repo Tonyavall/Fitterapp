@@ -15,7 +15,7 @@ const Home: NextPage = () => {
     }
     setLoggedIn(false)
     Router.push('/login')
-  })
+  }, [setLoggedIn])
 
   return (
     <Layout>

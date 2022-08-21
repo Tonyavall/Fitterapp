@@ -14,7 +14,7 @@ const Following = () => {
         }
         setLoggedIn(false)
         Router.push('/login')
-    })
+    }, [setLoggedIn])
 
     return (
         <Layout>

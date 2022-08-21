@@ -14,7 +14,7 @@ const Direct = () => {
         }
         setLoggedIn(false)
         Router.push('/login')
-    })
+    }, [])
 
     return (
         <Layout>

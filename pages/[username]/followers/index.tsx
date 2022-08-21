@@ -14,7 +14,7 @@ const Followers = () => {
         }
         setLoggedIn(false)
         Router.push('/login')
-    })
+    , []})
 
     return (
         <Layout>

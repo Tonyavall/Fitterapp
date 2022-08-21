@@ -41,16 +41,18 @@ const Navbar = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
-    // const [userProfile, setUserProfile] = useAtom(userProfileAtom)
+    const [userProfile, setUserProfile] = useAtom(userProfileAtom)
     const handleLogout = () => {
-        setLoggedIn(false)
         Auth.logout()
+        setLoggedIn(false)
         Router.push('/login')
     }
+    
     useEffect(() => {
-        // const userToken = Auth.getProfile()
-        // console.log(userToken)
-    }, [])
+        // @ts-ignore
+        const { data } = Auth.getProfile()
+        setUserProfile(data)
+    }, [setUserProfile])
 
     return (
         <chakra.header
@@ -161,12 +163,12 @@ const Navbar = () => {
                             </Center>
                             <br />
                             <Center>
-                                <p>{}</p>
+                                <p>{ userProfile.username }</p>
                             </Center>
                             <br />
                             <MenuDivider />
-                            <MenuItem as="button" onClick={()=> Router.push('/profile')}>Profile</MenuItem>
-                            <MenuItem as="button" onClick={()=> Router.push('/settings')}>Account Settings</MenuItem>
+                            <MenuItem as="button" onClick={() => Router.push('/profile')}>Profile</MenuItem>
+                            <MenuItem as="button" onClick={() => Router.push('/settings')}>Account Settings</MenuItem>
                             <MenuItem as="button" onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
                     </Menu>
