@@ -1,8 +1,20 @@
 import Navbar from '../navbar'
 import { Box } from '@chakra-ui/react'
 import Head from 'next/head'
+import React, { useEffect } from 'react'
+import { useAtom } from 'jotai'
+import Auth from '../../utils/clientAuth'
+import { loggedInAtom } from '../../utils/globalAtoms'
 
-const Main = ({ children }: React.PropsWithChildren<{}>) => {
+const Main = ({ children }: React.PropsWithChildren) => {
+    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
+
+    useEffect(() => {
+        // @ts-ignore
+        setLoggedIn(Auth.loggedIn())
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loggedIn])
+
     return (
         <Box>
             <Head>
@@ -11,14 +23,12 @@ const Main = ({ children }: React.PropsWithChildren<{}>) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Navbar />
             <main>
+                {loggedIn ?
+                    <Navbar /> : null
+                }
                 {children}
             </main>
-
-            <footer>
-                <p>Footer Here</p>
-            </footer>
         </Box>
     )
 }

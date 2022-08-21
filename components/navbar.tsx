@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Router from "next/router";
 import {
     Avatar,
@@ -33,9 +33,24 @@ import {
     AiOutlineHome,
 } from "react-icons/ai";
 import { TbShirt } from "react-icons/tb"
+import { useAtom } from "jotai";
+import { loggedInAtom } from "../utils/globalAtoms";
+import { userProfileAtom } from "../utils/globalAtoms";
+
 const Navbar = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
+    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
+    // const [userProfile, setUserProfile] = useAtom(userProfileAtom)
+    const handleLogout = () => {
+        setLoggedIn(false)
+        Auth.logout()
+        Router.push('/login')
+    }
+    useEffect(() => {
+        // const userToken = Auth.getProfile()
+        // console.log(userToken)
+    }, [])
 
     return (
         <chakra.header
@@ -146,13 +161,13 @@ const Navbar = () => {
                             </Center>
                             <br />
                             <Center>
-                                <p>Username</p>
+                                <p>{}</p>
                             </Center>
                             <br />
                             <MenuDivider />
                             <MenuItem as="button" onClick={()=> Router.push('/profile')}>Profile</MenuItem>
                             <MenuItem as="button" onClick={()=> Router.push('/settings')}>Account Settings</MenuItem>
-                            <MenuItem as="button" onClick={()=> Auth.logout()}>Logout</MenuItem>
+                            <MenuItem as="button" onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
                     </Menu>
                 </HStack>

@@ -18,21 +18,10 @@ type UserInput = {
 
 interface currentUser {
     user: {
-        _id: Types.ObjectId
-        username: string
-        email: string
-        firstName: string
-        lastName: string
-        password: string
-        userImage: string
-        posts: object[]
-        friends: object[]
-        tops: object[]
-        bottoms: object[]
-        footwear: object[]
-        outfits: object[]
-        followerCount: number
-        followingCount: number
+        email: string,
+        username: string,
+        _id: Types.ObjectId,
+        isAdmin: boolean,
     }
 }
 
@@ -177,7 +166,6 @@ export const resolvers = {
                     password 
                 })
                 const token = signToken(user)
-                console.log(token)
                 return { user, token }
             } catch (error) {
                 console.log(error)
@@ -190,7 +178,6 @@ export const resolvers = {
             context: currentUser
         ) => {
             await connectDb()
-            console.log(context)
             const user = await User.findOne({ username });
             
             if (!user) {

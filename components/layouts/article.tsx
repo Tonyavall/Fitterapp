@@ -1,9 +1,10 @@
-// Direct message route for talkjs API
-const Layout = () => {
+import { motion } from "framer-motion"
+
+const Layout = ({children}: React.PropsWithChildren) => {
     return (
-        <p>
-            Layout
-        </p>
+        <motion.article>
+            {children}
+        </motion.article>
     )
 }
 

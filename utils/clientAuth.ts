@@ -30,14 +30,12 @@ class AuthService {
     getToken() {
         // Retrieves the user token from localStorage
         const localToken = localStorage.getItem('id_token') || '';
-        if (!localToken) throw Error('Unable to fetch local storage token from the user at getToken')
         return localToken
     }
 
     login(idToken: string) {
         // Saves user token to localStorage
         localStorage.setItem('id_token', idToken);
-
         Router.push('/')
     }
 

@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import { Types } from 'mongoose'
-import Layout from '../../components/layouts/article'
-import { loggedInAtom } from '../../utils/globalAtoms'
+import Layout from '../../../components/layouts/article'
+import { loggedInAtom } from '../../../utils/globalAtoms'
 import { useAtom } from 'jotai'
 import Router from 'next/router';
-import Auth from '../../utils/clientAuth'
+import Auth from '../../../utils/clientAuth'
 
-const User = () => {
+const Post = () => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
 
     useEffect(() => {
@@ -19,9 +18,9 @@ const User = () => {
 
     return (
         <Layout>
-            User
+            This is a post
         </Layout>
     )
 }
 
-export default User
+export default Post

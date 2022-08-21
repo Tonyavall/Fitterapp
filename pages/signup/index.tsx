@@ -6,6 +6,9 @@ import { useMutation } from '@apollo/client';
 import { CREATE_USER } from "../api/mutations";
 import Auth from '../../utils/clientAuth';
 
+import { loggedInAtom } from '../../utils/globalAtoms'
+import { useAtom } from 'jotai'
+
 const Signup = () => {
     const [formState, setFormState] = useState({
         email: '',
@@ -25,7 +28,7 @@ const Signup = () => {
         'activity'
     ]
     const [errorMessage, setErrorMessage] = useState('')
-
+    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [createUser, { error }] = useMutation(CREATE_USER);
 
     const handleFormSubmit = async (event: SyntheticEvent) => {
@@ -55,6 +58,7 @@ const Signup = () => {
                 },
             });
             const token = mutationResponse.data.createUser.token;
+            setLoggedIn(true)
             Auth.login(token);
         } catch (e) {
             console.log(e);
