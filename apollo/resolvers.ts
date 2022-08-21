@@ -192,7 +192,7 @@ export const resolvers = {
             await connectDb()
             console.log(context)
             const user = await User.findOne({ username });
-
+            
             if (!user) {
                 throw new AuthenticationError('Incorrect credentials');
             }

@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "next/link"
+import Router from "next/router";
 import {
     Avatar,
     Button,
@@ -23,7 +23,7 @@ import {
     InputLeftElement,
     Input,
 } from "@chakra-ui/react";
-
+import Auth from '../utils/clientAuth'
 import {
     AiOutlineMenu,
     AiFillHome,
@@ -45,8 +45,11 @@ const Navbar = () => {
             py={4}
             shadow="md"
         >
-            <Flex alignItems="center" justifyContent="space-between" mx="auto">
+            <Flex alignItems="center" justifyContent="space-between" mx="auto" width="45vw" height="27.5px">
                 <HStack display="flex" spacing={3} alignItems="center">
+                    <Box width="4em" fontSize="1.6rem" fontWeight="medium" fontFamily="cursive" letterSpacing="1.5px">
+                        Fitter
+                    </Box>
                     <Box display={{ base: "inline-flex", md: "none" }}>
                         <IconButton
                             display={{ base: "flex", md: "none" }}
@@ -99,45 +102,31 @@ const Navbar = () => {
                             </Button>
                         </VStack>
                     </Box>
-
-                    {/* Horizontal menu */}
-                    <HStack spacing={8} display={{ base: "none", md: "inline-flex" }}>
-                        <Link href="/">
-
-                            <AiOutlineHome cursor="pointer" size={25} />
-                        </Link>
-                        <Link href="/direct">
-                            <AiOutlineInbox cursor="pointer" size={25} />
-                        </Link>
-                        <Link href="/fits">
-                            <TbShirt cursor="pointer" size={25} />
-                        </Link>
-                    </HStack>
                 </HStack>
+                <InputGroup width="15vw" display={mobileNav.isOpen ? "none" : "flex"}>
+                    <InputLeftElement pointerEvents="none" height="2em">
+                        <AiOutlineSearch />
+                    </InputLeftElement>
+                    <Input type="tel" placeholder="Search" bg="#EFEFEF" height="2em" />
+                </InputGroup>
                 <HStack
                     spacing={3}
                     display={mobileNav.isOpen ? "none" : "flex"}
                 >
-                    <InputGroup>
-                        <InputLeftElement pointerEvents="none">
-                            <AiOutlineSearch />
-                        </InputLeftElement>
-                        <Input type="tel" placeholder="Search..." />
-                    </InputGroup>
-
-                    <chakra.a
-                        p={3}
-                        color="gray.800"
-                        _dark={{ color: "inherit" }}
-                        rounded="sm"
-                        _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
-                    >
-                        <AiFillBell />
-                        <VisuallyHidden>Notifications</VisuallyHidden>
-                    </chakra.a>
-
+                    {/* Horizontal menu */}
+                    <HStack spacing={6} display={{ base: "none", md: "inline-flex" }} marginRight="1em">
+                        <button onClick={() => Router.push('/')}>
+                            <AiOutlineHome cursor="pointer" size={25} />
+                        </button>
+                        <button onClick={() => Router.push('/direct')}>
+                            <AiOutlineInbox cursor="pointer" size={25} />
+                        </button>
+                        <button onClick={() => Router.push('/fits')}>
+                            <TbShirt cursor="pointer" size={25} />
+                        </button>
+                    </HStack>
                     {/* Profile avatar menu */}
-                    <Menu>
+                    <Menu placement="bottom-end">
                         <MenuButton
                             as={Button}
                             rounded={'full'}
@@ -161,9 +150,9 @@ const Navbar = () => {
                             </Center>
                             <br />
                             <MenuDivider />
-                            <MenuItem>Your Fits</MenuItem>
-                            <MenuItem>Account Settings</MenuItem>
-                            <MenuItem>Logout</MenuItem>
+                            <MenuItem as="button" onClick={()=> Router.push('/profile')}>Profile</MenuItem>
+                            <MenuItem as="button" onClick={()=> Router.push('/settings')}>Account Settings</MenuItem>
+                            <MenuItem as="button" onClick={()=> Auth.logout()}>Logout</MenuItem>
                         </MenuList>
                     </Menu>
                 </HStack>

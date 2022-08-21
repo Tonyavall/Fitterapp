@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from "../api/mutations";
 import Auth from '../../utils/clientAuth';
-import Router from "next/router";
+
 const Signup = () => {
     const [formState, setFormState] = useState({
         email: '',
@@ -14,6 +14,17 @@ const Signup = () => {
         firstName: '',
         lastName: '',
     })
+    const reservedNames = [
+        'settings',
+        'fits',
+        'explore',
+        'direct',
+        'store',
+        'login',
+        'signup',
+        'activity'
+    ]
+    const [errorMessage, setErrorMessage] = useState('')
 
     const [createUser, { error }] = useMutation(CREATE_USER);
 
@@ -21,7 +32,16 @@ const Signup = () => {
         event.preventDefault();
         const fieldValues = Object.values(formState)
         for (let i = 0; i < fieldValues.length; i++) {
-            if (fieldValues[i] === '') return
+            if (fieldValues[i] === '') {
+                setErrorMessage("Please fill out the entire form.")
+                return
+            }
+        }
+        for (let i = 0; i < reservedNames.length; i++) {
+            if (reservedNames[i] === formState.username) {
+                setErrorMessage(`The username ${formState.username} is unavailable.`)
+                return
+            }
         }
 
         try {
@@ -44,16 +64,18 @@ const Signup = () => {
     const handleChange = (event: any) => {
         const userInput = event.target.value
         const fieldType = event.target.dataset.input
+        const handleInput = (fieldType === 'username') ? userInput.toLowerCase() : userInput
+
         setFormState({
             ...formState,
-            [fieldType]: userInput,
+            [fieldType]: handleInput,
         });
     };
     return (
         <SignupForm
             handleChange={handleChange}
             handleFormSubmit={handleFormSubmit}
-            error={error}
+            errorMessage={errorMessage}
         />
     )
 }

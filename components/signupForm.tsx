@@ -17,7 +17,7 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-export default function SignupForm({handleChange, handleFormSubmit, error}: any) {
+export default function SignupForm({handleChange, handleFormSubmit, errorMessage}: any) {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
@@ -90,6 +90,7 @@ export default function SignupForm({handleChange, handleFormSubmit, error}: any)
                                 onClick={handleFormSubmit}>
                                 Sign up
                             </Button>
+                            {errorMessage ? <Text>{errorMessage}</Text> : null}
                         </Stack>
                         <Stack pt={6}>
                             <Text align={'center'}>
