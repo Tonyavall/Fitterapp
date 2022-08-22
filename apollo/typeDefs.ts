@@ -99,11 +99,15 @@ export const typeDefs = gql`
     # COMMENTS
     addPostComment(postId: ID!, commentBody: String!) : Post
     deletePostComment(commentId: ID!, postId: ID!, postOwnerId: ID!, commentOwnerId: ID!)
-    # OTUFIT
+    # OUTFIT
     addTop(image: String!): User
     addBottom(image: String!): User
     addFootwear(image: String!): User
     addOutfit(topId: String!, BottomId: String!, footwearId: String): User
+    deleteTop(topId: ID!): User
+    deleteBottom(bottomId: ID!): User
+    deleteFootwear(footwearId: ID!): User
+    deleteOutfit(outfitId: ID!): User
     # Dangerous mutations
     deleteUser(userId: ID!) : User
   }

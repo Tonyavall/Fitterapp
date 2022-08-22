@@ -310,13 +310,13 @@ export const resolvers = {
             try {
                 const userId = context.user._id
 
-                const top = await User.findOneAndUpdate(
+                const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
                     { $push: { tops: { image } } },
                     { runValidators: true, new: true }
                 )
-                if (!top) return { status: 404, message: 'User not found.' }
-                return { status: 200, top: top }
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
             } catch (error) {
                 console.log(error)
                 return error
@@ -331,13 +331,13 @@ export const resolvers = {
             try {
                 const userId = context.user._id
 
-                const bottom = await User.findOneAndUpdate(
+                const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
                     { $push: { bottoms: { image } } },
                     { runValidators: true, new: true }
                 )
-                if (!bottom) return { status: 404, message: 'User not found.' }
-                return { status: 200, bottom: bottom }
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
             } catch (error) {
                 console.log(error)
                 return error
@@ -352,13 +352,13 @@ export const resolvers = {
             try {
                 const userId = context.user._id
 
-                const footwear = await User.findOneAndUpdate(
+                const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
                     { $push: { footwear: { image } } },
                     { runValidators: true, new: true }
                 )
-                if (!footwear) return { status: 404, message: 'User not found.' }
-                return { status: 200, footwear: footwear }
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
             } catch (error) {
                 console.log(error)
                 return error
@@ -373,13 +373,97 @@ export const resolvers = {
             try {
                 const userId = context.user._id
 
-                const outfit = await User.findOneAndUpdate(
+                const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
                     { $push: { outfits: { topId, bottomId, footwearId } } },
                     { runValidators: true, new: true }
                 )
-                if (!outfit) return { status: 404, message: 'User not found.' }
-                return { status: 200, footwear: outfit }
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        deletTop: async (
+            parent: undefined,
+            { topId }: { topId: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $pull: { tops: { topId } } },
+                    { runValidators: true, new: true }
+                )
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        deleteBottom: async (
+            parent: undefined,
+            { bottomId }: { bottomId: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $pull: { bottoms: { bottomId } } },
+                    { runValidators: true, new: true }
+                )
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        deleteFootwear: async (
+            parent: undefined,
+            { footwearId }: { footwearId: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $pull: { footwear: { footwearId } } },
+                    { runValidators: true, new: true }
+                )
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        deleteOutfit: async (
+            parent: undefined,
+            { outfitId }: { outfitId: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $pull: { outfits: { outfitId } } },
+                    { runValidators: true, new: true }
+                )
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
             } catch (error) {
                 console.log(error)
                 return error
