@@ -233,6 +233,36 @@ export const resolvers = {
                 console.log(error)
                 return error
             }
+        },
+        deletePostComment: async (
+            parent: undefined,
+            { commentId, postId, postOwnerId, commentOwnerId }:
+                { commentId: string, postId: string, postOwnerId: string, commentOwnerId: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                // Can delete comment only if 
+                // 1. the user is the owner of the post
+                // 2. the user is the owner of the comment
+                // 3. the user is an admin
+                if (
+                    context.user._id === postOwnerId ||
+                    context.user._id === commentOwnerId ||
+                    context.user.isAdmin === true
+                ) {
+                    await Post.findOneAndUpdate(
+                        { _id: postId },
+                        { $pull: { comments: { _id: commentId } } },
+                        { runValidators: true, new: true }
+                    )
+                    return { status: 200 }
+                }
+                throw new AuthenticationError('Only the owner of the comment or post can delete that!');
+            } catch (error) {
+                console.log(error)
+                return error
+            }
         }
     }
 }

@@ -95,7 +95,8 @@ export const typeDefs = gql`
     unfollowUser(followingId: ID!): User
     likePost(postId: ID!): Post
     unlikePost(postId: ID!): Post
-    addPostComment(postId: ID!, commentBody: String!) : Comment
+    addPostComment(postId: ID!, commentBody: String!) : Post
+    deletePostComment(commentId: ID!, postOwnerId: ID!, commentOwnerId: ID!, postId: ID!)
     # Outfit related mutations
     addTop(image: String!): User
     addBottom(image: String!): User
