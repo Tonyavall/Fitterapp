@@ -213,6 +213,25 @@ export const resolvers = {
                 return error
             }
         },
+        deletePost: async (
+            parent: undefined,
+            { postId, postOwnerId }: { postId: string, postOwnerId: string },
+            context: any
+        ) => {
+            await connectDb()
+            const userId = context.user._id
+            try {
+                if (userId === postOwnerId || context.user.isAdmin === true) {
+                    const response = await Post.findOneAndDelete({_id: postId})
+                    if (!response) return { status: 404 }
+                    return { response }
+                }
+                throw new AuthenticationError('Only the owner can delete that!');
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
         addPostComment: async (
             parent: undefined,
             { commentBody, postId }: { commentBody: string, postId: string },
@@ -227,7 +246,6 @@ export const resolvers = {
                     { $push: { comments: { commentBody, userId, username } } },
                     { runValidators: true, new: true }
                 )
-
                 return { status: 200 }
             } catch (error) {
                 console.log(error)

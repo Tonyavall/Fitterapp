@@ -96,7 +96,7 @@ export const typeDefs = gql`
     likePost(postId: ID!): Post
     unlikePost(postId: ID!): Post
     addPostComment(postId: ID!, commentBody: String!) : Post
-    deletePostComment(commentId: ID!, postOwnerId: ID!, commentOwnerId: ID!, postId: ID!)
+    deletePostComment(commentId: ID!, postId: ID!, postOwnerId: ID!, commentOwnerId: ID!)
     # Outfit related mutations
     addTop(image: String!): User
     addBottom(image: String!): User
@@ -104,6 +104,6 @@ export const typeDefs = gql`
     addOutfit(topId: String!, BottomId: String!, footwearId: String): User
     # Dangerous mutations
     deleteUser(userId: ID!) : User
-    deletePost(postId: ID!) : User
+    deletePost(postId: ID! postOwnerId: ID!) : User
   }
 `
