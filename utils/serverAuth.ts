@@ -7,11 +7,8 @@ import { NextApiRequest } from "next";
 const secret = 'rejeanissofineong';
 const expiration = '2h';
 
-interface UserDataRequest extends NextApiRequest {
-    user: object
-}
-
-export const authMiddleware = ({ req }: { req: UserDataRequest }) => {
+// MESSAGE FOR LATER - PROBLEM IS TOKEN NOT STORED IN QUERY
+export const authMiddleware = ({ req }: { req: any }) => {
     let token = req.body?.token || req.query?.token || req.headers.authorization;
     
     if (req.headers.authorization) {

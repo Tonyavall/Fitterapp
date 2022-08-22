@@ -2,12 +2,12 @@ import { gql } from '@apollo/client'
 
 export const typeDefs = gql`
   type User {
-    _id: ID!
-    username: String!
-    email: String!
-    firstName: String!
-    lastName: String!
-    password: String!
+    _id: ID
+    username: String
+    email: String
+    firstName: String
+    lastName: String
+    password: String
     userImage: String
     posts: [Post]
     tops: [Top]
@@ -20,53 +20,53 @@ export const typeDefs = gql`
   }
 
   type Top {
-    _id: ID!
-    image: String!
-    userId: ID!
-    createdAt: String!
+    _id: ID
+    image: String
+    userId: ID
+    createdAt: String
   }
 
   type Bottom {
-    _id: ID!
-    image: String!
-    userId: ID!
-    createdAt: String!
+    _id: ID
+    image: String
+    userId: ID
+    createdAt: String
   }
 
   type Footwear {
-    _id: ID!
-    image: String!
-    userId: ID!
-    createdAt: String!
+    _id: ID
+    image: String
+    userId: ID
+    createdAt: String
   }
 
   type Outfit {
-    _id: ID!
-    userId: ID!
-    top: Top!
-    bottom: Bottom!
+    _id: ID
+    userId: ID
+    top: Top
+    bottom: Bottom
     footwear: Footwear
-    createdAt: String!
+    createdAt: String
   }
 
   type Post {
-    _id: ID!
-    userId: ID!
+    _id: ID
+    userId: ID
     description: String
     comments: [Comment]
     likedBy: [User]
-    createdAt: String!
+    createdAt: String
     likes: Int
     commentCount: Int
-    postImage: String!
+    postImage: String
     outfit: [Outfit]
   }
 
   type Comment {
-    _id: ID!
-    userId: ID!
-    commentBody: String!
-    createdAt: String!
+    _id: ID
+    userId: ID
+    commentBody: String
+    createdAt: String
   }
 
   type Auth {
@@ -90,10 +90,12 @@ export const typeDefs = gql`
     login(username: String!, password: String!): Auth
     # Social related mutations
     # This will return the current logged in User information
+    createPost(outfit: Array!, postImage: String!, description: String): Post
     followUser(followingId: ID!): User
     unfollowUser(followingId: ID!): User
     likePost(postId: ID!): Post
     unlikePost(postId: ID!): Post
+    addPostComment(postId: ID!, commentBody: String!) : Comment
     # Outfit related mutations
     addTop(image: String!): User
     addBottom(image: String!): User

@@ -2,7 +2,7 @@ import User from "../models/User"
 import Post from "../models/Post"
 import { Types } from 'mongoose'
 
-import { AuthenticationError } from "apollo-server-micro"
+import { UserInputError, AuthenticationError } from "apollo-server-micro"
 
 import connectDb from "../lib/connection"
 
@@ -16,21 +16,12 @@ type UserInput = {
     password: string
 }
 
-interface currentUser {
-    user: {
-        email: string,
-        username: string,
-        _id: Types.ObjectId,
-        isAdmin: boolean,
-    }
-}
-
 export const resolvers = {
     Query: {
         findMe: async (
             parent: undefined,
             args: undefined,
-            context: currentUser
+            context: any
         ) => {
             await connectDb()
             if (context.user) {
@@ -61,17 +52,25 @@ export const resolvers = {
         findUser: async (
             parent: undefined,
             { username }: { username: string },
-            context: currentUser
+            context: any
         ) => {
             await connectDb()
-            if (context.user) {
-                const user = await User
-                    .find({ username: username })
-                    .populate({
-                        path: 'posts',
-                        populate: ['_id', 'image']
-                    })
-                return user;
+            console.log(context.user)
+            try {
+                if (context.user) {
+                    const [user] = await User
+                        .find({ username: username })
+                        .populate({
+                            path: 'posts',
+                            populate: ['_id', 'image']
+                        })
+                    if (!user) {
+                        throw new UserInputError(`Username ${username} was not found.`)
+                    }
+                    return user;
+                }
+            } catch (error) {
+                console.log(error);
             }
             throw new AuthenticationError('You have to be logged in!')
         },
@@ -86,7 +85,7 @@ export const resolvers = {
         homeRecentTenPosts: async (
             parent: undefined,
             args: undefined,
-            context: currentUser
+            context: any
         ) => {
             await connectDb()
             if (context.user) {
@@ -107,7 +106,7 @@ export const resolvers = {
         grabRandomTwelvePosts: async (
             parent: undefined,
             args: undefined,
-            context: currentUser
+            context: any
         ) => {
             // I have no idea if this code even works
             await connectDb()
@@ -127,7 +126,7 @@ export const resolvers = {
         findSinglePost: async (
             parent: undefined,
             { postId }: { postId: string },
-            context: currentUser
+            context: any
         ) => {
             if (context.user) {
                 return await Post
@@ -154,16 +153,16 @@ export const resolvers = {
         createUser: async (
             parent: undefined,
             { email, username, firstName, lastName, password }: UserInput,
-            context: currentUser
+            context: any
         ) => {
             try {
                 await connectDb()
-                const user = await User.create({ 
-                    email, 
-                    username, 
-                    firstName, 
-                    lastName, 
-                    password 
+                const user = await User.create({
+                    email,
+                    username,
+                    firstName,
+                    lastName,
+                    password
                 })
                 const token = signToken(user)
                 return { user, token }
@@ -175,11 +174,11 @@ export const resolvers = {
         login: async (
             parent: undefined,
             { username, password }: { username: string, password: string },
-            context: currentUser
+            context: any
         ) => {
             await connectDb()
             const user = await User.findOne({ username });
-            
+
             if (!user) {
                 throw new AuthenticationError('Incorrect credentials');
             }
@@ -191,8 +190,49 @@ export const resolvers = {
             }
 
             const token = signToken(user);
-
             return { token, user };
+        },
+        createPost: async (
+            parent: undefined,
+            { outfit, postImage, description }: { outfit: string[], postImage: string, description: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+                const createdPost = await Post.create({
+                    userId,
+                    postImage,
+                    outfit,
+                    description,
+                })
+
+                return createdPost
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        addPostComment: async (
+            parent: undefined,
+            { commentBody, postId }: { commentBody: string, postId: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+                const username = context.user.username
+                await Post.findOneAndUpdate(
+                    { _id: postId },
+                    { $push: { comments: { commentBody, userId, username } } },
+                    { runValidators: true, new: true }
+                )
+
+                return { status: 200 }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
         }
     }
 }

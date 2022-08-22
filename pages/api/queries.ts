@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_USER = gql`
-  query findUser($username: String) {
+export const FIND_USER = gql`
+  query($username: String!) {
     findUser(username: $username) {
       _id
       username
@@ -11,7 +11,17 @@ export const QUERY_USER = gql`
       postCount
       posts {
         postImage
-        outfit
+        outfit {
+          top {
+            image
+          }
+          bottom {
+            image
+          }
+          footwear {
+            image
+          }
+        }
       }
     }
   }

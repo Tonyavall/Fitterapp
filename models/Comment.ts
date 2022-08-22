@@ -3,7 +3,6 @@ import { Schema } from 'mongoose'
 interface comment {
     commentBody: String,
     userId: String,
-    userImage: String,
     username: String,
     createdAt?: String,
 }
@@ -11,6 +10,10 @@ interface comment {
 const commentSchema = new Schema<comment>(
     {
         userId: {
+            type: String,
+            required: true
+        },
+        commentBody: {
             type: String,
             required: true
         },

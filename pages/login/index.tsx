@@ -1,11 +1,9 @@
 import LoginForm from "../../components/loginForm"
-import { SyntheticEvent, useContext } from "react";
+import { SyntheticEvent } from "react";
 import { useState } from "react";
 import { useMutation } from '@apollo/client';
-
 import { LOGIN } from '../api/mutations'
 import Auth from '../../utils/clientAuth';
-
 import { loggedInAtom } from '../../utils/globalAtoms'
 import { useAtom } from 'jotai'
 
@@ -22,7 +20,7 @@ const Login = () => {
             const mutationResponse = await login({
                 variables: { username: formState.username, password: formState.password },
             });
-            // NEED TO HANDLE ERROR MESSAGES FROM BACKEND HERE
+            // NEED TO HANDLE ERROR MESSAGES FROM BACKEND HERE / WRAP W TRY CATCH
             const token = mutationResponse.data.login.token;
             Auth.login(token);
             setLoggedIn(true)

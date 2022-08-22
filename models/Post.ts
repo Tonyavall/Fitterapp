@@ -21,6 +21,7 @@ const postSchema = new Schema<Post>(
         description: {
             type: String,
             maxLength: 500,
+            default: ''
         },
         comments: [Comment],
         outfit: [Outfit],
