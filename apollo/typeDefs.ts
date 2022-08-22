@@ -84,26 +84,27 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    # Here it returns Auth, which is the token and the user information : Auth
+    # USER
     createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!): Auth
     updateUser(email: String!, username: String!, firstName: String!, lastName: String!, password: String!): User 
     login(username: String!, password: String!): Auth
-    # Social related mutations
-    # This will return the current logged in User information
-    createPost(outfit: Array!, postImage: String!, description: String): Post
+    # SOCIAL
     followUser(followingId: ID!): User
     unfollowUser(followingId: ID!): User
+    # POSTS
+    createPost(outfit: Array!, postImage: String!, description: String): Post
     likePost(postId: ID!): Post
     unlikePost(postId: ID!): Post
+    deletePost(postId: ID! postOwnerId: ID!) : User
+    # COMMENTS
     addPostComment(postId: ID!, commentBody: String!) : Post
     deletePostComment(commentId: ID!, postId: ID!, postOwnerId: ID!, commentOwnerId: ID!)
-    # Outfit related mutations
+    # OTUFIT
     addTop(image: String!): User
     addBottom(image: String!): User
     addFootwear(image: String!): User
     addOutfit(topId: String!, BottomId: String!, footwearId: String): User
     # Dangerous mutations
     deleteUser(userId: ID!) : User
-    deletePost(postId: ID! postOwnerId: ID!) : User
   }
 `

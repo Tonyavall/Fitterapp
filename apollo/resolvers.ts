@@ -171,6 +171,20 @@ export const resolvers = {
                 return error
             }
         },
+        deleteUser: async (
+            parent: undefined,
+            { userId }: { userId: string },
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                await User.findOneAndDelete({ _id: userId })
+                return { status: 200 }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
         login: async (
             parent: undefined,
             { username, password }: { username: string, password: string },
@@ -219,10 +233,13 @@ export const resolvers = {
             context: any
         ) => {
             await connectDb()
-            const userId = context.user._id
             try {
-                if (userId === postOwnerId || context.user.isAdmin === true) {
-                    const response = await Post.findOneAndDelete({_id: postId})
+                // Checking the current user
+                const { isAdmin } = await User.findById(context.user._id)
+                const userId = context.user._id
+
+                if (userId === postOwnerId || isAdmin === true) {
+                    const response = await Post.findOneAndDelete({ _id: postId })
                     if (!response) return { status: 404 }
                     return { response }
                 }
@@ -260,6 +277,8 @@ export const resolvers = {
         ) => {
             await connectDb()
             try {
+                // Checking the current user
+                const { isAdmin } = await User.findById(context.user._id)
                 // Can delete comment only if 
                 // 1. the user is the owner of the post
                 // 2. the user is the owner of the comment
@@ -267,7 +286,7 @@ export const resolvers = {
                 if (
                     context.user._id === postOwnerId ||
                     context.user._id === commentOwnerId ||
-                    context.user.isAdmin === true
+                    isAdmin === true
                 ) {
                     await Post.findOneAndUpdate(
                         { _id: postId },
@@ -281,6 +300,90 @@ export const resolvers = {
                 console.log(error)
                 return error
             }
-        }
+        },
+        addTop: async (
+            parent: undefined,
+            { image }: { image: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const top = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $push: { tops: { image } } },
+                    { runValidators: true, new: true }
+                )
+                if (!top) return { status: 404, message: 'User not found.' }
+                return { status: 200, top: top }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        addBottom: async (
+            parent: undefined,
+            { image }: { image: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const bottom = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $push: { bottoms: { image } } },
+                    { runValidators: true, new: true }
+                )
+                if (!bottom) return { status: 404, message: 'User not found.' }
+                return { status: 200, bottom: bottom }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        addFootwear: async (
+            parent: undefined,
+            { image }: { image: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const footwear = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $push: { footwear: { image } } },
+                    { runValidators: true, new: true }
+                )
+                if (!footwear) return { status: 404, message: 'User not found.' }
+                return { status: 200, footwear: footwear }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        addOutfit: async (
+            parent: undefined,
+            { topId, bottomId, footwearId = null }: { topId: string, bottomId: string, footwearId: string|null },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const outfit = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $push: { outfits: { topId, bottomId, footwearId } } },
+                    { runValidators: true, new: true }
+                )
+                if (!outfit) return { status: 404, message: 'User not found.' }
+                return { status: 200, footwear: outfit }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
     }
 }
