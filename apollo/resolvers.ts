@@ -24,28 +24,16 @@ export const resolvers = {
             context: any
         ) => {
             await connectDb()
-            if (context.user) {
-                const user = await User
-                    .findById(context.user._id)
-                    .populate([
-                        {
-                            path: 'tops',
-                            populate: ['_id', 'image']
-                        },
-                        {
-                            path: 'bottoms',
-                            populate: ['_id', 'image']
-                        },
-                        {
-                            path: 'footwear',
-                            populate: ['_id', 'image']
-                        },
-                        {
-                            path: 'outfits',
-                            populate: ['_id', 'image']
-                        }
-                    ])
-                return user;
+            try {
+                if (context.user) {
+                    const user = await User
+                        .findById(context.user._id)
+                        
+                    return user;
+                }
+            } catch (error) {
+                console.log(error)
+                return error
             }
             throw new AuthenticationError('You have to be logged in!')
         },
@@ -62,9 +50,6 @@ export const resolvers = {
                         .populate([
                             {
                                 path: 'posts',
-                                populate: {
-                                    path: 'outfitId',
-                                }
                             },
                         ])
                     

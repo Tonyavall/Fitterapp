@@ -31,10 +31,10 @@ export const authMiddleware = ({ req }: { req: any }) => {
 }
 
 export const signToken = (
-    { email, username, _id, isAdmin = false }: 
-    { email: string, username: string, _id: Types.ObjectId, isAdmin: boolean }
+    { email, username, _id, isAdmin = false, userImage }: 
+    { email: string, username: string, _id: Types.ObjectId, isAdmin: boolean, userImage: string }
 ) => {
-    const payload = { email, username, _id, isAdmin };
+    const payload = { email, username, _id, isAdmin, userImage };
 
     return jwt.sign(
         { data: payload },

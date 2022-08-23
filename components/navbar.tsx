@@ -61,7 +61,7 @@ const Navbar = () => {
             width="100vw"
             maxW="100%"
         >
-            <Flex alignItems="center" justifyContent="space-between" mx="auto" maxW={980} height="27.5px">
+            <Flex alignItems="center" justifyContent="space-between" mx="auto" maxW={955} height="27.5px">
                 <HStack display="flex" spacing={3} alignItems="center">
                     <Box width="4em" fontSize="1.6rem" fontWeight="medium" fontFamily="cursive" letterSpacing="1.5px">
                         Fitter
@@ -151,6 +151,7 @@ const Navbar = () => {
                             minW={0}>
                             <Avatar
                                 size={'sm'}
+                                src={userProfile.userImage}
                             />
                         </MenuButton>
                         <MenuList alignItems={'center'}>
@@ -158,6 +159,7 @@ const Navbar = () => {
                             <Center>
                                 <Avatar
                                     size={'2xl'}
+                                    src={userProfile.userImage}
                                 />
                             </Center>
                             <br />

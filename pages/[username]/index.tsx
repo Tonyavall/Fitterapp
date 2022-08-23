@@ -16,7 +16,8 @@ import {
     Image,
     Box,
     Grid,
-    GridItem
+    GridItem,
+    Img 
 } from "@chakra-ui/react";
 
 interface UserData {
@@ -44,6 +45,11 @@ const User = ({ data: { data: { findUser } } }: any) => {
         username = 'John Doe',
     } = findUser
 
+    const handlePostClick = (e: any) => {
+        const postId = e.target.dataset.postid
+        Router.push(`${username}/post/${postId}`)
+    }
+
     useEffect(() => {
         if (Auth.loggedIn()) {
             return setLoggedIn(true)
@@ -69,6 +75,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
                     h="150px"
                     m=".25em"
                     zIndex="-1"
+                    objectFit="scale-down"
                     src={userImage}
                 />
 
@@ -139,12 +146,18 @@ const User = ({ data: { data: { findUser } } }: any) => {
                 >
                     {posts?.map((post: any) => {
                         return (
-                            <GridItem key={post._id}>
+                            <GridItem 
+                                key={post._id}
+                                onClick={e => handlePostClick(e)}
+                            >
                                 <Image
                                     bg="lightgray"
                                     alt={username}
                                     boxSize={[85, 125, 206, 300, 300]}
+                                    objectFit="cover"
                                     src={post.postImage}
+                                    data-postid={post._id}
+                                    cursor="pointer"
                                 />
                             </GridItem>
                         )

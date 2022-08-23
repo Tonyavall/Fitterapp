@@ -13,19 +13,18 @@ export const FIND_USER = gql`
       followingCount
       bio
       posts {
+        _id
         postImage
-        outfit {
-          top {
-            image
-          }
-          bottom {
-            image
-          }
-          footwear {
-            image
-          }
-        }
       }
+    }
+  }
+`;
+
+export const FIND_ME = gql`
+  query {
+    findMe {
+      _id
+      userImage
     }
   }
 `;
