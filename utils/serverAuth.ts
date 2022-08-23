@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 import { Types } from 'mongoose';
 import { NextApiRequest } from "next";
 const secret = 'rejeanissofineong';
-const expiration = '2h';
+const expiration = '24h';
 
 // MESSAGE FOR LATER - PROBLEM IS TOKEN NOT STORED IN QUERY
 export const authMiddleware = ({ req }: { req: any }) => {
@@ -21,10 +21,11 @@ export const authMiddleware = ({ req }: { req: any }) => {
 
     try {
         const { data } = jwt.verify(token, secret, { maxAge: expiration });
-        console.log(data)
+
         req.user = data;
     } catch {
         console.log('Invalid token');
+        return
     }
     return req;
 }

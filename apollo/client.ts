@@ -14,7 +14,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
     // let token = (typeof window !== 'undefined') ? localStorage.getItem('id_token') : ''
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoidG9ueUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InRvbnlhdmFsbCIsIl9pZCI6IjYzMDA2ZTkxMzM5ZGQ3Y2ZiOWFiNzNkMCIsImlzQWRtaW4iOmZhbHNlfSwiaWF0IjoxNjYxMTg5OTA2LCJleHAiOjE2NjExOTcxMDZ9.ZutYOO6cfDM-gLkkbPDR6nkTjX8D6EATv9wjwUVAAHY'
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoidG9ueUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InRvbnlhdmFsbCIsIl9pZCI6IjYzMDA2ZTkxMzM5ZGQ3Y2ZiOWFiNzNkMCIsImlzQWRtaW4iOmZhbHNlfSwiaWF0IjoxNjYxMTk2NDk1LCJleHAiOjE2NjEyODI4OTV9.QbowXyphXCPknxWgGOb0jGK2fJH1uzlkIRd8Lm9ALS4'
     return {
         headers: {
             ...headers,

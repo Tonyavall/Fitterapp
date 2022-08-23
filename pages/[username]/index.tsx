@@ -7,6 +7,17 @@ import Auth from '../../utils/clientAuth'
 import { FIND_USER } from '../api/queries';
 import client, { addClientState } from '../../apollo/client'
 import { GetServerSideProps } from 'next'
+import {
+    Avatar,
+    Heading,
+    Button,
+    Text,
+    Divider,
+    Image,
+    Box,
+    Grid,
+    GridItem
+} from "@chakra-ui/react";
 
 interface UserData {
     _id: string
@@ -15,15 +26,23 @@ interface UserData {
     lastName: string
     userImage: string
     postCount: string
-    posts: {
-        postImage: string
-        outfit: string
-    }
+    posts: object[]
 }
 
-const User = (what:any) => {
+const User = ({ data: { data: { findUser } } }: any) => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
-    console.log(what)
+
+    const {
+        bio = '',
+        firstName = 'John',
+        followerCount = 0,
+        followingCount = 0,
+        lastName = 'Doe',
+        postCount = 0,
+        posts = [],
+        userImage = '',
+        username = 'John Doe',
+    } = findUser
 
     useEffect(() => {
         if (Auth.loggedIn()) {
@@ -35,7 +54,107 @@ const User = (what:any) => {
 
     return (
         <Layout>
-            User
+            <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-evenly"
+                alignItems="center"
+                h="fit-content"
+                w="full"
+                p={1.5}
+                flexWrap="wrap"
+            >
+                <Avatar
+                    w="150px"
+                    h="150px"
+                    m=".25em"
+                    zIndex="-1"
+                    src={userImage}
+                />
+
+                <Box
+                    w={[345, 550]}
+                    m=".25em"
+                    h="185px"
+                >
+                    <Box
+                        display="flex"
+                        flexDirection="row"
+                        justifyContent="space-evenly"
+                        alignItems="center"
+                        p={1.5}
+                    >
+                        <Heading size="lg" fontWeight="light">
+                            {username}
+                        </Heading>
+
+                        <Box mb="-.5">
+                            <Button colorScheme="twitter" size="sm" height={27.5} mr={2.5}>Message</Button>
+                            <Button colorScheme="twitter" size="sm" height={27.5}>Follow</Button>
+                        </Box>
+                    </Box>
+                    <Box
+                        display="flex"
+                        flexDirection="row"
+                        alignItems="center"
+                        px={2}
+                        py={5}
+                    >
+                        <Box display="flex" flexDirection="row" mr="3em">
+                            <Text mr=".3em" fontWeight="medium">{postCount}</Text>
+                            <Text>posts</Text>
+                        </Box>
+                        <Box display="flex" flexDirection="row" mr="3em">
+                            <Text mr=".3em" fontWeight="medium">{followerCount}</Text>
+                            <Text>followers</Text>
+                        </Box>
+                        <Box display="flex" flexDirection="row">
+                            <Text mr=".3em" fontWeight="medium">{followingCount}</Text>
+                            <Text>following</Text>
+                        </Box>
+                    </Box>
+                    <Text
+                        px={2}
+                        py={1.5}
+                        fontWeight="bold"
+                    >
+                        {`${firstName} ${lastName}`}
+                    </Text>
+                    <Text
+                        px={2}
+                        fontWeight="light"
+                    >
+                        {bio}
+                    </Text>
+                </Box>
+            </Box>
+            <Divider borderColor="gray" my={10} />
+
+            {/* POSTS HERE */}
+
+            {postCount ?
+                <Grid
+                    templateColumns="repeat(3, 1fr)"
+                    gap={[0, 0, 2, 6, 6]}
+                >
+                    {posts?.map((post: any) => {
+                        return (
+                            <GridItem key={post._id}>
+                                <Image
+                                    bg="lightgray"
+                                    alt={username}
+                                    boxSize={[85, 125, 206, 300, 300]}
+                                    src={post.postImage}
+                                />
+                            </GridItem>
+                        )
+                    })}
+                </Grid>
+                :
+                <Heading fontWeight="light" fontSize="2rem" textAlign="center" m="1em">
+                    {`${username} hasn't posted :(`}
+                </Heading>
+            }
         </Layout>
     )
 }
@@ -43,6 +162,7 @@ const User = (what:any) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     if (context.params === undefined) return
     const username = context.params.username
+
     try {
         const data = await client.query<UserData, any>({
             query: FIND_USER,
@@ -53,8 +173,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             props: { data },
         })
     } catch (error) {
-        const err = JSON.stringify(error)
-        return { props: { err } }
+        return {
+            notFound: true,
+        }
     }
 }
 

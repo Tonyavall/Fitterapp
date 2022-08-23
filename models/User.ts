@@ -19,6 +19,7 @@ interface UserInput {
     bottoms: object[],
     footwear?: object[],
     outfits?: object[],
+    bio: string,
     isAdmin: boolean
 }
 
@@ -55,6 +56,9 @@ const UserSchema = new Schema<UserInput>(
             trim: true
         },
         userImage: {
+            type: String,
+        },
+        bio: {
             type: String,
         },
         posts: [

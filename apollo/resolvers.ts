@@ -55,22 +55,31 @@ export const resolvers = {
             context: any
         ) => {
             await connectDb()
-            console.log(context.user)
             try {
                 if (context.user) {
                     const [user] = await User
                         .find({ username: username })
-                        .populate({
-                            path: 'posts',
-                            populate: ['_id', 'image']
-                        })
+                        .populate([
+                            {
+                                path: 'posts',
+                                populate: ['_id']
+                            },
+                            {
+                                path: 'followers',
+                                populate: ['_id']
+                            },
+                            {
+                                path: 'following',
+                                populate: ['_id']
+                            },
+                        ])
                     if (!user) {
                         throw new UserInputError(`Username ${username} was not found.`)
                     }
                     return user;
                 }
             } catch (error) {
-                console.log(error);
+                return error
             }
             throw new AuthenticationError('You have to be logged in!')
         },
@@ -366,7 +375,7 @@ export const resolvers = {
         },
         addOutfit: async (
             parent: undefined,
-            { topId, bottomId, footwearId = null }: { topId: string, bottomId: string, footwearId: string|null },
+            { topId, bottomId, footwearId = null }: { topId: string, bottomId: string, footwearId: string | null },
             context: any
         ) => {
             await connectDb()
@@ -385,7 +394,7 @@ export const resolvers = {
                 return error
             }
         },
-        deletTop: async (
+        deleteTop: async (
             parent: undefined,
             { topId }: { topId: string },
             context: any
@@ -460,6 +469,27 @@ export const resolvers = {
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
                     { $pull: { outfits: { outfitId } } },
+                    { runValidators: true, new: true }
+                )
+                if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        addBio: async (
+            parent: undefined,
+            { bioBody }: { bioBody: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $set: { bio: bioBody } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }

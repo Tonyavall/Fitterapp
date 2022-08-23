@@ -15,12 +15,16 @@ const Main = ({ children }: React.PropsWithChildren) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main>
+            <Box as="main" 
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+            >
                 {loggedIn ?
                     <Navbar /> : null
                 }
                 {children}
-            </main>
+            </Box>
         </Box>
     )
 }

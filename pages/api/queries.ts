@@ -9,6 +9,9 @@ export const FIND_USER = gql`
       lastName
       userImage
       postCount
+      followerCount
+      followingCount
+      bio
       posts {
         postImage
         outfit {

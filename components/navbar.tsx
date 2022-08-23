@@ -13,7 +13,6 @@ import {
     Box,
     Flex,
     useColorModeValue,
-    VisuallyHidden,
     HStack,
     useDisclosure,
     VStack,
@@ -26,10 +25,8 @@ import {
 import Auth from '../utils/clientAuth'
 import {
     AiOutlineMenu,
-    AiFillHome,
     AiOutlineInbox,
     AiOutlineSearch,
-    AiFillBell,
     AiOutlineHome,
 } from "react-icons/ai";
 import { TbShirt } from "react-icons/tb"
@@ -42,12 +39,13 @@ const Navbar = () => {
     const mobileNav = useDisclosure();
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [userProfile, setUserProfile] = useAtom(userProfileAtom)
+
     const handleLogout = () => {
         Auth.logout()
         setLoggedIn(false)
         Router.push('/login')
     }
-    
+
     useEffect(() => {
         // @ts-ignore
         const { data } = Auth.getProfile()
@@ -57,12 +55,13 @@ const Navbar = () => {
     return (
         <chakra.header
             bg={bg}
-            w="full"
             px={{ base: 2, sm: 4 }}
             py={4}
             shadow="md"
+            width="100vw"
+            maxW="100%"
         >
-            <Flex alignItems="center" justifyContent="space-between" mx="auto" width="45vw" height="27.5px">
+            <Flex alignItems="center" justifyContent="space-between" mx="auto" maxW={980} height="27.5px">
                 <HStack display="flex" spacing={3} alignItems="center">
                     <Box width="4em" fontSize="1.6rem" fontWeight="medium" fontFamily="cursive" letterSpacing="1.5px">
                         Fitter
@@ -120,7 +119,7 @@ const Navbar = () => {
                         </VStack>
                     </Box>
                 </HStack>
-                <InputGroup width="15vw" display={mobileNav.isOpen ? "none" : "flex"}>
+                <InputGroup width={[150, 275]} display={mobileNav.isOpen ? "none" : "flex"}>
                     <InputLeftElement pointerEvents="none" height="2em">
                         <AiOutlineSearch />
                     </InputLeftElement>
@@ -131,7 +130,7 @@ const Navbar = () => {
                     display={mobileNav.isOpen ? "none" : "flex"}
                 >
                     {/* Horizontal menu */}
-                    <HStack spacing={6} display={{ base: "none", md: "inline-flex" }} marginRight="1em">
+                    <HStack spacing={6} display={{ base: "none", md: "inline-flex" }} mr="1em">
                         <button onClick={() => Router.push('/')}>
                             <AiOutlineHome cursor="pointer" size={25} />
                         </button>
@@ -163,11 +162,11 @@ const Navbar = () => {
                             </Center>
                             <br />
                             <Center>
-                                <p>{ userProfile.username }</p>
+                                <p>{userProfile.username}</p>
                             </Center>
                             <br />
                             <MenuDivider />
-                            <MenuItem as="button" onClick={() => Router.push('/profile')}>Profile</MenuItem>
+                            <MenuItem as="button" onClick={() => Router.push(`/${userProfile.username}`)}>Profile</MenuItem>
                             <MenuItem as="button" onClick={() => Router.push('/settings')}>Account Settings</MenuItem>
                             <MenuItem as="button" onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
