@@ -2,7 +2,6 @@ import { Schema } from 'mongoose'
 
 interface Outfit {
     image: String,
-    userId: String,
     top: object,
     bottom: object,
     footwear: object,
@@ -11,10 +10,6 @@ interface Outfit {
 
 const outfitSchema = new Schema<Outfit>(
     {
-        userId: {
-            type: String,
-            required: true
-        },
         top: {
             type: Schema.Types.ObjectId,
             ref: 'top',

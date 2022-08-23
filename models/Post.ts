@@ -4,19 +4,20 @@ import Outfit from './Outfit'
 
 interface Post {
     description: string,
-    userId: string,
+    userId: object,
     comments: object[],
     likedBy: object[],
     createdAt?: Date,
-    outfit: object[],
+    outfit: object,
     postImage: string
 }
 
 const postSchema = new Schema<Post>(
     {
         userId: {
-            type: String,
-            required: true,
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
         },
         description: {
             type: String,
@@ -24,7 +25,11 @@ const postSchema = new Schema<Post>(
             default: ''
         },
         comments: [Comment],
-        outfit: [Outfit],
+        outfit: {
+            type: Schema.Types.ObjectId,
+            ref: 'outfit',
+            required: true
+        },
         postImage: {
             type: String,
             required: true

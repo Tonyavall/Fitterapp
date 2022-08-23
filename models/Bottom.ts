@@ -2,17 +2,12 @@ import { Schema } from 'mongoose'
 
 interface Bottom {
     image: String,
-    userId: String,
     createdAt?: String,
 }
 
 const bottomSchema = new Schema<Bottom>(
     {
         image: {
-            type: String,
-            required: true
-        },
-        userId: {
             type: String,
             required: true
         },

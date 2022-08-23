@@ -25,27 +25,23 @@ export const typeDefs = gql`
   type Top {
     _id: ID
     image: String
-    userId: ID
     createdAt: String
   }
 
   type Bottom {
     _id: ID
     image: String
-    userId: ID
     createdAt: String
   }
 
   type Footwear {
     _id: ID
     image: String
-    userId: ID
     createdAt: String
   }
 
   type Outfit {
     _id: ID
-    userId: ID
     top: Top
     bottom: Bottom
     footwear: Footwear
@@ -85,12 +81,6 @@ export const typeDefs = gql`
     grabRandomTwelvePosts: [Post]
     findSinglePost(postId: ID!): Post
   }
-  
-  input outfitInput {
-    topId: String
-    bottomId: String
-    footwearId: String
-  }
 
   type Mutation {
     # USER
@@ -98,11 +88,12 @@ export const typeDefs = gql`
     updateUser(email: String!, username: String!, firstName: String!, lastName: String!, password: String!): User 
     login(username: String!, password: String!): Auth
     addBio(bioBody: String!): User
+    addProfilePicture(image: String!): User
     # SOCIAL
     followUser(followingId: ID!): User
     unfollowUser(followingId: ID!): User
     # POSTS
-    createPost(outfit: outfitInput!, postImage: String!, description: String): Post
+    createPost(outfitId: ID!, postImage: String!, description: String): Post
     likePost(postId: ID!): Post
     unlikePost(postId: ID!): Post
     deletePost(postId: ID! postOwnerId: ID!) : User
@@ -113,7 +104,7 @@ export const typeDefs = gql`
     addTop(image: String!): User
     addBottom(image: String!): User
     addFootwear(image: String!): User
-    addOutfit(topId: String!, BottomId: String!, footwearId: String): User
+    addOutfit(topId: String!, bottomId: String!, footwearId: String): User
     deleteTop(topId: ID!): User
     deleteBottom(bottomId: ID!): User
     deleteFootwear(footwearId: ID!): User
@@ -122,3 +113,8 @@ export const typeDefs = gql`
     deleteUser(userId: ID!) : User
   }
 `
+
+// 6304534f398f0aad018769a5 top
+// bottom 6304534f398f0aad018769a5
+// footwear 6304534f398f0aad018769a5
+// 630465aa398f0aad018769c0 outfit 

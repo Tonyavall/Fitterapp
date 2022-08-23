@@ -98,17 +98,21 @@ export const resolvers = {
         ) => {
             await connectDb()
             if (context.user) {
-                const { following }: any = await User
-                    .find({ _id: context.user._id })
-                    .populate({
-                        path: 'following',
-                        select: ['_id']
-                    })
-                const tenPosts = await Post
-                    .find({ _id: following })
-                    .sort({ createdAt: -1 })
-                    .limit(10)
-                return tenPosts;
+                try {
+                    const { following = [] }: any = await User
+                        .find({ _id: context.user._id })
+                        .populate({
+                            path: 'following',
+                            select: ['_id']
+                        })
+                    const tenPosts = await Post
+                        .find({ _id: following })
+                        .sort({ createdAt: -1 })
+                        .limit(10)
+                    return tenPosts;
+                } catch (error) {
+                    return error
+                }
             }
             throw new AuthenticationError('You have to be logged in!')
         },
@@ -217,17 +221,17 @@ export const resolvers = {
         },
         createPost: async (
             parent: undefined,
-            { outfit, postImage, description }: { outfit: string[], postImage: string, description: string },
+            { outfitId, postImage, description }: { outfitId: string[], postImage: string, description: string },
             context: any
         ) => {
             await connectDb()
             try {
                 const userId = context.user._id
                 const createdPost = await Post.create({
-                    userId,
-                    postImage,
-                    outfit,
-                    description,
+                    userId: userId,
+                    postImage: postImage,
+                    outfitId: outfitId,
+                    description: description,
                 })
 
                 return createdPost
@@ -384,7 +388,7 @@ export const resolvers = {
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
-                    { $push: { outfits: { topId, bottomId, footwearId } } },
+                    { $push: { outfits: { top: topId, bottom: bottomId, footwear: footwearId } } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
@@ -493,6 +497,27 @@ export const resolvers = {
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
+                return updatedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        addProfilePicture: async (
+            parent: undefined,
+            { image }: { image: string },
+            context: any
+        ) => {
+            await connectDb()
+            try {
+                const userId = context.user._id
+
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $set: { userImage: image } },
+                    { runValidators: true, new: true }
+                )
+                
                 return updatedUser
             } catch (error) {
                 console.log(error)
