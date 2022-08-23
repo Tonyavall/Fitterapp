@@ -50,7 +50,7 @@ export const typeDefs = gql`
 
   type Post {
     _id: ID
-    userId: ID
+    userId: [User]
     description: String
     comments: [Comment]
     likedBy: [User]
@@ -58,7 +58,7 @@ export const typeDefs = gql`
     likes: Int
     commentCount: Int
     postImage: String
-    outfit: [Outfit]
+    outfitId: Outfit
   }
 
   type Comment {
@@ -96,7 +96,7 @@ export const typeDefs = gql`
     createPost(outfitId: ID!, postImage: String!, description: String): Post
     likePost(postId: ID!): Post
     unlikePost(postId: ID!): Post
-    deletePost(postId: ID! postOwnerId: ID!) : User
+    deletePost(postId: ID! postOwnerId: ID!) : Post
     # COMMENTS
     addPostComment(postId: ID!, commentBody: String!) : Post
     deletePostComment(commentId: ID!, postId: ID!, postOwnerId: ID!, commentOwnerId: ID!) : Post
@@ -118,3 +118,27 @@ export const typeDefs = gql`
 // bottom 6304534f398f0aad018769a5
 // footwear 6304534f398f0aad018769a5
 // 630465aa398f0aad018769c0 outfit 
+// 630467bbd727656bdb22c33d postid
+
+// 63006e91339dd7cfb9ab73d0
+
+// query($username: String!) {
+//   findUser(username:$username) {
+//     _id
+//     posts {
+//       postImage
+//       description
+//       outfitId {
+//         top {
+//           image
+//         }
+//         bottom {
+//           image
+//         }
+//         footwear {
+//           image
+//         }
+//       }
+//     }
+//   }
+// }

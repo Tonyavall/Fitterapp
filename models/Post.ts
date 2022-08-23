@@ -8,7 +8,7 @@ interface Post {
     comments: object[],
     likedBy: object[],
     createdAt?: Date,
-    outfit: object,
+    outfitId: object,
     postImage: string
 }
 
@@ -25,7 +25,7 @@ const postSchema = new Schema<Post>(
             default: ''
         },
         comments: [Comment],
-        outfit: {
+        outfitId: {
             type: Schema.Types.ObjectId,
             ref: 'outfit',
             required: true

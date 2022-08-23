@@ -62,17 +62,12 @@ export const resolvers = {
                         .populate([
                             {
                                 path: 'posts',
-                                populate: ['_id']
-                            },
-                            {
-                                path: 'followers',
-                                populate: ['_id']
-                            },
-                            {
-                                path: 'following',
-                                populate: ['_id']
+                                populate: {
+                                    path: 'outfitId',
+                                }
                             },
                         ])
+                    
                     if (!user) {
                         throw new UserInputError(`Username ${username} was not found.`)
                     }
@@ -233,7 +228,11 @@ export const resolvers = {
                     outfitId: outfitId,
                     description: description,
                 })
-
+                await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $push: { posts: createdPost._id } },
+                    { runValidators: true, new: true }
+                )
                 return createdPost
             } catch (error) {
                 console.log(error)
@@ -252,9 +251,14 @@ export const resolvers = {
                 const userId = context.user._id
 
                 if (userId === postOwnerId || isAdmin === true) {
-                    const response = await Post.findOneAndDelete({ _id: postId })
-                    if (!response) return { status: 404 }
-                    return { response }
+                    const deletedPost = await Post.findOneAndDelete({ _id: postId })
+                    if (!deletedPost) throw new UserInputError(`Post not found.`)
+                    User.findOneAndUpdate(
+                        { _id: userId },
+                        { $pull: { posts: { _id: postId } } },
+                        { runValidators: true, new: true }
+                    )
+                    return deletedPost
                 }
                 throw new AuthenticationError('Only the owner can delete that!');
             } catch (error) {
@@ -271,12 +275,13 @@ export const resolvers = {
             try {
                 const userId = context.user._id
                 const username = context.user.username
-                await Post.findOneAndUpdate(
+                const updatedPost = await Post.findOneAndUpdate(
                     { _id: postId },
                     { $push: { comments: { commentBody, userId, username } } },
                     { runValidators: true, new: true }
                 )
-                return { status: 200 }
+                if (!updatedPost) throw new UserInputError(`Post not found.`)
+                return updatedPost
             } catch (error) {
                 console.log(error)
                 return error
@@ -517,7 +522,7 @@ export const resolvers = {
                     { $set: { userImage: image } },
                     { runValidators: true, new: true }
                 )
-                
+
                 return updatedUser
             } catch (error) {
                 console.log(error)
