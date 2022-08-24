@@ -27,6 +27,7 @@ const Signup = () => {
         'signup',
         'activity'
     ]
+    
     const [errorMessage, setErrorMessage] = useState('')
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [createUser, { error }] = useMutation(CREATE_USER);

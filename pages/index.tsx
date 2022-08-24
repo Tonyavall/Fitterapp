@@ -11,7 +11,6 @@ import { userProfileAtom } from '../utils/globalAtoms'
 // import { addClientState } from '../apollo/client'
 // import client from '../apollo/client'
 
-
 const Home: NextPage = () => {
   const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
   const [userProfile, setUserProfile] = useAtom(userProfileAtom)
@@ -20,6 +19,7 @@ const Home: NextPage = () => {
     if (Auth.loggedIn()) {
       return setLoggedIn(true)
     }
+    // If they are not logged in push them to home page
     setLoggedIn(false)
     Router.push('/login')
   }, [setLoggedIn])
