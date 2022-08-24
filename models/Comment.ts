@@ -3,23 +3,19 @@ import { Schema } from 'mongoose'
 interface comment {
     commentBody: String,
     userId: String,
-    username: String,
     createdAt?: String,
 }
 
 const commentSchema = new Schema<comment>(
     {
         userId: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true
         },
         commentBody: {
             type: String,
             required: true
-        },
-        username: {
-            type: String,
-            required: true,
         },
         createdAt: {
             type: Date,

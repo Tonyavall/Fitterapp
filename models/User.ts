@@ -87,7 +87,12 @@ const UserSchema = new Schema<UserInput>(
         tops: [Top],
         bottoms: [Bottom],
         footwear: [Footwear],
-        outfits: [Outfit]
+        outfits: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Outfit'
+            }
+        ],
     },
     {
         toJSON: {

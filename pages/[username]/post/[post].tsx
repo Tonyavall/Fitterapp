@@ -4,14 +4,26 @@ import { loggedInAtom } from '../../../utils/globalAtoms'
 import { useAtom } from 'jotai'
 import Router from 'next/router';
 import Auth from '../../../utils/clientAuth'
-import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button  } from '@chakra-ui/react';
+import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button } from '@chakra-ui/react';
 import { AiOutlineHeart } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
+import { GetServerSideProps } from 'next';
+import client from '../../../apollo/client';
+import { FIND_POST } from '../../api/queries';
+import { addClientState } from '../../../apollo/client';
 
-const Post = () => {
+const Post = ({ data: { data: { findSinglePost } } }: any) => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
 
+    const {
+        postImage,
+        comments = [],
+        description,
+        userImage,
+        userId
+    } = findSinglePost
+    console.log(findSinglePost)
     useEffect(() => {
         if (Auth.loggedIn()) {
             return setLoggedIn(true)
@@ -33,8 +45,9 @@ const Post = () => {
                 flexWrap="wrap"
             >
                 <Image
-                    src=""
+                    src={postImage}
                     alt="dnaiwdhjoa"
+                    objectFit="contain"
                     w="600px"
                     h="full"
                 />
@@ -60,13 +73,14 @@ const Post = () => {
                         <Avatar
                             size="sm"
                             m="1.25em"
+                            src={userId.userImage}
                         />
 
                         <Text
                             fontWeight="medium"
                             fontSize="sm"
                         >
-                            tonyavall
+                            {userId.username}
                         </Text>
                     </Box>
 
@@ -99,6 +113,7 @@ const Post = () => {
                                 size="sm"
                                 m="1.25em"
                                 alignSelf="start"
+                                src={userId.userImage}
                             />
                             <Text
                                 fontWeight="normal"
@@ -109,12 +124,45 @@ const Post = () => {
                                     mr=".3em"
                                     fontWeight="medium"
                                 >
-                                    tonyavall
+                                    {userId.username}
                                 </Text>
 
-                                COMMENT BODY HERE!
+                                {description}
                             </Text>
                         </Box>
+                        {
+                            comments?.map((comment: any) => {
+                                return (
+                                    <Box
+                                        key={comment._id}
+                                        display="flex"
+                                        flexDirection="row"
+                                        alignItems="center"
+                                    >
+                                        <Avatar
+                                            size="sm"
+                                            m="1.25em"
+                                            alignSelf="start"
+                                            src={comment.userId.userImage}
+                                        />
+                                        <Text
+                                            fontWeight="normal"
+                                            fontSize="sm"
+                                        >
+                                            <Text
+                                                as="span"
+                                                mr=".3em"
+                                                fontWeight="medium"
+                                            >
+                                                {comment.userId.username}
+                                            </Text>
+
+                                            {comment.commentBody}
+                                        </Text>
+                                    </Box>
+                                )
+                            })
+                        }
                     </Box>
 
                     <Box
@@ -126,9 +174,9 @@ const Post = () => {
                         h="50px"
                         borderY="1px solid #EFEFEF"
                     >
-                        <Icon as={AiOutlineHeart} h={7} w={7} ml="1em" mr={4}/>
-                        <Icon as={BsChat} h="22px" w="22px" strokeWidth=".5px" mr={4}/>
-                        <Icon as={IoPaperPlaneOutline} h={6} w={6}/>
+                        <Icon as={AiOutlineHeart} h={7} w={7} ml="1em" mr={4} />
+                        <Icon as={BsChat} h="22px" w="22px" strokeWidth=".5px" mr={4} />
+                        <Icon as={IoPaperPlaneOutline} h={6} w={6} />
                     </Box>
 
                     <Text
@@ -147,14 +195,14 @@ const Post = () => {
                         Aug 23, 2022
                     </Text>
 
-                    <FormControl 
+                    <FormControl
                         flexDirection="row"
                         flexWrap="nowrap"
                         alignItems="center"
                         ml="1.15em"
                         mt="6px"
                     >
-                        <Input placeholder='Add a comment' fontSize="sm" w="250px" h="35px" border="none"/>
+                        <Input placeholder='Add a comment' fontSize="sm" w="250px" h="35px" border="none" />
                         {/* @ts-ignore */}
                         <Button h="35px" border="none" bg="white" _hover="" fontSize="sm" color="twitter.600" fontWeight="bold" ml="1px">Post</Button>
                     </FormControl>
@@ -162,6 +210,24 @@ const Post = () => {
             </Box>
         </Layout>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const postId = context?.params?.post
+
+    try {
+        const data = await client.query<any, any>({
+            query: FIND_POST,
+            variables: { postId }
+        })
+        return addClientState(client, {
+            props: { data },
+        })
+    } catch (error) {
+        return {
+            notFound: true,
+        }
+    }
 }
 
 export default Post

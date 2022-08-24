@@ -1,6 +1,5 @@
 import { Schema, model, models } from'mongoose'
 import Comment from './Comment'
-import Outfit from './Outfit'
 
 interface Post {
     description: string,
@@ -8,7 +7,7 @@ interface Post {
     comments: object[],
     likedBy: object[],
     createdAt?: Date,
-    outfitId: object,
+    outfit: object,
     postImage: string
 }
 
@@ -25,9 +24,9 @@ const postSchema = new Schema<Post>(
             default: ''
         },
         comments: [Comment],
-        outfitId: {
+        outfit: {
             type: Schema.Types.ObjectId,
-            ref: 'outfit',
+            ref: 'Outfit',
             required: true
         },
         postImage: {
@@ -37,7 +36,7 @@ const postSchema = new Schema<Post>(
         likedBy: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'user'
+                ref: 'User'
             }
         ],
         createdAt: {

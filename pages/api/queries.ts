@@ -28,3 +28,36 @@ export const FIND_ME = gql`
     }
   }
 `;
+
+export const FIND_POST = gql`
+query($postId: ID!) {
+  findSinglePost(postId: $postId) {
+    _id
+    postImage
+    description
+    userId {
+      username
+      userImage
+    }
+    outfit {
+      top {
+        image
+      }
+      bottom {
+        image
+      }
+      footwear {
+        image
+      }
+    }
+    comments {
+      _id
+      userId {
+        username
+        userImage
+      }
+      commentBody
+    }
+  }
+}
+`

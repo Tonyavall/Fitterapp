@@ -153,7 +153,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
                                 <Image
                                     bg="lightgray"
                                     alt={username}
-                                    boxSize={[85, 125, 206, 300, 300]}
+                                    boxSize={[105, 125, 206, 300, 300]}
                                     objectFit="cover"
                                     src={post.postImage}
                                     data-postid={post._id}
@@ -173,8 +173,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
 }
 // error.networkError.result.errors
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    if (context.params === undefined) return
-    const username = context.params.username
+    const username = context?.params?.username
 
     try {
         const data = await client.query<UserData, any>({

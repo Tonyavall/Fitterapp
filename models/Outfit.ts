@@ -1,6 +1,10 @@
-import { Schema } from 'mongoose'
+import { Schema, model, models } from "mongoose"
+import Top from './Top'
+import Bottom from './Bottom'
+import Footwear from './Footwear'
 
 interface Outfit {
+    userId: String,
     image: String,
     top: object,
     bottom: object,
@@ -10,20 +14,14 @@ interface Outfit {
 
 const outfitSchema = new Schema<Outfit>(
     {
-        top: {
+        userId: {
             type: Schema.Types.ObjectId,
-            ref: 'top',
+            ref: 'User',
             required: true
         },
-        bottom: {
-            type: Schema.Types.ObjectId,
-            ref: 'bottom',
-            required: true
-        },
-        footwear: {
-            type: Schema.Types.ObjectId,
-            ref: 'footwear'
-        },
+        top: Top,
+        bottom: Bottom,
+        footwear: Footwear,
         createdAt: {
             type: Date,
             default: Date.now,
@@ -39,4 +37,4 @@ const outfitSchema = new Schema<Outfit>(
     }
 )
 
-export default outfitSchema
+export default models.Outfit || model<Outfit>('Outfit', outfitSchema)

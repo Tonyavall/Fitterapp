@@ -40,6 +40,21 @@ export const typeDefs = gql`
     createdAt: String
   }
 
+  input TopInput {
+    _id: ID
+    image: String
+  }
+  
+  input BottomInput {
+    _id: ID
+    image: String
+  }
+
+  input FootwearInput {
+    _id: ID
+    image: String
+  }
+
   type Outfit {
     _id: ID
     top: Top
@@ -50,7 +65,7 @@ export const typeDefs = gql`
 
   type Post {
     _id: ID
-    userId: [User]
+    userId: User
     description: String
     comments: [Comment]
     likedBy: [User]
@@ -58,12 +73,12 @@ export const typeDefs = gql`
     likes: Int
     commentCount: Int
     postImage: String
-    outfitId: Outfit
+    outfit: Outfit
   }
 
   type Comment {
     _id: ID
-    userId: ID
+    userId: User
     commentBody: String
     createdAt: String
   }
@@ -104,7 +119,7 @@ export const typeDefs = gql`
     addTop(image: String!): User
     addBottom(image: String!): User
     addFootwear(image: String!): User
-    addOutfit(topId: String!, bottomId: String!, footwearId: String): User
+    addOutfit(top: TopInput!, bottom: BottomInput!, footwear: FootwearInput): Outfit
     deleteTop(topId: ID!): User
     deleteBottom(bottomId: ID!): User
     deleteFootwear(footwearId: ID!): User
@@ -121,24 +136,3 @@ export const typeDefs = gql`
 // 630467bbd727656bdb22c33d postid
 
 // 63006e91339dd7cfb9ab73d0
-
-// query($username: String!) {
-//   findUser(username:$username) {
-//     _id
-//     posts {
-//       postImage
-//       description
-//       outfitId {
-//         top {
-//           image
-//         }
-//         bottom {
-//           image
-//         }
-//         footwear {
-//           image
-//         }
-//       }
-//     }
-//   }
-// }

@@ -1,5 +1,6 @@
 import User from "../models/User"
 import Post from "../models/Post"
+import Outfit from '../models/Outfit'
 import { Types } from 'mongoose'
 
 import { UserInputError, AuthenticationError } from "apollo-server-micro"
@@ -28,7 +29,7 @@ export const resolvers = {
                 if (context.user) {
                     const user = await User
                         .findById(context.user._id)
-                        
+                        .populate('outfits')
                     return user;
                 }
             } catch (error) {
@@ -47,12 +48,8 @@ export const resolvers = {
                 if (context.user) {
                     const [user] = await User
                         .find({ username: username })
-                        .populate([
-                            {
-                                path: 'posts',
-                            },
-                        ])
-                    
+                        .populate(['posts'])
+
                     if (!user) {
                         throw new UserInputError(`Username ${username} was not found.`)
                     }
@@ -121,23 +118,21 @@ export const resolvers = {
             { postId }: { postId: string },
             context: any
         ) => {
-            if (context.user) {
-                return await Post
-                    .find({ _id: postId })
-                    .populate([
-                        {
-                            path: 'comment',
-                            populate: ['_id', 'image']
-                        },
-                        {
-                            path: 'footwear',
-                            populate: ['_id', 'image']
-                        },
-                        {
-                            path: 'outfits',
-                            populate: ['_id', 'image']
-                        }
-                    ])
+            try {
+                if (context.user) {
+                    const [post] = await Post
+                        .find({ _id: postId })
+                        .populate(['userId', {
+                            path: 'comments',
+                            populate: ['userId']
+                        }, 'outfit'])
+
+                    if (!post) throw new UserInputError(`Post not found.`)
+                    return post
+                }
+            } catch (error) {
+                console.log(error)
+                return error
             }
             throw new AuthenticationError('You have to be logged in!')
         }
@@ -210,9 +205,10 @@ export const resolvers = {
                 const createdPost = await Post.create({
                     userId: userId,
                     postImage: postImage,
-                    outfitId: outfitId,
+                    outfit: outfitId,
                     description: description,
                 })
+                console.log(createdPost)
                 await User.findOneAndUpdate(
                     { _id: userId },
                     { $push: { posts: createdPost._id } },
@@ -259,10 +255,10 @@ export const resolvers = {
             await connectDb()
             try {
                 const userId = context.user._id
-                const username = context.user.username
+
                 const updatedPost = await Post.findOneAndUpdate(
                     { _id: postId },
-                    { $push: { comments: { commentBody, userId, username } } },
+                    { $push: { comments: { commentBody, userId } } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedPost) throw new UserInputError(`Post not found.`)
@@ -369,20 +365,25 @@ export const resolvers = {
         },
         addOutfit: async (
             parent: undefined,
-            { topId, bottomId, footwearId = null }: { topId: string, bottomId: string, footwearId: string | null },
+            { top, bottom, footwear = null }: { top: string, bottom: string, footwear: string | null },
             context: any
         ) => {
             await connectDb()
             try {
                 const userId = context.user._id
 
-                const updatedUser = await User.findOneAndUpdate(
+                const createdOutfit = await Outfit.create({
+                    userId,
+                    top,
+                    bottom,
+                    footwear
+                })
+                await User.findOneAndUpdate(
                     { _id: userId },
-                    { $push: { outfits: { top: topId, bottom: bottomId, footwear: footwearId } } },
+                    { $push: { outfits: createdOutfit._id } },
                     { runValidators: true, new: true }
                 )
-                if (!updatedUser) return { status: 404, message: 'User not found.' }
-                return updatedUser
+                return createdOutfit
             } catch (error) {
                 console.log(error)
                 return error
