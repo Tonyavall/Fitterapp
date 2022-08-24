@@ -34,6 +34,10 @@ import { useAtom } from "jotai";
 import { loggedInAtom } from "../utils/globalAtoms";
 import { userProfileAtom } from "../utils/globalAtoms";
 
+// https://choc-ui.com/docs/packages/autocomplete\
+// https://stackoverflow.com/questions/65460085/open-a-page-in-a-next-js-website-as-an-overlay
+// SEARCH OPTIONS UP TOP
+
 const Navbar = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();

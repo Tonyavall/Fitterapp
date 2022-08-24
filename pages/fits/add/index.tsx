@@ -4,13 +4,13 @@ import { useEffect } from "react"
 import Router from "next/router"
 import Auth from "../../../utils/clientAuth"
 import Layout from "../../../components/layouts/article"
-import { 
-    Box, 
-    Heading, 
-    Divider 
+import {
+    Box,
+    Heading,
+    Divider
 } from "@chakra-ui/react"
 
-const Create = () => {
+const Add = () => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const Create = () => {
                     mx="1em"
                     mt="1em"
                 >
-                    Create an Outfit
+                    Add a Top/Bottom/Footwear
                 </Heading>
                 <Divider borderColor="gray" my="1em" />
             </Box>
@@ -45,4 +45,4 @@ const Create = () => {
     )
 }
 
-export default Create
+export default Add

@@ -61,3 +61,43 @@ query($postId: ID!) {
   }
 }
 `
+
+export const FIND_FITS = gql`
+query {
+  findMe {
+    tops {
+      _id
+      image
+    }
+    bottoms {
+      _id
+      image
+    }
+    footwear {
+      _id
+      image
+    }
+  }
+}
+`
+
+export const FIND_OUTFITS = gql`
+query{
+  findMe {
+		outfits {
+      top {
+        _id
+        image
+      }
+      bottom {
+        _id
+        image
+      }
+      footwear {
+        _id
+        image
+      }
+    }
+  }
+}
+`

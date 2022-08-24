@@ -3,8 +3,8 @@ import { Box } from "@chakra-ui/react"
 const Layout = ({children}: React.PropsWithChildren) => {
     return (
         <Box
-            h="100vh"
-            w={[350, 400, 700, 980]}
+            h="fit-content"
+            w={[375, 480, 780, 980, 980]}
             display="flex"
             justifyContent="start"
             alignItems="center"
