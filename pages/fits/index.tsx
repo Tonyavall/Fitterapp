@@ -1,7 +1,7 @@
 import Layout from "../../components/layouts/article"
 import { useAtom } from 'jotai'
 import { loggedInAtom } from '../../utils/globalAtoms'
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Router from "next/router"
 import Auth from "../../utils/clientAuth"
 import {
@@ -9,19 +9,22 @@ import {
     Heading,
     Divider,
     Grid,
-    GridItem,
-    Image,
     Button,
-    Icon
 } from "@chakra-ui/react"
-import { AiOutlinePlusSquare } from 'react-icons/ai'
 import { FIND_FITS } from "../api/queries"
 import { GetServerSideProps } from 'next'
 import client, { addClientState } from '../../apollo/client'
-
+import AddClothesModal from "../../components/addClothesModal"
+import { useToast } from "@chakra-ui/react"
+import { useMutation } from "@apollo/client"
+import { ADD_OUTFIT } from "../api/mutations"
+import FitsRadioGroup from "../../components/fitsRadioGroups"
+import { checkProps } from "../../utils/functions"
 
 const Fits = ({ data }: any) => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
+    const [selectedFits, setSelectedFits] = useState({ top: null, bottom: null, footwear: null })
+    const toast = useToast()
 
     const {
         bottoms = [],
@@ -29,7 +32,7 @@ const Fits = ({ data }: any) => {
         tops = []
     } = data.data.findMe
 
-    // TODO!!!!need loading implementation for all componetns
+    // TODO!!!! need loading implementation for all componetns
 
     useEffect(() => {
         if (Auth.loggedIn()) {
@@ -38,6 +41,43 @@ const Fits = ({ data }: any) => {
         setLoggedIn(false)
         Router.push('/login')
     }, [setLoggedIn])
+
+    const [addOutfit, { data: addOutfitData, error: addOutfitError }] = useMutation(ADD_OUTFIT)
+
+    useEffect(() => {
+        if (addOutfitData) {
+            toast({
+                title: "Outfit has been added.",
+                status: 'success',
+                duration: 5000,
+            })
+        }
+        if (addOutfitError) {
+            toast({
+                title: "An error occured.",
+                status: 'error',
+                duration: 1500,
+            })
+        }
+    }, [addOutfitData, addOutfitError, toast])
+
+    const handleOutfitAddition = async () => {
+        try {
+            const { check, property = null } = checkProps(selectedFits, 'footwear')
+
+            if (!check) {
+                toast({
+                    title: `Please select a ${property}`,
+                    status: 'error',
+                    duration: 1500,
+                })
+                return
+            }
+            addOutfit({ variables: selectedFits })
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <Layout>
@@ -59,26 +99,37 @@ const Fits = ({ data }: any) => {
                     >
                         <Heading
                             fontWeight="light"
-                            fontSize="2rem"
+                            fontSize={["1.5rem", "2rem"]}
                             textAlign="left"
                         >
-                            Tops
+                            tops
                         </Heading>
 
-                        <Box>
-                            <Button
-                                colorScheme="twitter"
-                                size="sm" height={27.5}
-                                mr={2.5}
-                                onClick={()=> Router.push('/fits/add')}
-                            >
-                                Add Clothes
-                            </Button>
+                        <Box
+                            display="flex"
+                            flexDirection="row"
+                            alignItems="center"
+                            flexWrap="wrap"
+                            w={["150px", "325px"]}
+                        >
+                            <AddClothesModal />
                             <Button
                                 colorScheme="twitter"
                                 size="sm"
                                 height={27.5}
-                                onClick={()=> Router.push('/fits/outfits')}
+                                mr={2.5}
+                                onClick={handleOutfitAddition}
+                                mb={1}
+                            >
+                                Create Outfit
+                            </Button>
+
+                            <Button
+                                colorScheme="twitter"
+                                size="sm"
+                                height={27.5}
+                                onClick={() => Router.push('/fits/outfits')}
+                                mb={1}
                             >
                                 See Outfits
                             </Button>
@@ -92,22 +143,14 @@ const Fits = ({ data }: any) => {
                             gap={[0, 0, 0, 1, 1]}
                         >
                             {
-                                tops.map((top: any) => {
-                                    return (
-                                        <GridItem
-                                            key={top._id}
-                                        >
-                                            <Image
-                                                bg="lightgray"
-                                                alt="Picture of a top"
-                                                boxSize={[65, 86, 145, 186, 186]}
-                                                objectFit="cover"
-                                                src={top.image}
-                                                data-topid={top._id}
-                                            />
-                                        </GridItem>
-                                    )
-                                })
+                                tops.map((top: any) => (
+                                    <FitsRadioGroup
+                                        key={top._id}
+                                        cloth={top}
+                                        setSelectedFits={setSelectedFits}
+                                        selectedFits={selectedFits}
+                                    />
+                                ))
                             }
                         </Grid>
                         :
@@ -128,10 +171,10 @@ const Fits = ({ data }: any) => {
                     >
                         <Heading
                             fontWeight="light"
-                            fontSize="2rem"
+                            fontSize={["1.5rem", "2rem"]}
                             textAlign="left"
                         >
-                            Bottoms
+                            bottoms
                         </Heading>
                     </Box>
                     <Divider borderColor="gray" />
@@ -144,18 +187,12 @@ const Fits = ({ data }: any) => {
                             {
                                 bottoms?.map((bottom: any) => {
                                     return (
-                                        <GridItem
+                                        <FitsRadioGroup
                                             key={bottom._id}
-                                        >
-                                            <Image
-                                                bg="lightgray"
-                                                alt="Picture of a bottom"
-                                                boxSize={[65, 86, 145, 186, 186]}
-                                                objectFit="cover"
-                                                src={bottom.image}
-                                                data-bottomid={bottom._id}
-                                            />
-                                        </GridItem>
+                                            cloth={bottom}
+                                            setSelectedFits={setSelectedFits}
+                                            selectedFits={selectedFits}
+                                        />
                                     )
                                 })
                             }
@@ -178,10 +215,10 @@ const Fits = ({ data }: any) => {
                     >
                         <Heading
                             fontWeight="light"
-                            fontSize="2rem"
+                            fontSize={["1.5rem", "2rem"]}
                             textAlign="left"
                         >
-                            Footwear
+                            footwear
                         </Heading>
                     </Box>
                     <Divider borderColor="gray" />
@@ -194,18 +231,12 @@ const Fits = ({ data }: any) => {
                             {
                                 footwear?.map((footwear: any) => {
                                     return (
-                                        <GridItem
+                                        <FitsRadioGroup
                                             key={footwear._id}
-                                        >
-                                            <Image
-                                                bg="lightgray"
-                                                alt="Picture of footwear"
-                                                boxSize={[65, 86, 145, 186, 186]}
-                                                objectFit="cover"
-                                                src={footwear.image}
-                                                data-footwearid={footwear._id}
-                                            />
-                                        </GridItem>
+                                            cloth={footwear}
+                                            setSelectedFits={setSelectedFits}
+                                            selectedFits={selectedFits}
+                                        />
                                     )
                                 })
                             }

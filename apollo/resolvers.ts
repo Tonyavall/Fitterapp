@@ -397,12 +397,12 @@ export const resolvers = {
             await connectDb()
             try {
                 const userId = context.user._id
-
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
-                    { $pull: { tops: { topId } } },
+                    { $pull: { tops: { _id: topId } } },
                     { runValidators: true, new: true }
                 )
+                console.log(updatedUser)
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
                 return updatedUser
             } catch (error) {
@@ -421,7 +421,7 @@ export const resolvers = {
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
-                    { $pull: { bottoms: { bottomId } } },
+                    { $pull: { bottoms: { _id: bottomId } } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
@@ -442,7 +442,7 @@ export const resolvers = {
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
-                    { $pull: { footwear: { footwearId } } },
+                    { $pull: { footwear: { _id: footwearId } } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }

@@ -34,3 +34,35 @@ export const LOGIN = gql`
         }
     }
 `
+
+export const ADD_OUTFIT = gql`
+    mutation addOutfit($top: TopInput!, $bottom: BottomInput!, $footwear: FootwearInput) {
+        addOutfit(top: $top, bottom: $bottom, footwear: $footwear) {
+            _id
+        }
+    }
+`
+
+export const DELETE_TOP = gql`
+    mutation deleteTop($topId: ID!) {
+        deleteTop(topId: $topId) {
+            _id
+        }
+    }
+`
+
+export const DELETE_BOTTOM = gql`
+    mutation deleteBottom($bottomId: ID!) {
+        deleteBottom(bottomId: $bottomId) {
+            _id
+        }
+    }
+`
+
+export const DELETE_FOOTWEAR = gql`
+    mutation deleteFootwear($footwearId: ID!) {
+        deleteFootwear(footwearId: $footwearId) {
+            _id
+        }
+    }
+`

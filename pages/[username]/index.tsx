@@ -153,12 +153,13 @@ const User = ({ data: { data: { findUser } } }: any) => {
                                 <Image
                                     bg="lightgray"
                                     alt={username}
-                                    boxSize={[105, 125, 206, 300, 300]}
+                                    boxSize={[113, 150, 243, 300, 300]}
                                     objectFit="cover"
                                     src={post.postImage}
                                     data-postid={post._id}
                                     cursor="pointer"
                                 />
+                                
                             </GridItem>
                         )
                     })}

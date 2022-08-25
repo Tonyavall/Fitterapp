@@ -96,13 +96,19 @@ const Navbar = () => {
                             spacing={3}
                             rounded="sm"
                             shadow="sm"
+                            zIndex={100}
                         >
                             <CloseButton
                                 aria-label="Close menu"
                                 justifySelf="self-start"
                                 onClick={mobileNav.onClose}
                             />
-                            <Button w="full" variant="ghost" leftIcon={<AiOutlineHome />}>
+                            <Button 
+                                w="full" 
+                                variant="ghost" 
+                                leftIcon={<AiOutlineHome />}
+                                onClick={()=> Router.push('/')}
+                            >
                                 Home
                             </Button>
                             <Button
@@ -110,6 +116,7 @@ const Navbar = () => {
                                 variant="ghost"
                                 colorScheme="brand"
                                 leftIcon={<AiOutlineInbox />}
+                                onClick={()=> Router.push('/direct')}
                             >
                                 Inbox
                             </Button>
@@ -117,6 +124,7 @@ const Navbar = () => {
                                 w="full"
                                 variant="ghost"
                                 leftIcon={<TbShirt />}
+                                onClick={()=> Router.push('/fits')}
                             >
                                 Fits
                             </Button>
@@ -158,7 +166,7 @@ const Navbar = () => {
                                 src={userProfile.userImage}
                             />
                         </MenuButton>
-                        <MenuList alignItems={'center'}>
+                        <MenuList alignItems={'center'} zIndex={3}>
                             <br />
                             <Center>
                                 <Avatar
