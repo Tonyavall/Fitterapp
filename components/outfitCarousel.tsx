@@ -7,7 +7,15 @@ import {
     IconButton,
     useBreakpointValue,
     Image,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    Menu
 } from "@chakra-ui/react";
+import { BiDotsHorizontalRounded } from 'react-icons/bi'
+import { DELETE_OUTFIT } from '../pages/api/mutations';
+import { useMutation } from '@apollo/client';
+import { FIND_FITS } from '../pages/api/queries';
 
 const settings = {
     dots: true,
@@ -25,6 +33,31 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
     const [slider, setSlider] = useState<Slider | null>(null);
     const top = useBreakpointValue({ base: '90%', md: '50%' });
     const side = useBreakpointValue({ base: '30%', md: '40px' });
+
+    const [deleteOutfit] = useMutation(DELETE_OUTFIT, {
+        update(cache, { data: { deleteOutfit: { outfits } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            })
+            console.log(outfits)
+            //manipulate fitsQueryResult, writeQuery
+            // cache.writeQuery({
+            //     query: FIND_OUTFITS,
+            //     data: {
+            //         findMe: {
+            //             ...findMe,
+            //             outfits: outfits,
+            //         }
+            //     }
+            // })
+        }
+    })
+
+    const handleOutfitDelete = (e: any) => {
+        const outfitId = e.currentTarget.dataset.id
+        deleteOutfit({ variables: { outfitId } })
+    }
 
     return (
         <>
@@ -46,6 +79,29 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
                     type="text/css"
                     href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
                 />
+                {/* DELETE MENU */}
+                <Menu placement="bottom-start">
+                    <MenuButton
+                        border="none"
+                        as={IconButton}
+                        aria-label='Options'
+                        icon={<BiDotsHorizontalRounded />}
+                        variant='outline'
+                        position="absolute"
+                        zIndex={20}
+                        left={0}
+                        boxSize="17.5px"
+                    />
+                    <MenuList display="flex" h={10}>
+                        <MenuItem
+                            command='⌘T'
+                            data-id={_id}
+                            onClick={(e) => handleOutfitDelete(e)}
+                        >
+                            Delete
+                        </MenuItem>
+                    </MenuList>
+                </Menu>
                 {/* Left Icon */}
                 <IconButton
                     aria-label="left-arrow"

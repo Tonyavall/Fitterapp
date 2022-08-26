@@ -5,7 +5,7 @@ import { useAtom } from 'jotai'
 import Router from 'next/router';
 import Auth from '../../utils/clientAuth'
 import { FIND_USER } from '../api/queries';
-import client, { addClientState } from '../../apollo/client'
+import client from '../../apollo/client'
 import { GetServerSideProps } from 'next'
 import {
     Avatar,
@@ -17,7 +17,7 @@ import {
     Box,
     Grid,
     GridItem,
-    Img 
+    Img
 } from "@chakra-ui/react";
 
 interface UserData {
@@ -146,7 +146,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
                 >
                     {posts?.map((post: any) => {
                         return (
-                            <GridItem 
+                            <GridItem
                                 key={post._id}
                                 onClick={e => handlePostClick(e)}
                             >
@@ -159,7 +159,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
                                     data-postid={post._id}
                                     cursor="pointer"
                                 />
-                                
+
                             </GridItem>
                         )
                     })}
@@ -182,9 +182,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             variables: { username }
         })
 
-        return addClientState(client, {
+        return {
             props: { data },
-        })
+        }
     } catch (error) {
         return {
             notFound: true,

@@ -33,6 +33,8 @@ import { TbShirt } from "react-icons/tb"
 import { useAtom } from "jotai";
 import { loggedInAtom } from "../utils/globalAtoms";
 import { userProfileAtom } from "../utils/globalAtoms";
+import { useQuery } from "@apollo/client";
+import { FIND_USER } from "../pages/api/queries";
 
 // https://choc-ui.com/docs/packages/autocomplete\
 // https://stackoverflow.com/questions/65460085/open-a-page-in-a-next-js-website-as-an-overlay
@@ -43,6 +45,8 @@ const Navbar = () => {
     const mobileNav = useDisclosure();
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [userProfile, setUserProfile] = useAtom(userProfileAtom)
+    // search abr stuff here
+    // const { loading, error, data } = useQuery(FIND_ALL_USERS)
 
     const handleLogout = () => {
         Auth.logout()
@@ -103,11 +107,11 @@ const Navbar = () => {
                                 justifySelf="self-start"
                                 onClick={mobileNav.onClose}
                             />
-                            <Button 
-                                w="full" 
-                                variant="ghost" 
+                            <Button
+                                w="full"
+                                variant="ghost"
                                 leftIcon={<AiOutlineHome />}
-                                onClick={()=> Router.push('/')}
+                                onClick={() => Router.push('/')}
                             >
                                 Home
                             </Button>
@@ -116,7 +120,7 @@ const Navbar = () => {
                                 variant="ghost"
                                 colorScheme="brand"
                                 leftIcon={<AiOutlineInbox />}
-                                onClick={()=> Router.push('/direct')}
+                                onClick={() => Router.push('/direct')}
                             >
                                 Inbox
                             </Button>
@@ -124,7 +128,7 @@ const Navbar = () => {
                                 w="full"
                                 variant="ghost"
                                 leftIcon={<TbShirt />}
-                                onClick={()=> Router.push('/fits')}
+                                onClick={() => Router.push('/fits')}
                             >
                                 Fits
                             </Button>

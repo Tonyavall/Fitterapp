@@ -461,13 +461,7 @@ export const resolvers = {
             try {
                 const userId = context.user._id
 
-                const updatedUser = await User.findOneAndUpdate(
-                    { _id: userId },
-                    { $pull: { outfits: { outfitId } } },
-                    { runValidators: true, new: true }
-                )
-                if (!updatedUser) return { status: 404, message: 'User not found.' }
-                return updatedUser
+                // 
             } catch (error) {
                 console.log(error)
                 return error

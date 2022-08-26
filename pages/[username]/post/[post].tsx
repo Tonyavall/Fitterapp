@@ -11,7 +11,7 @@ import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
 import client from '../../../apollo/client';
 import { FIND_POST } from '../../api/queries';
-import { addClientState } from '../../../apollo/client';
+// import { addClientState } from '../../../apollo/client';
 
 const Post = ({ data: { data: { findSinglePost } } }: any) => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
@@ -220,14 +220,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             query: FIND_POST,
             variables: { postId }
         })
-        return addClientState(client, {
-            props: { data },
-        })
-    } catch (error) {
+
         return {
-            notFound: true,
+            props: { data },
         }
+    } catch (error) {
+    return {
+        notFound: true,
     }
+}
 }
 
 export default Post

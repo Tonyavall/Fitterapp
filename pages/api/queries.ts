@@ -65,26 +65,8 @@ query($postId: ID!) {
 export const FIND_FITS = gql`
 query {
   findMe {
-    tops {
-      _id
-      image
-    }
-    bottoms {
-      _id
-      image
-    }
-    footwear {
-      _id
-      image
-    }
-  }
-}
-`
-
-export const FIND_OUTFITS = gql`
-query{
-  findMe {
 		outfits {
+      _id
       top {
         _id
         image
@@ -97,6 +79,18 @@ query{
         _id
         image
       }
+    }
+    tops {
+      _id
+      image
+    }
+    bottoms {
+      _id
+      image
+    }
+    footwear {
+      _id
+      image
     }
   }
 }

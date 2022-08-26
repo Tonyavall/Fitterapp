@@ -6,28 +6,96 @@ import {
     chakra,
     useRadioGroup,
     Icon,
+    Radio,
     Button,
     Box,
-    CloseButton
+    CloseButton,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    IconButton
 } from "@chakra-ui/react"
 import { useMutation } from "@apollo/client"
-import { DELETE_TOP } from "../pages/api/mutations"
-import { DELETE_BOTTOM } from "../pages/api/mutations"
-import { DELETE_FOOTWEAR } from "../pages/api/mutations"
+import {
+    DELETE_TOP,
+    DELETE_BOTTOM,
+    DELETE_FOOTWEAR
+} from "../pages/api/mutations"
+import { FIND_FITS } from "../pages/api/queries"
 import { GrFormClose } from 'react-icons/gr'
-
+import { BiDotsHorizontalRounded } from 'react-icons/bi'
 // IMPLEMENT UPDATING THE COMPONENT !!!
 // passive event listener error
+
 function FitsRadio(props: any) {
     const { image, type, _id, ...radioProps } = props
     const { state, getInputProps, getCheckboxProps, htmlProps, getLabelProps } =
         useRadio(radioProps)
-    const [deleteTop] = useMutation(DELETE_TOP)
-    const [deleteBottom] = useMutation(DELETE_BOTTOM)
-    const [deleteFootwear] = useMutation(DELETE_FOOTWEAR)
+    const [deleteTop] = useMutation(DELETE_TOP, {
+        update(cache, { data: { deleteTop: { tops } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            });
+            //manipulate fitsQueryResult, writeQuery
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        tops: tops,
+                        bottoms: findMe.bottoms,
+                        footwear: findMe.footwear,
+                    }
+                }
+            })
+        }
+    })
+    const [deleteBottom] = useMutation(DELETE_BOTTOM, {
+        update(cache, { data: { deleteBottom: { bottoms } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            });
+            //manipulate fitsQueryResult, writeQuery
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        tops: findMe.tops,
+                        bottoms: bottoms,
+                        footwear: findMe.footwear,
+                    }
+                }
+            })
+        }
+    })
+
+    const [deleteFootwear] = useMutation(DELETE_FOOTWEAR, {
+        update(cache, { data: { deleteFootwear: { footwear } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            });
+            //manipulate fitsQueryResult, writeQuery
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        tops: findMe.tops,
+                        bottoms: findMe.bottoms,
+                        footwear: footwear,
+                    }
+                }
+            })
+        }
+    })
 
     const handleFitDelete = (e: any) => {
-        const fitId = e.currentTarget.id
+        const fitId = e.currentTarget.dataset.id
         const fitType = e.currentTarget.dataset.type
 
         switch (fitType) {
@@ -46,16 +114,29 @@ function FitsRadio(props: any) {
     return (
         <chakra.label {...htmlProps} cursor='pointer' position="relative">
             <input {...getInputProps({})} hidden />
-            <Icon
-                as={GrFormClose}
-                id={_id}
-                data-type={type}
-                position="absolute"
-                zIndex={20}
-                right={0}
-                boxSize="17.5px"
-                onClick={(e) => handleFitDelete(e)}
-            />
+            <Menu placement="bottom-start">
+                <MenuButton
+                    border="none"
+                    as={IconButton}
+                    aria-label='Options'
+                    icon={<BiDotsHorizontalRounded />}
+                    variant='outline'
+                    position="absolute"
+                    zIndex={20}
+                    left={0}
+                    boxSize="17.5px"
+                />
+                <MenuList display="flex" h={10}>
+                    <MenuItem
+                        command='⌘T'
+                        data-id={_id}
+                        data-type={type}
+                        onClick={(e) => handleFitDelete(e)}
+                    >
+                        Delete
+                    </MenuItem>
+                </MenuList>
+            </Menu>
             <Image
                 bg="lightgray"
                 alt="Picture of a top"
@@ -71,13 +152,13 @@ function FitsRadio(props: any) {
     )
 }
 
-const FitsRadioGroup = ({ cloth, setSelectedFits, selectedFits }: any) => {
+const FitsRadioGroup = ({ fits, setSelectedFits, selectedFits }: any) => {
     const toast = useToast()
     // I'm extremely lazy so I stringified and parsed the incoming value I 
     // don't know what data transformations they do
     const handleChange = (value: any) => {
         const fit = JSON.parse(value)
-        const type = fit.__typename.toLowerCase()  
+        const type = fit.__typename.toLowerCase()
 
         toast({
             title: `${type} selected`,
@@ -95,21 +176,25 @@ const FitsRadioGroup = ({ cloth, setSelectedFits, selectedFits }: any) => {
         defaultValue: 'Error',
         onChange: handleChange,
     })
+
     return (
         <>
-            <GridItem
-                key={cloth._id}
-                {...getRootProps()}
-            >
-                <FitsRadio
-                    key={cloth._id}
-                    image={cloth.image}
-                    _id={cloth._id}
-                    type={cloth.__typename.toLowerCase()}
-                    // @ts-ignore
-                    {...getRadioProps({ value: JSON.stringify(cloth) })}
-                />
-            </GridItem>
+            {fits?.map((fit: any) => {
+                return (
+                    <GridItem
+                        key={fit._id}
+                        {...getRootProps()}
+                    >
+                        <FitsRadio
+                            key={fit._id}
+                            image={fit.image}
+                            _id={fit._id}
+                            type={fit.__typename.toLowerCase()}
+                            {...getRadioProps({ value: JSON.stringify(fit) })}
+                        />
+                    </GridItem>
+                )
+            })}
         </>
     )
 }

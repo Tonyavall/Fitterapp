@@ -47,6 +47,10 @@ export const DELETE_TOP = gql`
     mutation deleteTop($topId: ID!) {
         deleteTop(topId: $topId) {
             _id
+            tops {
+                _id
+                image
+            }
         }
     }
 `
@@ -55,6 +59,10 @@ export const DELETE_BOTTOM = gql`
     mutation deleteBottom($bottomId: ID!) {
         deleteBottom(bottomId: $bottomId) {
             _id
+            bottoms {
+                _id
+                image
+            }
         }
     }
 `
@@ -63,6 +71,21 @@ export const DELETE_FOOTWEAR = gql`
     mutation deleteFootwear($footwearId: ID!) {
         deleteFootwear(footwearId: $footwearId) {
             _id
+            footwear {
+                _id
+                image
+            }
+        }
+    }
+`
+
+export const DELETE_OUTFIT = gql`
+    mutation deleteOutfit($outfitId: ID!) {
+        deleteOutfit(outfitId: $outfitId) {
+            _id
+            outfits {
+                _id
+            }
         }
     }
 `

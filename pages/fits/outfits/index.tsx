@@ -9,16 +9,15 @@ import {
     Heading,
     Button,
     Grid,
-    GridItem,
     Divider,
 } from "@chakra-ui/react"
-import { FIND_OUTFITS } from "../../api/queries"
-import { GetServerSideProps } from 'next'
-import client, { addClientState } from '../../../apollo/client'
+import { FIND_FITS } from "../../api/queries"
 import OutfitCarousel from "../../../components/outfitCarousel"
+import { useQuery } from "@apollo/client"
 
-const Outfits = ({ data }: any) => {
+const Outfits = () => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
+    const { data, loading } = useQuery(FIND_FITS);
 
     useEffect(() => {
         if (Auth.loggedIn()) {
@@ -30,7 +29,7 @@ const Outfits = ({ data }: any) => {
 
     const {
         outfits = []
-    } = data.data.findMe
+    } = data?.findMe || {}
 
     return (
         <Layout>
@@ -87,13 +86,13 @@ const Outfits = ({ data }: any) => {
                             {
                                 outfits.map((outfit: any) => {
                                     return (
-                                            <OutfitCarousel
-                                                key={outfit._id}
-                                                _id={outfit._id}
-                                                tops={outfit.top}
-                                                bottoms={outfit.bottom}
-                                                footwear={outfit.footwear}
-                                            />
+                                        <OutfitCarousel
+                                            key={outfit._id}
+                                            _id={outfit._id}
+                                            tops={outfit.top}
+                                            bottoms={outfit.bottom}
+                                            footwear={outfit.footwear}
+                                        />
                                     )
                                 })
                             }
@@ -108,22 +107,6 @@ const Outfits = ({ data }: any) => {
             </Box>
         </Layout>
     )
-}
-
-export const getServerSideProps: GetServerSideProps = async () => {
-    try {
-        const data = await client.query<any, any>({
-            query: FIND_OUTFITS
-        })
-
-        return addClientState(client, {
-            props: { data },
-        })
-    } catch (error) {
-        return {
-            notFound: true,
-        }
-    }
 }
 
 export default Outfits

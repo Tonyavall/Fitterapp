@@ -13,24 +13,25 @@ import {
 } from "@chakra-ui/react"
 import { FIND_FITS } from "../api/queries"
 import { GetServerSideProps } from 'next'
-import client, { addClientState } from '../../apollo/client'
+import client from '../../apollo/client'
 import AddClothesModal from "../../components/addClothesModal"
 import { useToast } from "@chakra-ui/react"
-import { useMutation } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { ADD_OUTFIT } from "../api/mutations"
 import FitsRadioGroup from "../../components/fitsRadioGroups"
 import { checkProps } from "../../utils/functions"
 
-const Fits = ({ data }: any) => {
+const Fits = () => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [selectedFits, setSelectedFits] = useState({ top: null, bottom: null, footwear: null })
     const toast = useToast()
-
+    const { data, loading } = useQuery(FIND_FITS);
+    // console.log(data)
     const {
         bottoms = [],
         footwear = [],
         tops = []
-    } = data.data.findMe
+    } = data?.findMe || {}
 
     // TODO!!!! need loading implementation for all componetns
 
@@ -41,6 +42,7 @@ const Fits = ({ data }: any) => {
         setLoggedIn(false)
         Router.push('/login')
     }, [setLoggedIn])
+
 
     const [addOutfit, { data: addOutfitData, error: addOutfitError }] = useMutation(ADD_OUTFIT)
 
@@ -136,25 +138,20 @@ const Fits = ({ data }: any) => {
                         </Box>
                     </Box>
                     <Divider borderColor="gray" />
-                    {tops ?
+                    {tops.length ?
                         <Grid
                             mt={1}
                             templateColumns={`repeat(${5}, 1fr)`}
-                            gap={[0, 0, 0, 1, 1]}
+                            gap={[0, 1]}
                         >
-                            {
-                                tops.map((top: any) => (
-                                    <FitsRadioGroup
-                                        key={top._id}
-                                        cloth={top}
-                                        setSelectedFits={setSelectedFits}
-                                        selectedFits={selectedFits}
-                                    />
-                                ))
-                            }
+                            <FitsRadioGroup
+                                fits={tops}
+                                setSelectedFits={setSelectedFits}
+                                selectedFits={selectedFits}
+                            />
                         </Grid>
                         :
-                        <Heading fontWeight="light" fontSize="2rem" textAlign="center" m="1em">
+                        <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
                             {"You don't have any tops :("}
                         </Heading>
                     }
@@ -178,28 +175,21 @@ const Fits = ({ data }: any) => {
                         </Heading>
                     </Box>
                     <Divider borderColor="gray" />
-                    {bottoms ?
+                    {bottoms.length ?
                         <Grid
                             mt={1}
                             templateColumns={`repeat(${5}, 1fr)`}
                             gap={[0, 1]}
                         >
-                            {
-                                bottoms?.map((bottom: any) => {
-                                    return (
-                                        <FitsRadioGroup
-                                            key={bottom._id}
-                                            cloth={bottom}
-                                            setSelectedFits={setSelectedFits}
-                                            selectedFits={selectedFits}
-                                        />
-                                    )
-                                })
-                            }
+                            <FitsRadioGroup
+                                fits={bottoms}
+                                setSelectedFits={setSelectedFits}
+                                selectedFits={selectedFits}
+                            />
                         </Grid>
                         :
-                        <Heading fontWeight="light" fontSize="2rem" textAlign="center" m="1em">
-                            {"You don't have any bottoms:("}
+                        <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
+                            {"You don't have any bottoms :("}
                         </Heading>
                     }
                 </Box>
@@ -222,28 +212,21 @@ const Fits = ({ data }: any) => {
                         </Heading>
                     </Box>
                     <Divider borderColor="gray" />
-                    {footwear ?
+                    {footwear.length ?
                         <Grid
                             mt={1}
                             templateColumns={`repeat(${5}, 1fr)`}
                             gap={[0, 1]}
                         >
-                            {
-                                footwear?.map((footwear: any) => {
-                                    return (
-                                        <FitsRadioGroup
-                                            key={footwear._id}
-                                            cloth={footwear}
-                                            setSelectedFits={setSelectedFits}
-                                            selectedFits={selectedFits}
-                                        />
-                                    )
-                                })
-                            }
+                            <FitsRadioGroup
+                                fits={footwear}
+                                setSelectedFits={setSelectedFits}
+                                selectedFits={selectedFits}
+                            />
                         </Grid>
                         :
-                        <Heading fontWeight="light" fontSize="2rem" textAlign="center" m="1em">
-                            {"You don't have any footwear:("}
+                        <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
+                            {"You don't have any footwear :("}
                         </Heading>
                     }
                 </Box>
@@ -252,20 +235,21 @@ const Fits = ({ data }: any) => {
     )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-    try {
-        const data = await client.query<any, any>({
-            query: FIND_FITS
-        })
-
-        return addClientState(client, {
-            props: { data },
-        })
-    } catch (error) {
-        return {
-            notFound: true,
-        }
-    }
-}
+// export const getServerSideProps: GetServerSideProps = async () => {
+//     try {
+//         const data = await client.query<any, any>({
+//             query: FIND_FITS
+//         })
+//         // Caching our props/ adding it to the current clients state's props
+//         console.log(client.cache.extract())
+//         return {
+//             props: { data }
+//         }
+//     } catch (error) {
+//         return {
+//             notFound: true,
+//         }
+//     }
+// }
 
 export default Fits
