@@ -378,12 +378,14 @@ export const resolvers = {
                     bottom,
                     footwear
                 })
-                await User.findOneAndUpdate(
-                    { _id: userId },
-                    { $push: { outfits: createdOutfit._id } },
-                    { runValidators: true, new: true }
-                )
-                return createdOutfit
+                const updatedUser = await User
+                    .findOneAndUpdate(
+                        { _id: userId },
+                        { $push: { outfits: createdOutfit._id } },
+                        { runValidators: true, new: true }
+                    )
+                    .populate('outfits')
+                return updatedUser
             } catch (error) {
                 console.log(error)
                 return error
@@ -402,7 +404,6 @@ export const resolvers = {
                     { $pull: { tops: { _id: topId } } },
                     { runValidators: true, new: true }
                 )
-                console.log(updatedUser)
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
                 return updatedUser
             } catch (error) {
@@ -459,9 +460,17 @@ export const resolvers = {
         ) => {
             await connectDb()
             try {
-                const userId = context.user._id
-
-                // 
+                // HANDLE OUTFIT DELETION HERE
+                const deletedOutfit = await Outfit.findOneAndDelete({ _id: outfitId })
+                if (!deletedOutfit) throw new UserInputError(`Outfit was not found.`)
+                const updatedUser = await User
+                    .findOneAndUpdate(
+                        { _id: context.user._id },
+                        { $pull: { outfits: outfitId } },
+                        { runValidators: true, new: true }
+                    )
+                    .populate('outfits')
+                return updatedUser
             } catch (error) {
                 console.log(error)
                 return error

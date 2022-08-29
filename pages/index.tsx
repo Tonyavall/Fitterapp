@@ -11,6 +11,17 @@ import { userProfileAtom } from '../utils/globalAtoms'
 // import { addClientState } from '../apollo/client'
 // import client from '../apollo/client'
 
+// WHEN YOU MIGRATE TO SESSIONS POSSIBLY USE THIS FOR HANDLING AUTH REDIRECTS
+// export const handleAuth = (setter: Function) => {
+//   if (Auth.loggedIn()) {
+//     return setter(true)
+//   }
+//   // If they are not logged in push them to home page
+//   setter(false)
+//   Router.push('/login')
+//   return
+// }
+
 const Home: NextPage = () => {
   const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
   const [userProfile, setUserProfile] = useAtom(userProfileAtom)
@@ -52,5 +63,8 @@ const Home: NextPage = () => {
 //     }
 //   }
 // }
+
+// UI COMPONENT ADDONS!! MUSTS!!
+// https://chakra-ui.com/docs/components/toast
 
 export default Home

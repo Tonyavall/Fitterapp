@@ -23,7 +23,6 @@ import {
     DELETE_FOOTWEAR
 } from "../pages/api/mutations"
 import { FIND_FITS } from "../pages/api/queries"
-import { GrFormClose } from 'react-icons/gr'
 import { BiDotsHorizontalRounded } from 'react-icons/bi'
 // IMPLEMENT UPDATING THE COMPONENT !!!
 // passive event listener error

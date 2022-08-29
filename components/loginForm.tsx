@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 
 const LoginForm = ({ handleChange, error, handleFormSubmit }: any) => {
+    
     return (
         <Flex
             minH={'100vh'}

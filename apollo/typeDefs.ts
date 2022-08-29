@@ -119,7 +119,7 @@ export const typeDefs = gql`
     addTop(image: String!): User
     addBottom(image: String!): User
     addFootwear(image: String!): User
-    addOutfit(top: TopInput!, bottom: BottomInput!, footwear: FootwearInput): Outfit
+    addOutfit(top: TopInput!, bottom: BottomInput!, footwear: FootwearInput): User
     deleteTop(topId: ID!): User
     deleteBottom(bottomId: ID!): User
     deleteFootwear(footwearId: ID!): User

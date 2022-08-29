@@ -21,7 +21,9 @@ import {
     InputGroup,
     InputLeftElement,
     Input,
+    Tooltip
 } from "@chakra-ui/react";
+
 import Auth from '../utils/clientAuth'
 import {
     AiOutlineMenu,
@@ -147,15 +149,21 @@ const Navbar = () => {
                 >
                     {/* Horizontal menu */}
                     <HStack spacing={6} display={{ base: "none", md: "inline-flex" }} mr="1em">
-                        <button onClick={() => Router.push('/')}>
-                            <AiOutlineHome cursor="pointer" size={25} />
-                        </button>
-                        <button onClick={() => Router.push('/direct')}>
-                            <AiOutlineInbox cursor="pointer" size={25} />
-                        </button>
-                        <button onClick={() => Router.push('/fits')}>
-                            <TbShirt cursor="pointer" size={25} />
-                        </button>
+                        <Tooltip hasArrow label='Home' bg='gray.300' color='black'>
+                            <button onClick={() => Router.push('/')}>
+                                <AiOutlineHome cursor="pointer" size={25} />
+                            </button>
+                        </Tooltip>
+                        <Tooltip hasArrow label='Messages' bg='gray.300' color='black'>
+                            <button onClick={() => Router.push('/direct')}>
+                                <AiOutlineInbox cursor="pointer" size={25} />
+                            </button>
+                        </Tooltip>
+                        <Tooltip hasArrow label='My Fits' bg='gray.300' color='black'>
+                            <button onClick={() => Router.push('/fits')}>
+                                <TbShirt cursor="pointer" size={25} />
+                            </button>
+                        </Tooltip>
                     </HStack>
                     {/* Profile avatar menu */}
                     <Menu placement="bottom-end">

@@ -44,7 +44,26 @@ const Fits = () => {
     }, [setLoggedIn])
 
 
-    const [addOutfit, { data: addOutfitData, error: addOutfitError }] = useMutation(ADD_OUTFIT)
+    const [
+        addOutfit, 
+        { data: addOutfitData, error: addOutfitError }
+    ] = useMutation(ADD_OUTFIT, {
+        update(cache, { data: { addOutfit: { outfits } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            })
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        outfits: outfits,
+                    }
+                }
+            })
+        }
+    })
 
     useEffect(() => {
         if (addOutfitData) {
@@ -234,22 +253,5 @@ const Fits = () => {
         </Layout>
     )
 }
-
-// export const getServerSideProps: GetServerSideProps = async () => {
-//     try {
-//         const data = await client.query<any, any>({
-//             query: FIND_FITS
-//         })
-//         // Caching our props/ adding it to the current clients state's props
-//         console.log(client.cache.extract())
-//         return {
-//             props: { data }
-//         }
-//     } catch (error) {
-//         return {
-//             notFound: true,
-//         }
-//     }
-// }
 
 export default Fits

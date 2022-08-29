@@ -10,7 +10,9 @@ import {
     MenuButton,
     MenuList,
     MenuItem,
-    Menu
+    Menu,
+    useRadio,
+    chakra
 } from "@chakra-ui/react";
 import { BiDotsHorizontalRounded } from 'react-icons/bi'
 import { DELETE_OUTFIT } from '../pages/api/mutations';
@@ -29,10 +31,12 @@ const settings = {
     slidesToScroll: 1,
 };
 
-const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) => {
+const OutfitCarousel = ({ _id, top = {}, bottom = {}, footwear = {}, ...radioProps }: any) => {
     const [slider, setSlider] = useState<Slider | null>(null);
-    const top = useBreakpointValue({ base: '90%', md: '50%' });
+    const topSide = useBreakpointValue({ base: '90%', md: '50%' });
     const side = useBreakpointValue({ base: '30%', md: '40px' });
+    const {state, getInputProps, getCheckboxProps, htmlProps, getLabelProps} = 
+        useRadio(radioProps)
 
     const [deleteOutfit] = useMutation(DELETE_OUTFIT, {
         update(cache, { data: { deleteOutfit: { outfits } } }) {
@@ -40,17 +44,15 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
             const { findMe }: any = cache.readQuery({
                 query: FIND_FITS
             })
-            console.log(outfits)
-            //manipulate fitsQueryResult, writeQuery
-            // cache.writeQuery({
-            //     query: FIND_OUTFITS,
-            //     data: {
-            //         findMe: {
-            //             ...findMe,
-            //             outfits: outfits,
-            //         }
-            //     }
-            // })
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        outfits: outfits,
+                    }
+                }
+            })
         }
     })
 
@@ -60,13 +62,17 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
     }
 
     return (
-        <>
+        <chakra.label {...htmlProps} cursor='pointer'>
+            <input {...getInputProps({})} hidden />
             <Box
                 key={_id + 10724}
                 boxSize={[105, 125, 206, 300, 300]}
                 cursor="pointer"
                 overflow={'hidden'}
                 position="relative"
+                {...getCheckboxProps()}
+                opacity={state.isChecked ? '50%' : '100%'}
+                {...getLabelProps()}
             >
                 <link
                     rel="stylesheet"
@@ -108,7 +114,7 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
                     variant="ghost"
                     position="absolute"
                     left={side}
-                    top={top}
+                    top={topSide}
                     transform={'translate(-75%, -50%)'}
                     zIndex={2}
                     onClick={() => slider?.slickPrev()}
@@ -122,7 +128,7 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
                     variant="ghost"
                     position="absolute"
                     right={side}
-                    top={top}
+                    top={topSide}
                     transform={'translate(75%, -50%)'}
                     zIndex={2}
                     onClick={() => slider?.slickNext()}
@@ -138,14 +144,14 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
                         position="relative"
                         alt="Picture of top"
                         objectFit="cover"
-                        src={tops.image}
+                        src={top.image}
                     />
                     <Image
                         key={_id + 512}
                         position="relative"
                         alt="Picture of bottom"
                         objectFit="cover"
-                        src={bottoms.image}
+                        src={bottom.image}
                     />
                     {footwear ?
                         <Image
@@ -161,7 +167,7 @@ const OutfitCarousel = ({ _id, tops = {}, bottoms = {}, footwear = {} }: any) =>
 
                 </Slider>
             </Box>
-        </>
+        </chakra.label>
     )
 }
 

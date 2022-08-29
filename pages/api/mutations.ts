@@ -39,6 +39,21 @@ export const ADD_OUTFIT = gql`
     mutation addOutfit($top: TopInput!, $bottom: BottomInput!, $footwear: FootwearInput) {
         addOutfit(top: $top, bottom: $bottom, footwear: $footwear) {
             _id
+            outfits {
+                _id
+                top {
+                    _id
+                    image
+                }
+                bottom {
+                    _id
+                    image
+                }
+                footwear {
+                    _id
+                    image
+                }
+            }
         }
     }
 `
@@ -85,6 +100,18 @@ export const DELETE_OUTFIT = gql`
             _id
             outfits {
                 _id
+                top {
+                    _id
+                    image
+                }
+                bottom {
+                    _id
+                    image
+                }
+                footwear {
+                    _id
+                    image
+                }
             }
         }
     }
