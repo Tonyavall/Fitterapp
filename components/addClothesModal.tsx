@@ -12,22 +12,61 @@ import {
     ModalFooter,
     Select,
     Box,
-    Center
+    Center,
+    Heading,
+    Tabs,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels
 } from "@chakra-ui/react"
 import { useDisclosure } from "@chakra-ui/react"
-import { useRef } from "react"
+import { useRef, useState } from "react"
+import MediaUpload from "./mediaUpload"
+import CropBox from "./cropBox"
 
 function AddClothesModal() {
-    // serverless uploading to s3 bucket
-    // do a get then put request on the bucket
-    // https://aws.amazon.com/blogs/compute/uploading-to-amazon-s3-directly-from-a-web-or-mobile-application/
-
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [image, setImage] = useState([])
 
     const initialRef = useRef(null)
     const finalRef = useRef(null)
-    // final ref will recieve values on close
 
+    // tab index starts at 0
+    const [tabIndex, setTabIndex] = useState(0)
+    // Hardcoded tab value, if adding/removing tabs please change this.
+    const maxTabs = 3
+
+    const handleButtonBackward = () => {
+        if (tabIndex === 0) return
+        setTabIndex(tabIndex - 1)
+    }
+
+    const handleButtonForward = () => {
+        if (tabIndex === maxTabs - 1) return
+        setTabIndex(tabIndex + 1)
+    }
+
+    const handleFitAdd = () => {
+
+    }
+    console.log(image)
+
+    const handleModalClose = () => {
+        setTabIndex(0)
+        setImage([])
+    }
+
+    const handleHeadingTitle = (index: number) => {
+        switch (index) {
+            case 1:
+                return "Crop"
+            case 2:
+                return "Fit Type"
+            default:
+                return "Upload Fit"
+        }
+    }
     return (
         <>
             <Button
@@ -46,47 +85,80 @@ function AddClothesModal() {
                 finalFocusRef={finalRef}
                 isOpen={isOpen}
                 onClose={onClose}
-                size={["xl","2xl"]}
+                size="3xl"
+                onCloseComplete={() => handleModalClose()}
             >
                 <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Add Clothes</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody pb={6}>
-                        <Box
-                            border="1px dashed black"
-                            borderRadius="5px"
+                <ModalContent
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    borderRadius="2xl"
+                    h="750px"
+                    w="full"
+                >
+                    <ModalHeader
+                        display="flex"
+                        flexDirection="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        w="full"
+                        p=".25em"
+                        borderBottom="1px solid lightgray"
+                    >
+                        <Button onClick={handleButtonBackward} bg="white" size="sm" visibility={tabIndex !== 0 ? "initial" : "hidden"}>Back</Button>
+                        <Heading size="sm" fontWeight="md">{handleHeadingTitle(tabIndex)}</Heading>
+                        {tabIndex === maxTabs - 1 ?
+                            <Button onClick={handleFitAdd} bg="white" size="sm">Add</Button>
+                            :
+                            <Button onClick={handleButtonForward} bg="white" size="sm" visibility={tabIndex !== 0 ? "initial" : "hidden"}>Next</Button>
+                        }
+                    </ModalHeader>
+
+                    <ModalBody
+                        p={0} m={0}
+                        w="full"
+                        h="full"
+                    >
+                        <Tabs index={tabIndex}
                             w="full"
-                            h="300px"
+                            h="full"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            <Center my="7.5em">Upload File Here</Center>
-                        </Box>
-
-                        <Select placeholder='Is this a Top, Bottom, or Foowear?' mt={4}>
-                            <option value='top'>Top</option>
-                            <option value='bottom'>Bottom</option>
-                            <option value='footwear'>Footwear</option>
-                        </Select>
+                            <TabList hidden={true}>
+                                <Tab>One</Tab>
+                                <Tab>Two</Tab>
+                                <Tab>Three</Tab>
+                            </TabList>
+                            <TabPanels w="full" h="full">
+                                <TabPanel
+                                    p={0}
+                                    m={0}
+                                    w="full"
+                                    h="full"
+                                    display="flex"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                >
+                                    <MediaUpload image={image} setImage={setImage} setTabIndex={setTabIndex} />
+                                </TabPanel>
+                                <TabPanel p={0} m={0} w="full" h="full">
+                                    {/* @ts-ignore */}
+                                    <CropBox image={image}/>
+                                </TabPanel>
+                                <TabPanel p={0} m={0}>
+                                    <Select placeholder='Is this a Top, Bottom, or Foowear?' mt={4}>
+                                        <option value='top'>Top</option>
+                                        <option value='bottom'>Bottom</option>
+                                        <option value='footwear'>Footwear</option>
+                                    </Select>
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
                     </ModalBody>
-
-                    <ModalFooter>
-                        <Button
-                            colorScheme="twitter"
-                            size="sm"
-                            height={27.5}
-                            mr={4}
-                        >
-                            Upload
-                        </Button>
-                        <Button
-                            colorScheme="twitter"
-                            size="sm"
-                            height={27.5}
-                            onClick={onClose}
-                        >
-                            Cancel
-                        </Button>
-                    </ModalFooter>
                 </ModalContent>
             </Modal>
         </>
