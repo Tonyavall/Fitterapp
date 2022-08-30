@@ -11,6 +11,7 @@ import {
     Grid,
     Divider,
     useRadioGroup,
+    Spinner
 } from "@chakra-ui/react"
 import { FIND_FITS } from "../../api/queries"
 import OutfitCarousel from "../../../components/outfitCarousel"
@@ -79,37 +80,45 @@ const Outfits = () => {
                             >
                                 {'<'} Back
                             </Button>
-                            <AddPostModal/>
+                            <AddPostModal />
                         </Box>
                     </Box>
                     <Divider borderColor="gray" mb={4} />
-                    {outfits.length ?
-                        <Grid
-                            mt={1}
-                            templateColumns="repeat(3, 1fr)"
-                            gap={[0, 0, 2, 6, 6]}
-                            {...getRootProps()}
-                        >
-                            {
-                                outfits.map((outfit: any) => {
-                                    return (
-                                        <OutfitCarousel
-                                            key={outfit._id}
-                                            _id={outfit._id}
-                                            top={outfit.top}
-                                            bottom={outfit.bottom}
-                                            footwear={outfit.footwear}
-                                            {...getRadioProps({ value: JSON.stringify(outfit) })}
-                                        />
-                                    )
-                                })
-                            }
+                    {loading ?
+                        <Spinner
+                            thickness='4px'
+                            speed='0.65s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='xl'
+                        />
+                        : outfits.length ?
+                            <Grid
+                                mt={1}
+                                templateColumns="repeat(3, 1fr)"
+                                gap={[0, 0, 2, 6, 6]}
+                                {...getRootProps()}
+                            >
+                                {
+                                    outfits.map((outfit: any) => {
+                                        return (
+                                            <OutfitCarousel
+                                                key={outfit._id}
+                                                _id={outfit._id}
+                                                top={outfit.top}
+                                                bottom={outfit.bottom}
+                                                footwear={outfit.footwear}
+                                                {...getRadioProps({ value: JSON.stringify(outfit) })}
+                                            />
+                                        )
+                                    })
+                                }
 
-                        </Grid>
-                        :
-                        <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
-                            {"You don't have any outfits :("}
-                        </Heading>
+                            </Grid>
+                            :
+                            <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
+                                {"You don't have any outfits :("}
+                            </Heading>
                     }
                 </Box>
 

@@ -58,6 +58,42 @@ export const ADD_OUTFIT = gql`
     }
 `
 
+export const ADD_TOP = gql`
+    mutation addTop($image: String!) {
+        addTop(image: $image) {
+            _id
+            tops {
+                _id
+                image
+            }
+        }
+    }
+`
+
+export const ADD_BOTTOM = gql`
+    mutation addBottom($image: String!) {
+        addBottom(image: $image) {
+            _id
+            bottoms {
+                _id
+                image
+            }
+        }
+    }
+`
+
+export const ADD_FOOTWEAR = gql`
+    mutation addFootwear($image: String!) {
+        addFootwear(image: $image) {
+            _id
+            footwear {
+                _id
+                image
+            }
+        }
+    }
+`
+
 export const DELETE_TOP = gql`
     mutation deleteTop($topId: ID!) {
         deleteTop(topId: $topId) {

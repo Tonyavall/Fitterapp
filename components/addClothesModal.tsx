@@ -18,19 +18,28 @@ import {
     Tab,
     TabList,
     TabPanel,
-    TabPanels
+    TabPanels,
+    Image,
+    useToast
 } from "@chakra-ui/react"
 import { useDisclosure } from "@chakra-ui/react"
 import { useRef, useState } from "react"
 import MediaUpload from "./mediaUpload"
 import CropBox from "./cropBox"
+import generateUploadURL from "../utils/s3"
+import { ADD_BOTTOM, ADD_TOP, ADD_FOOTWEAR } from "../pages/api/mutations"
+import { FIND_FITS } from "../pages/api/queries"
+import { useMutation } from "@apollo/client"
 
 function AddClothesModal() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [image, setImage] = useState([])
-
+    const [croppedImageBlob, setCroppedImageBlob] = useState({})
+    const [croppedImageDataUrl, setCroppedImageDataUrl] = useState('')
+    const [fitType, setFitType] = useState('')
     const initialRef = useRef(null)
     const finalRef = useRef(null)
+    const toast = useToast()
 
     // tab index starts at 0
     const [tabIndex, setTabIndex] = useState(0)
@@ -47,14 +56,112 @@ function AddClothesModal() {
         setTabIndex(tabIndex + 1)
     }
 
-    const handleFitAdd = () => {
+    const [addTop] = useMutation(ADD_TOP, {
+        update(cache, { data: { addTop: { tops } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            });
+            //manipulate fitsQueryResult, writeQuery
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        tops: tops,
+                    }
+                }
+            })
+        }
+    })
 
+    const [addBottom] = useMutation(ADD_BOTTOM, {
+        update(cache, { data: { addBottom: { bottoms } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            });
+            //manipulate fitsQueryResult, writeQuery
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        bottoms: bottoms,
+                    }
+                }
+            })
+        }
+    })
+
+    const [addFootwear] = useMutation(ADD_FOOTWEAR, {
+        update(cache, { data: { addFootwear: { footwear } } }) {
+            //retrieve cached query value from memory
+            const { findMe }: any = cache.readQuery({
+                query: FIND_FITS
+            });
+            //manipulate fitsQueryResult, writeQuery
+            cache.writeQuery({
+                query: FIND_FITS,
+                data: {
+                    findMe: {
+                        ...findMe,
+                        footwear: footwear,
+                    }
+                }
+            })
+        }
+    })
+
+    const handleFitAdd = async () => {
+        try {
+            if (!fitType) {
+                toast({
+                    title: 'Please select a fit type.',
+                    status: 'error',
+                    duration: 1500,
+                })
+                return
+            }
+
+            const uploadUrl = await generateUploadURL()
+
+            await fetch(uploadUrl, {
+                method: 'PUT',
+                headers: {
+                    // @ts-ignore
+                    "Content-Type": croppedImageBlob.type
+                },
+                // @ts-ignore
+                body: croppedImageBlob
+            })
+            const s3ImageUrl = uploadUrl.split('?')[0]
+
+            // Handling data/backend here
+            switch (fitType) {
+                case 'top':
+                    addTop({ variables: { image: s3ImageUrl } })
+                    break;
+                case 'bottom':
+                    addBottom({ variables: { image: s3ImageUrl } })
+                    break;
+                case 'footwear':
+                    addFootwear({ variables: { image: s3ImageUrl } })
+                    break;
+                default:
+                    break;
+            }
+            // finally closing the modal
+            onClose()
+        } catch (error) {
+            console.log(error)
+        }
     }
-    console.log(image)
 
     const handleModalClose = () => {
         setTabIndex(0)
         setImage([])
+        setFitType('')
     }
 
     const handleHeadingTitle = (index: number) => {
@@ -67,6 +174,7 @@ function AddClothesModal() {
                 return "Upload Fit"
         }
     }
+    
     return (
         <>
             <Button
@@ -147,10 +255,32 @@ function AddClothesModal() {
                                 </TabPanel>
                                 <TabPanel p={0} m={0} w="full" h="full">
                                     {/* @ts-ignore */}
-                                    <CropBox image={image}/>
+                                    <CropBox setCroppedImageBlob={setCroppedImageBlob} setCroppedImageDataUrl={setCroppedImageDataUrl} image={image} />
                                 </TabPanel>
-                                <TabPanel p={0} m={0}>
-                                    <Select placeholder='Is this a Top, Bottom, or Foowear?' mt={4}>
+                                <TabPanel
+                                    p={0}
+                                    m={0}
+                                    w="full"
+                                    h="full"
+                                    display="flex"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    flexDirection="column"
+                                >
+                                    <Image
+                                        // @ts-ignore
+                                        src={croppedImageDataUrl}
+                                        alt="Image of a top/bottom/footwear"
+                                        h="400px"
+                                        w="500px"
+                                    />
+
+                                    <Select
+                                        placeholder='Is this a Top, Bottom, or Foowear?'
+                                        mt={4}
+                                        width="50%"
+                                        onChange={(e) => setFitType(e.currentTarget.value)}
+                                    >
                                         <option value='top'>Top</option>
                                         <option value='bottom'>Bottom</option>
                                         <option value='footwear'>Footwear</option>

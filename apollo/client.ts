@@ -14,7 +14,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
     // let token = (typeof window !== 'undefined') ? localStorage.getItem('id_token') : ''
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoidG9ueUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InRvbnlhdmFsbCIsIl9pZCI6IjYzMDA2ZTkxMzM5ZGQ3Y2ZiOWFiNzNkMCIsImlzQWRtaW4iOmZhbHNlLCJ1c2VySW1hZ2UiOiJodHRwczovL3ByM3NvY21lZGFwcC5zMy51cy13ZXN0LTEuYW1hem9uYXdzLmNvbS9JTUdfMjc0MisoMSkuanBnIn0sImlhdCI6MTY2MTcyNjk1OSwiZXhwIjoxNjYxODEzMzU5fQ.v-008b-hnVEh5Kc7eMu9EudnGvYRmmTGFFMR5j9oKq8"
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoidG9ueUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InRvbnlhdmFsbCIsIl9pZCI6IjYzMDA2ZTkxMzM5ZGQ3Y2ZiOWFiNzNkMCIsImlzQWRtaW4iOmZhbHNlLCJ1c2VySW1hZ2UiOiJodHRwczovL3ByM3NvY21lZGFwcC5zMy51cy13ZXN0LTEuYW1hem9uYXdzLmNvbS9JTUdfMjc0MisoMSkuanBnIn0sImlhdCI6MTY2MTgxNjE1NywiZXhwIjoxNjYxOTAyNTU3fQ.ToInSeVZOm_k0yWf_ldP0snt6ybyirxGuMWNgDDhlyY"
     return {
         headers: {
             ...headers,

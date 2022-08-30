@@ -311,7 +311,7 @@ export const resolvers = {
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
-                    { $push: { tops: { image } } },
+                    { $push: { tops: { image: image } } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
@@ -329,10 +329,10 @@ export const resolvers = {
             await connectDb()
             try {
                 const userId = context.user._id
-
+                
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
-                    { $push: { bottoms: { image } } },
+                    { $push: { bottoms: { image: image } } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
@@ -353,7 +353,7 @@ export const resolvers = {
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
-                    { $push: { footwear: { image } } },
+                    { $push: { footwear: { image: image } } },
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }

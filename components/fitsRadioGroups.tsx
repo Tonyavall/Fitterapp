@@ -44,8 +44,6 @@ function FitsRadio(props: any) {
                     findMe: {
                         ...findMe,
                         tops: tops,
-                        bottoms: findMe.bottoms,
-                        footwear: findMe.footwear,
                     }
                 }
             })
@@ -63,9 +61,7 @@ function FitsRadio(props: any) {
                 data: {
                     findMe: {
                         ...findMe,
-                        tops: findMe.tops,
                         bottoms: bottoms,
-                        footwear: findMe.footwear,
                     }
                 }
             })
@@ -84,8 +80,6 @@ function FitsRadio(props: any) {
                 data: {
                     findMe: {
                         ...findMe,
-                        tops: findMe.tops,
-                        bottoms: findMe.bottoms,
                         footwear: footwear,
                     }
                 }
