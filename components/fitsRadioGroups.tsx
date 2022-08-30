@@ -133,7 +133,6 @@ function FitsRadio(props: any) {
             <Image
                 bg="lightgray"
                 alt="Picture of a top"
-                boxSize={[65, 86, 145, 186, 186]}
                 objectFit="cover"
                 src={image}
                 data-topid={_id}

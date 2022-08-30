@@ -152,3 +152,25 @@ export const DELETE_OUTFIT = gql`
         }
     }
 `
+
+export const CREATE_POST = gql`
+    mutation createPost($outfitId: ID!, $postImage: String!, $description: String) {
+        createPost(outfitId: $outfitId, postImage: $postImage, description: $description) {
+            _id
+        }
+    }
+`
+export const ADD_POST_COMMENT = gql`
+    mutation addPostComment($postId: ID!, $commentBody: String!) {
+        addPostComment(commentBody: $commentBody, postId: $postId) {
+            comments {
+                _id
+                commentBody
+                userId {
+                    username
+                    userImage
+                }
+            }
+        }
+    }
+`

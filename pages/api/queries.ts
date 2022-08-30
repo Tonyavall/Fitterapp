@@ -50,13 +50,20 @@ query($postId: ID!) {
         image
       }
     }
+  }
+}
+`
+
+export const FIND_POST_COMMENTS = gql`
+query($postId: ID!) {
+  findPostComments(postId: $postId) {
     comments {
       _id
+      commentBody
       userId {
         username
         userImage
       }
-      commentBody
     }
   }
 }

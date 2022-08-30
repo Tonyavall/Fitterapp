@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../api/mutations'
 import Auth from '../../utils/clientAuth';
-import { loggedInAtom } from '../../utils/globalAtoms'
-import { useAtom } from 'jotai'
+import { loggedInAtom, userProfileAtom } from '../../utils/globalAtoms'
+import { useAtom, useSetAtom } from 'jotai'
 
 const Login = () => {
     const [formState, setFormState] = useState({ username: '', password: '' });
     const [login, { error }] = useMutation(LOGIN);
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
+    const setUserProfile = useSetAtom(userProfileAtom)
 
     const handleFormSubmit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -23,6 +24,7 @@ const Login = () => {
             // NEED TO HANDLE ERROR MESSAGES FROM BACKEND HERE / WRAP W TRY CATCH
             const token = mutationResponse.data.login.token;
             Auth.login(token);
+            // setUserProfile(token)
             setLoggedIn(true)
         } catch (e) {
             console.log(e);

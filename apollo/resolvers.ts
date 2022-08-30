@@ -135,6 +135,29 @@ export const resolvers = {
                 return error
             }
             throw new AuthenticationError('You have to be logged in!')
+        },
+        findPostComments: async (
+            parent: undefined,
+            { postId }: { postId: string },
+            context: any
+        ) => {
+            try {
+                if (context.user) {
+                    const [post] = await Post
+                        .find({ _id: postId })
+                        .populate(['userId', {
+                            path: 'comments',
+                            populate: ['userId']
+                        }, 'outfit'])
+
+                    if (!post) throw new UserInputError(`Post not found.`)
+                    return post
+                }
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+            throw new AuthenticationError('You have to be logged in!')
         }
     },
     Mutation: {
@@ -256,11 +279,16 @@ export const resolvers = {
             try {
                 const userId = context.user._id
 
-                const updatedPost = await Post.findOneAndUpdate(
-                    { _id: postId },
-                    { $push: { comments: { commentBody, userId } } },
-                    { runValidators: true, new: true }
-                )
+                const updatedPost = await Post
+                    .findOneAndUpdate(
+                        { _id: postId },
+                        { $push: { comments: { commentBody, userId } } },
+                        { runValidators: true, new: true }
+                    )
+                    .populate(['userId', {
+                        path: 'comments',
+                        populate: ['userId']
+                    }, 'outfit'])
                 if (!updatedPost) throw new UserInputError(`Post not found.`)
                 return updatedPost
             } catch (error) {
@@ -329,7 +357,7 @@ export const resolvers = {
             await connectDb()
             try {
                 const userId = context.user._id
-                
+
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
                     { $push: { bottoms: { image: image } } },

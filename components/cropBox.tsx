@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 const CropBox: React.FC = ({ image, setCroppedImageBlob, setCroppedImageDataUrl }: any) => {
   const cropperRef = useRef<HTMLImageElement>(null);
-  
+
   const onCrop = (e: any) => {
     e.preventDefault()
     const imageElement: any = cropperRef?.current;
@@ -12,7 +12,7 @@ const CropBox: React.FC = ({ image, setCroppedImageBlob, setCroppedImageDataUrl 
     // grabbing the blob to upload to s3
     const croppedImageDataUrl = cropper.getCroppedCanvas().toDataURL()
     setCroppedImageDataUrl(croppedImageDataUrl)
-    cropper.getCroppedCanvas().toBlob((blob: any, type='image/png') => {
+    cropper.getCroppedCanvas().toBlob((blob: any, type = 'image/png') => {
       setCroppedImageBlob(blob)
     })
   };
@@ -21,9 +21,8 @@ const CropBox: React.FC = ({ image, setCroppedImageBlob, setCroppedImageDataUrl 
     <Cropper
       src={image[0]?.dataURL}
       data-image={image}
-      style={{ height: '705px', width: 'full', zIndex:'100'}}
-      aspectRatio={5 / 4}
-      guides={false}
+      style={{ height: '700px', width: '700px' }}
+      aspectRatio={1 / 1}
       crop={onCrop}
       dragMode="move"
       ref={cropperRef}

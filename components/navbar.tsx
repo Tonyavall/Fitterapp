@@ -175,6 +175,7 @@ const Navbar = () => {
                             minW={0}>
                             <Avatar
                                 size={'sm'}
+                                objectFit="scale-down"
                                 src={userProfile.userImage}
                             />
                         </MenuButton>
@@ -183,6 +184,7 @@ const Navbar = () => {
                             <Center>
                                 <Avatar
                                     size={'2xl'}
+                                    objectFit="scale-down"
                                     src={userProfile.userImage}
                                 />
                             </Center>

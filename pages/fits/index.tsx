@@ -10,10 +10,9 @@ import {
     Divider,
     Grid,
     Button,
+    Spinner
 } from "@chakra-ui/react"
 import { FIND_FITS } from "../api/queries"
-import { GetServerSideProps } from 'next'
-import client from '../../apollo/client'
 import AddClothesModal from "../../components/addClothesModal"
 import { useToast } from "@chakra-ui/react"
 import { useMutation, useQuery } from "@apollo/client"
@@ -26,14 +25,12 @@ const Fits = () => {
     const [selectedFits, setSelectedFits] = useState({ top: null, bottom: null, footwear: null })
     const toast = useToast()
     const { data, loading } = useQuery(FIND_FITS);
-    // console.log(data)
+
     const {
         bottoms = [],
         footwear = [],
         tops = []
     } = data?.findMe || {}
-
-    // TODO!!!! need loading implementation for all componetns
 
     useEffect(() => {
         if (Auth.loggedIn()) {
@@ -43,9 +40,8 @@ const Fits = () => {
         Router.push('/login')
     }, [setLoggedIn])
 
-
     const [
-        addOutfit, 
+        addOutfit,
         { data: addOutfitData, error: addOutfitError }
     ] = useMutation(ADD_OUTFIT, {
         update(cache, { data: { addOutfit: { outfits } } }) {
@@ -109,8 +105,15 @@ const Fits = () => {
                 flexDirection="column"
                 alignItems="start"
             >
-                <Box w="full">
+                <Box 
+                    w="full"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
                     <Box
+                        w="full"
                         display="flex"
                         flexDirection="row"
                         justifyContent="space-between"
@@ -157,26 +160,42 @@ const Fits = () => {
                         </Box>
                     </Box>
                     <Divider borderColor="gray" />
-                    {tops.length ?
-                        <Grid
-                            mt={1}
-                            templateColumns={`repeat(${5}, 1fr)`}
-                            gap={[0, 1]}
-                        >
-                            <FitsRadioGroup
-                                fits={tops}
-                                setSelectedFits={setSelectedFits}
-                                selectedFits={selectedFits}
-                            />
-                        </Grid>
-                        :
-                        <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
-                            {"You don't have any tops :("}
-                        </Heading>
+                    {loading ?
+                        <Spinner
+                            justifySelf="center"
+                            thickness='2px'
+                            speed='0.65s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='md'
+                            mt={10}
+                        />
+                        : tops.length ?
+                            <Grid
+                                mt={1}
+                                templateColumns={`repeat(${5}, 1fr)`}
+                                gap={[0, 1]}
+                            >
+                                <FitsRadioGroup
+                                    fits={tops}
+                                    setSelectedFits={setSelectedFits}
+                                    selectedFits={selectedFits}
+                                />
+                            </Grid>
+                            :
+                            <Heading fontWeight="light" color="gray.500" fontSize="1.1rem" textAlign="center" m="1em">
+                                {"You don't have any tops :("}
+                            </Heading>
                     }
                 </Box>
 
-                <Box w="full">
+                <Box
+                    w="full"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
                     <Box
                         display="flex"
                         flexDirection="row"
@@ -194,26 +213,42 @@ const Fits = () => {
                         </Heading>
                     </Box>
                     <Divider borderColor="gray" />
-                    {bottoms.length ?
-                        <Grid
-                            mt={1}
-                            templateColumns={`repeat(${5}, 1fr)`}
-                            gap={[0, 1]}
-                        >
-                            <FitsRadioGroup
-                                fits={bottoms}
-                                setSelectedFits={setSelectedFits}
-                                selectedFits={selectedFits}
-                            />
-                        </Grid>
-                        :
-                        <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
-                            {"You don't have any bottoms :("}
-                        </Heading>
+                    {loading ?
+                        <Spinner
+                            justifySelf="center"
+                            thickness='2px'
+                            speed='0.65s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='md'
+                            mt={10}
+                        />
+                        : bottoms.length ?
+                            <Grid
+                                mt={1}
+                                templateColumns={`repeat(${5}, 1fr)`}
+                                gap={[0, 1]}
+                            >
+                                <FitsRadioGroup
+                                    fits={bottoms}
+                                    setSelectedFits={setSelectedFits}
+                                    selectedFits={selectedFits}
+                                />
+                            </Grid>
+                            :
+                            <Heading fontWeight="light" color="gray.500" fontSize="1.1rem" textAlign="center" m="1em">
+                                {"You don't have any bottoms :("}
+                            </Heading>
                     }
                 </Box>
 
-                <Box w="full">
+                <Box
+                    w="full"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
                     <Box
                         display="flex"
                         flexDirection="row"
@@ -231,22 +266,32 @@ const Fits = () => {
                         </Heading>
                     </Box>
                     <Divider borderColor="gray" />
-                    {footwear.length ?
-                        <Grid
-                            mt={1}
-                            templateColumns={`repeat(${5}, 1fr)`}
-                            gap={[0, 1]}
-                        >
-                            <FitsRadioGroup
-                                fits={footwear}
-                                setSelectedFits={setSelectedFits}
-                                selectedFits={selectedFits}
-                            />
-                        </Grid>
-                        :
-                        <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
-                            {"You don't have any footwear :("}
-                        </Heading>
+                    {loading ?
+                        <Spinner
+                            justifySelf="center"
+                            thickness='2px'
+                            speed='0.65s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='md'
+                            mt={10}
+                        />
+                        : footwear.length ?
+                            <Grid
+                                mt={1}
+                                templateColumns={`repeat(${5}, 1fr)`}
+                                gap={[0, 1]}
+                            >
+                                <FitsRadioGroup
+                                    fits={footwear}
+                                    setSelectedFits={setSelectedFits}
+                                    selectedFits={selectedFits}
+                                />
+                            </Grid>
+                            :
+                            <Heading fontWeight="light" color="gray.500" fontSize="1.1rem" textAlign="center" m="1em">
+                                {"You don't have any footwear :("}
+                            </Heading>
                     }
                 </Box>
             </Box>

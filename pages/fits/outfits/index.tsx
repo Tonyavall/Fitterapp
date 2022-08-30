@@ -14,14 +14,31 @@ import {
     Spinner
 } from "@chakra-ui/react"
 import { FIND_FITS } from "../../api/queries"
-import OutfitCarousel from "../../../components/outfitCarousel"
+import OutfitCarousel from "../../../components/imageCarousel"
 import { useQuery } from "@apollo/client"
-import AddPostModal from "../../../components/addPostModal"
+import AddPostModal from "../../../components/postOutfitModal"
+import PostOutfitModal from "../../../components/postOutfitModal"
+
+interface outfitObject {
+    top: {
+        _id?: string
+        image?: string
+    }
+    bottom: {
+        _id?: string
+        image?: string
+    }
+    footwear?: {
+        _id?: string
+        image?: string
+    }
+    _id: string
+}
 
 const Outfits = () => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const { data, loading } = useQuery(FIND_FITS);
-    const [selectedOutfit, setSelectedOutfit] = useState(null)
+    const [selectedOutfit, setSelectedOutfit] = useState<outfitObject|null>(null)
 
     const {
         outfits = []
@@ -54,8 +71,15 @@ const Outfits = () => {
                 flexDirection="column"
                 alignItems="start"
             >
-                <Box w="full">
+                <Box
+                    w="full"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
                     <Box
+                        w="full"
                         display="flex"
                         flexDirection="row"
                         justifyContent="space-between"
@@ -80,17 +104,27 @@ const Outfits = () => {
                             >
                                 {'<'} Back
                             </Button>
-                            <AddPostModal />
+                            <PostOutfitModal
+                                outfitId={selectedOutfit?._id}
+                                topImage={selectedOutfit?.top.image}
+                                bottomImage={selectedOutfit?.bottom.image}
+                                footwearImage={selectedOutfit?.footwear?.image}
+                            />
                         </Box>
                     </Box>
-                    <Divider borderColor="gray" mb={4} />
+                    <Divider
+                        borderColor="gray"
+                        mb={4}
+                    />
                     {loading ?
                         <Spinner
-                            thickness='4px'
+                            justifySelf="center"
+                            thickness='2px'
                             speed='0.65s'
                             emptyColor='gray.200'
                             color='blue.500'
-                            size='xl'
+                            size='md'
+                            mt={10}
                         />
                         : outfits.length ?
                             <Grid
@@ -116,7 +150,7 @@ const Outfits = () => {
 
                             </Grid>
                             :
-                            <Heading fontWeight="light" color="gray.500" fontSize="1.5rem" textAlign="center" m="1em">
+                            <Heading fontWeight="light" color="gray.500" fontSize="1.1rem" textAlign="center" m="1em">
                                 {"You don't have any outfits :("}
                             </Heading>
                     }

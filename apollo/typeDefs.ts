@@ -95,6 +95,7 @@ export const typeDefs = gql`
     homeRecentTenPosts: [Post]
     grabRandomTwelvePosts: [Post]
     findSinglePost(postId: ID!): Post
+    findPostComments(postId: ID!): Post
   }
 
   type Mutation {

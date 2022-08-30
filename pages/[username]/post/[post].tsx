@@ -1,29 +1,56 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/layouts/article'
 import { loggedInAtom } from '../../../utils/globalAtoms'
 import { useAtom } from 'jotai'
 import Router from 'next/router';
 import Auth from '../../../utils/clientAuth'
-import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button } from '@chakra-ui/react';
+import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button, Spinner } from '@chakra-ui/react';
 import { AiOutlineHeart } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
 import client from '../../../apollo/client';
-import { FIND_POST } from '../../api/queries';
-// import { addClientState } from '../../../apollo/client';
+import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
+import { useQuery, useMutation } from '@apollo/client';
+import { ADD_POST_COMMENT } from '../../api/mutations';
 
 const Post = ({ data: { data: { findSinglePost } } }: any) => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
+    const [commentBody, setCommentBody] = useState('')
 
     const {
+        _id,
         postImage,
-        comments = [],
         description,
         userImage,
-        userId
+        userId,
+        outfit
     } = findSinglePost
-    console.log(findSinglePost)
+
+    const {
+        loading,
+        error,
+        data
+    } = useQuery(FIND_POST_COMMENTS, { variables: { postId: _id } })
+
+    const [addPostComment] = useMutation(ADD_POST_COMMENT, {
+        update(cache, { data: { addPostComment: { comments } } }) {
+            const data = cache.readQuery({
+                query: FIND_POST_COMMENTS
+            });
+            console.log(data)
+            //manipulate fitsQueryResult, writeQuery
+            cache.writeQuery({
+                query: FIND_POST_COMMENTS,
+                data: {
+                    findPostComments: {
+                        comments: comments
+                    }
+                }
+            })
+        }
+    })
+
     useEffect(() => {
         if (Auth.loggedIn()) {
             return setLoggedIn(true)
@@ -31,6 +58,16 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
         setLoggedIn(false)
         Router.push('/login')
     }, [setLoggedIn])
+
+    const handleCommentInputChange = (e: any) => {
+        const commentBody = e.target.value
+        setCommentBody(commentBody)
+    }
+
+    const handleCommentAddition = () => {
+        addPostComment({ variables: { postId: _id, commentBody: commentBody } })
+        setCommentBody('')
+    }
 
     return (
         <Layout>
@@ -47,9 +84,9 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                 <Image
                     src={postImage}
                     alt="dnaiwdhjoa"
-                    objectFit="contain"
+                    objectFit="cover"
                     w="600px"
-                    h="full"
+                    h="450px"
                 />
 
                 {/* ENTIRE COMMENT SECTION CONTAINER */}
@@ -104,34 +141,49 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                             }
                         }}
                     >
-                        <Box
-                            display="flex"
-                            flexDirection="row"
-                            alignItems="center"
-                        >
-                            <Avatar
-                                size="sm"
-                                m="1.25em"
-                                alignSelf="start"
-                                src={userId.userImage}
-                            />
-                            <Text
-                                fontWeight="normal"
-                                fontSize="sm"
+                        {description ?
+                            <Box
+                                display="flex"
+                                flexDirection="row"
+                                alignItems="center"
                             >
+                                <Avatar
+                                    size="sm"
+                                    m="1.25em"
+                                    alignSelf="start"
+                                    src={userId.userImage}
+                                />
                                 <Text
-                                    as="span"
-                                    mr=".3em"
-                                    fontWeight="medium"
+                                    fontWeight="normal"
+                                    fontSize="sm"
                                 >
-                                    {userId.username}
-                                </Text>
+                                    <Text
+                                        as="span"
+                                        mr=".3em"
+                                        fontWeight="medium"
+                                    >
+                                        {userId.username}
+                                    </Text>
 
-                                {description}
-                            </Text>
-                        </Box>
-                        {
-                            comments?.map((comment: any) => {
+                                    {description}
+                                </Text>
+                            </Box>
+                            :
+                            null
+                        }
+                        {loading ?
+                            <Spinner
+                                justifySelf="center"
+                                thickness='2px'
+                                speed='0.65s'
+                                emptyColor='gray.200'
+                                color='blue.500'
+                                size='sm'
+                                mt={10}
+                                alignSelf="center"
+                            />
+                            :
+                            data?.findPostComments?.comments.map((comment: any) => {
                                 return (
                                     <Box
                                         key={comment._id}
@@ -202,9 +254,20 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                         ml="1.15em"
                         mt="6px"
                     >
-                        <Input placeholder='Add a comment' fontSize="sm" w="250px" h="35px" border="none" />
+                        <Input placeholder='Add a comment' fontSize="sm" w="250px" h="35px" border="none" onChange={handleCommentInputChange} value={commentBody} />
                         {/* @ts-ignore */}
-                        <Button h="35px" border="none" bg="white" _hover="" fontSize="sm" color="twitter.600" fontWeight="bold" ml="1px">Post</Button>
+                        <Button
+                            h="35px"
+                            border="none"
+                            bg="white"
+                            fontSize="sm"
+                            color="twitter.600"
+                            fontWeight="bold"
+                            ml="1px"
+                            onClick={handleCommentAddition}
+                        >
+                            Post
+                        </Button>
                     </FormControl>
                 </Box>
             </Box>
@@ -225,10 +288,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             props: { data },
         }
     } catch (error) {
-    return {
-        notFound: true,
+        return {
+            notFound: true,
+        }
     }
-}
 }
 
 export default Post
