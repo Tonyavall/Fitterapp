@@ -4,10 +4,7 @@ import { SyntheticEvent } from "react";
 import { useState } from "react";
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from "../api/mutations";
-import Auth from '../../utils/clientAuth';
-
-import { loggedInAtom } from '../../utils/globalAtoms'
-import { useAtom } from 'jotai'
+import Router from "next/router";
 
 const Signup = () => {
     const [formState, setFormState] = useState({
@@ -27,9 +24,8 @@ const Signup = () => {
         'signup',
         'activity'
     ]
-    
+
     const [errorMessage, setErrorMessage] = useState('')
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [createUser, { error }] = useMutation(CREATE_USER);
 
     const handleFormSubmit = async (event: SyntheticEvent) => {
@@ -49,7 +45,7 @@ const Signup = () => {
         }
 
         try {
-            const mutationResponse = await createUser({
+            const { data } = await createUser({
                 variables: {
                     email: formState.email,
                     username: formState.username,
@@ -58,9 +54,8 @@ const Signup = () => {
                     lastName: formState.lastName,
                 },
             });
-            const token = mutationResponse.data.createUser.token;
-            setLoggedIn(true)
-            Auth.login(token);
+            // Need to handle user errors
+            if (data.createUser) Router.push('/login')
         } catch (e) {
             console.log(e);
         }

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/layouts/article'
-import { loggedInAtom } from '../../../utils/globalAtoms'
 import { useAtom } from 'jotai'
 import Router from 'next/router';
-import Auth from '../../../utils/clientAuth'
 import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button, Spinner } from '@chakra-ui/react';
 import { AiOutlineHeart } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
@@ -16,7 +14,6 @@ import { ADD_POST_COMMENT } from '../../api/mutations';
 import ImageCarousel from '../../../components/imageCarousel'
 
 const Post = ({ data: { data: { findSinglePost } } }: any) => {
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [commentBody, setCommentBody] = useState('')
 
     const {
@@ -52,14 +49,6 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
             })
         }
     })
-
-    useEffect(() => {
-        if (Auth.loggedIn()) {
-            return setLoggedIn(true)
-        }
-        setLoggedIn(false)
-        Router.push('/login')
-    }, [setLoggedIn])
 
     const handleCommentInputChange = (e: any) => {
         const commentBody = e.target.value

@@ -1,13 +1,9 @@
 import User from "../models/User"
 import Post from "../models/Post"
 import Outfit from '../models/Outfit'
-import { Types } from 'mongoose'
-
 import { UserInputError, AuthenticationError } from "apollo-server-micro"
-
 import connectDb from "../lib/connection"
-
-import { signToken } from "../utils/serverAuth"
+import { setLoginSession, getLoginSession } from '../utils/auth'
 
 type UserInput = {
     username: string
@@ -19,6 +15,23 @@ type UserInput = {
 
 export const resolvers = {
     Query: {
+        viewer: async (
+            parent: undefined,
+            args: undefined,
+            context: any
+        ) => {
+            try {
+                const session = await getLoginSession(context.req)
+
+                if (session) {
+                    return await User.findOne({ _id: session._id })
+                }
+            } catch (error) {
+                throw new AuthenticationError(
+                    'Authentication token is invalid, please log in'
+                )
+            }
+        },
         findMe: async (
             parent: undefined,
             args: undefined,
@@ -150,11 +163,11 @@ export const resolvers = {
                             {
                                 path: 'comments',
                                 populate: ['userId']
-                            }, 
+                            },
                             'outfit'
                         ])
                     if (!post) throw new UserInputError(`Post not found.`)
-                    post.comments = post.comments.sort((a:any,b:any) => b.createdAt-a.createdAt)
+                    post.comments = post.comments.sort((a: any, b: any) => b.createdAt - a.createdAt)
                     return post
                 }
             } catch (error) {
@@ -168,7 +181,6 @@ export const resolvers = {
         createUser: async (
             parent: undefined,
             { email, username, firstName, lastName, password }: UserInput,
-            context: any
         ) => {
             try {
                 await connectDb()
@@ -179,8 +191,7 @@ export const resolvers = {
                     lastName,
                     password
                 })
-                const token = signToken(user)
-                return { user, token }
+                return { user }
             } catch (error) {
                 console.log(error)
                 return error
@@ -209,7 +220,7 @@ export const resolvers = {
             const user = await User.findOne({ username });
 
             if (!user) {
-                throw new AuthenticationError('Incorrect credentials');
+                throw new AuthenticationError('Username not found.');
             }
 
             const correctPw = await user.isCorrectPassword(password);
@@ -218,8 +229,9 @@ export const resolvers = {
                 throw new AuthenticationError('Incorrect credentials');
             }
 
-            const token = signToken(user);
-            return { token, user };
+            await setLoginSession(context.res, user)
+
+            return { user }
         },
         createPost: async (
             parent: undefined,
@@ -300,7 +312,7 @@ export const resolvers = {
                         'outfit'
                     ])
                 if (!updatedPost) throw new UserInputError(`Post not found.`)
-                updatedPost.comments = updatedPost.comments.sort((a:any,b:any) => b.createdAt-a.createdAt)
+                updatedPost.comments = updatedPost.comments.sort((a: any, b: any) => b.createdAt - a.createdAt)
                 return updatedPost
             } catch (error) {
                 console.log(error)

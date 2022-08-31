@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Router from "next/router";
 import {
     Avatar,
@@ -23,8 +23,6 @@ import {
     Input,
     Tooltip
 } from "@chakra-ui/react";
-
-import Auth from '../utils/clientAuth'
 import {
     AiOutlineMenu,
     AiOutlineInbox,
@@ -33,10 +31,7 @@ import {
 } from "react-icons/ai";
 import { TbShirt } from "react-icons/tb"
 import { useAtom } from "jotai";
-import { loggedInAtom } from "../utils/globalAtoms";
-import { userProfileAtom } from "../utils/globalAtoms";
-import { useQuery } from "@apollo/client";
-import { FIND_USER } from "../pages/api/queries";
+import { userProfileAtom } from "../lib/globalAtoms";
 
 // https://choc-ui.com/docs/packages/autocomplete\
 // https://stackoverflow.com/questions/65460085/open-a-page-in-a-next-js-website-as-an-overlay
@@ -45,22 +40,14 @@ import { FIND_USER } from "../pages/api/queries";
 const Navbar = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [userProfile, setUserProfile] = useAtom(userProfileAtom)
     // search abr stuff here
     // const { loading, error, data } = useQuery(FIND_ALL_USERS)
 
+    // have to do a usemutation
     const handleLogout = () => {
-        Auth.logout()
-        setLoggedIn(false)
-        Router.push('/login')
+        
     }
-
-    useEffect(() => {
-        // @ts-ignore
-        const { data } = Auth.getProfile()
-        setUserProfile(data)
-    }, [setUserProfile])
 
     return (
         <chakra.header

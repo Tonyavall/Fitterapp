@@ -3,14 +3,13 @@ import { SyntheticEvent } from "react";
 import { useState } from "react";
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../api/mutations'
-import Auth from '../../utils/clientAuth';
-import { loggedInAtom, userProfileAtom } from '../../utils/globalAtoms'
+import { userProfileAtom } from '../../lib/globalAtoms'
 import { useAtom, useSetAtom } from 'jotai'
+import Router from "next/router";
 
 const Login = () => {
     const [formState, setFormState] = useState({ username: '', password: '' });
     const [login, { error }] = useMutation(LOGIN);
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const setUserProfile = useSetAtom(userProfileAtom)
 
     const handleFormSubmit = async (e: SyntheticEvent) => {
@@ -18,14 +17,11 @@ const Login = () => {
         if (!formState.username || !formState.password) return
 
         try {
-            const mutationResponse = await login({
+            const { data } = await login({
                 variables: { username: formState.username, password: formState.password },
             });
             // NEED TO HANDLE ERROR MESSAGES FROM BACKEND HERE / WRAP W TRY CATCH
-            const token = mutationResponse.data.login.token;
-            Auth.login(token);
-            // setUserProfile(token)
-            setLoggedIn(true)
+            if (data.login.user) Router.push('/')
         } catch (e) {
             console.log(e);
         }
@@ -42,10 +38,10 @@ const Login = () => {
     };
 
     return (
-        <LoginForm 
-        handleChange={handleChange} 
-        error={error}
-        handleFormSubmit={handleFormSubmit}
+        <LoginForm
+            handleChange={handleChange}
+            error={error}
+            handleFormSubmit={handleFormSubmit}
         />
     )
 }

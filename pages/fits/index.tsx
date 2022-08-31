@@ -1,9 +1,6 @@
 import Layout from "../../components/layouts/article"
-import { useAtom } from 'jotai'
-import { loggedInAtom } from '../../utils/globalAtoms'
 import { useEffect, useState } from "react"
 import Router from "next/router"
-import Auth from "../../utils/clientAuth"
 import {
     Box,
     Heading,
@@ -21,7 +18,6 @@ import FitsRadioGroup from "../../components/fitsRadioGroups"
 import { checkProps } from "../../utils/functions"
 
 const Fits = () => {
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const [selectedFits, setSelectedFits] = useState({ top: null, bottom: null, footwear: null })
     const toast = useToast()
     const { data, loading } = useQuery(FIND_FITS);
@@ -31,14 +27,6 @@ const Fits = () => {
         footwear = [],
         tops = []
     } = data?.findMe || {}
-
-    useEffect(() => {
-        if (Auth.loggedIn()) {
-            return setLoggedIn(true)
-        }
-        setLoggedIn(false)
-        Router.push('/login')
-    }, [setLoggedIn])
 
     const [
         addOutfit,

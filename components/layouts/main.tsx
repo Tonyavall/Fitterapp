@@ -2,11 +2,7 @@ import Navbar from '../navbar'
 import { Box } from '@chakra-ui/react'
 import Head from 'next/head'
 import React from 'react'
-import { useAtom } from 'jotai'
-import { loggedInAtom } from '../../utils/globalAtoms'
 const Main = ({ children }: React.PropsWithChildren) => {
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
-
     return (
         <Box>
             <Head>
@@ -15,14 +11,12 @@ const Main = ({ children }: React.PropsWithChildren) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Box as="main" 
+            <Box as="main"
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
             >
-                {loggedIn ?
-                    <Navbar /> : null
-                }
+                <Navbar />
                 {children}
             </Box>
         </Box>

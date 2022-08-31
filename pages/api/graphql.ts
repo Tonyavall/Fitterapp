@@ -1,4 +1,3 @@
-import { authMiddleware } from '../../utils/serverAuth'
 import { ApolloServer } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { typeDefs } from '../../apollo/typeDefs';
@@ -10,7 +9,10 @@ const Cors = cors()
 const server = new ApolloServer({
     resolvers,
     typeDefs,
-    context: authMiddleware,
+    // returning the context with each request
+    context(context) {
+        return context
+    },
     introspection: true,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground({})]
 })

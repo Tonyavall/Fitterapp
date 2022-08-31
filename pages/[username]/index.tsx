@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
 import Layout from '../../components/layouts/article'
-import { loggedInAtom } from '../../utils/globalAtoms'
-import { useAtom } from 'jotai'
 import Router from 'next/router';
-import Auth from '../../utils/clientAuth'
 import { FIND_USER } from '../api/queries';
 import client from '../../apollo/client'
 import { GetServerSideProps } from 'next'
@@ -31,8 +28,6 @@ interface UserData {
 }
 
 const User = ({ data: { data: { findUser } } }: any) => {
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
-
     const {
         bio = '',
         firstName = 'John',
@@ -49,14 +44,6 @@ const User = ({ data: { data: { findUser } } }: any) => {
         const postId = e.target.dataset.postid
         Router.push(`${username}/post/${postId}`)
     }
-
-    useEffect(() => {
-        if (Auth.loggedIn()) {
-            return setLoggedIn(true)
-        }
-        setLoggedIn(false)
-        Router.push('/login')
-    }, [setLoggedIn])
 
     return (
         <Layout>

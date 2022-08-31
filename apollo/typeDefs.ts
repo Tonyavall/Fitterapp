@@ -83,11 +83,6 @@ export const typeDefs = gql`
     createdAt: String
   }
 
-  type Auth {
-    token: ID
-    user: User
-  }
-
   type Query {
     findMe: User
     findUser(username: String!): User
@@ -96,13 +91,14 @@ export const typeDefs = gql`
     grabRandomTwelvePosts: [Post]
     findSinglePost(postId: ID!): Post
     findPostComments(postId: ID!): Post
+    viewer: User
   }
 
   type Mutation {
     # USER
-    createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!): Auth
+    createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!): User
     updateUser(email: String!, username: String!, firstName: String!, lastName: String!, password: String!): User 
-    login(username: String!, password: String!): Auth
+    login(username: String!, password: String!): User
     addBio(bioBody: String!): User
     addProfilePicture(image: String!): User
     # SOCIAL
