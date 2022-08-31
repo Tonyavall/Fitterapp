@@ -137,11 +137,11 @@ const Outfits = () => {
                                     outfits.map((outfit: any) => {
                                         return (
                                             <OutfitCarousel
-                                                key={outfit._id}
-                                                _id={outfit._id}
-                                                top={outfit.top}
-                                                bottom={outfit.bottom}
-                                                footwear={outfit.footwear}
+                                                key={outfit?._id}
+                                                _id={outfit?._id}
+                                                topImage={outfit?.top.image}
+                                                bottomImage={outfit?.bottom.image}
+                                                footwearImage={outfit?.footwear?.image}
                                                 {...getRadioProps({ value: JSON.stringify(outfit) })}
                                             />
                                         )

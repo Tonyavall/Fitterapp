@@ -13,6 +13,7 @@ import client from '../../../apollo/client';
 import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
+import ImageCarousel from '../../../components/imageCarousel'
 
 const Post = ({ data: { data: { findSinglePost } } }: any) => {
     const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
@@ -35,15 +36,16 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
 
     const [addPostComment] = useMutation(ADD_POST_COMMENT, {
         update(cache, { data: { addPostComment: { comments } } }) {
-            const data = cache.readQuery({
-                query: FIND_POST_COMMENTS
+            const { findPostComments }: any = cache.readQuery({
+                query: FIND_POST_COMMENTS,
+                variables: { postId: _id }
             });
-            console.log(data)
-            //manipulate fitsQueryResult, writeQuery
+            console.log(comments)
             cache.writeQuery({
                 query: FIND_POST_COMMENTS,
                 data: {
                     findPostComments: {
+                        ...findPostComments,
                         comments: comments
                     }
                 }
@@ -81,12 +83,16 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                 mt="1.4em"
                 flexWrap="wrap"
             >
-                <Image
-                    src={postImage}
-                    alt="dnaiwdhjoa"
-                    objectFit="cover"
-                    w="600px"
-                    h="450px"
+                <ImageCarousel
+                    width={"600px"}
+                    height={"450px"}
+                    _id={_id}
+                    postImage={postImage}
+                    topImage={outfit?.top?.image}
+                    bottomImage={outfit?.bottom?.image}
+                    footwearImage={outfit?.footwear?.image}
+                    autoplay={false}
+                    radio={false}
                 />
 
                 {/* ENTIRE COMMENT SECTION CONTAINER */}
@@ -254,7 +260,17 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                         ml="1.15em"
                         mt="6px"
                     >
-                        <Input placeholder='Add a comment' fontSize="sm" w="250px" h="35px" border="none" onChange={handleCommentInputChange} value={commentBody} />
+                        <Input
+                            placeholder='Add a comment'
+                            fontSize="sm"
+                            w="250px" h="35px"
+                            border="none"
+                            onChange={handleCommentInputChange}
+                            value={commentBody} 
+                            onKeyDown={(e)=> {
+                                if (e.key === 'Enter') handleCommentAddition()
+                            }}
+                        />
                         {/* @ts-ignore */}
                         <Button
                             h="35px"

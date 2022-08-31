@@ -57,6 +57,7 @@ query($postId: ID!) {
 export const FIND_POST_COMMENTS = gql`
 query($postId: ID!) {
   findPostComments(postId: $postId) {
+    _id
     comments {
       _id
       commentBody

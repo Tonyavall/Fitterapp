@@ -19,66 +19,85 @@ import { DELETE_OUTFIT } from '../pages/api/mutations';
 import { useMutation } from '@apollo/client';
 import { FIND_FITS } from '../pages/api/queries';
 
-const settings = {
-    dots: true,
-    arrows: false,
-    fade: true,
-    infinite: true,
-    autoplay: true,
-    speed: 500,
-    autoplaySpeed: 5000,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-};
+// WARNING------------------
+// I USE THIS FOR BOTH THE OUTFITS CAROUSELS AND POST CAROUSELS
 
-// These are the normalized box sizes for profile, outfit carousel
+// These are the normalized box sizes for profile/outfit carousel
 const box = [105, 125, 206, 300, 300]
 
 const ImageCarousel = (
-    { _id, top = {}, bottom = {}, footwear = {}, postImage, width = box, height = box, ...radioProps }: any
+    {
+        _id,
+        topImage,
+        bottomImage,
+        footwearImage = null,
+        postImage,
+        width = box,
+        height = box,
+        autoplay = true,
+        radio = true,
+        // needs to be at the bottom
+        ...radioProps
+    }: any
 ) => {
-
     const [slider, setSlider] = useState<Slider | null>(null);
     const topSide = useBreakpointValue({ base: '90%', md: '50%' });
     const side = useBreakpointValue({ base: '30%', md: '40px' });
     const { state, getInputProps, getCheckboxProps, htmlProps, getLabelProps } =
         useRadio(radioProps)
 
-    const [deleteOutfit] = useMutation(DELETE_OUTFIT, {
-        update(cache, { data: { deleteOutfit: { outfits } } }) {
-            //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
-                query: FIND_FITS
-            })
-            cache.writeQuery({
-                query: FIND_FITS,
-                data: {
-                    findMe: {
-                        ...findMe,
-                        outfits: outfits,
-                    }
-                }
-            })
-        }
-    })
+    const settings = {
+        dots: true,
+        arrows: false,
+        fade: true,
+        infinite: true,
+        autoplay: autoplay,
+        speed: 500,
+        autoplaySpeed: 5000,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+    };
 
-    const handleOutfitDelete = (e: any) => {
-        const outfitId = e.currentTarget.dataset.id
-        deleteOutfit({ variables: { outfitId } })
-    }
+    // Handle outfit deletion at the top level
+    // const [deleteOutfit] = useMutation(DELETE_OUTFIT, {
+    //     update(cache, { data: { deleteOutfit: { outfits } } }) {
+    //         //retrieve cached query value from memory
+    //         const { findMe }: any = cache.readQuery({
+    //             query: FIND_FITS
+    //         })
+    //         cache.writeQuery({
+    //             query: FIND_FITS,
+    //             data: {
+    //                 findMe: {
+    //                     ...findMe,
+    //                     outfits: outfits,
+    //                 }
+    //             }
+    //         })
+    //     }
+    // })
+
+    // const handleOutfitDelete = (e: any) => {
+    //     const outfitId = e.currentTarget.dataset.id
+    //     deleteOutfit({ variables: { outfitId } })
+    // }
 
     return (
         <chakra.label {...htmlProps} cursor='pointer'>
-            <input {...getInputProps({})} hidden />
+            {radio &&
+                <input 
+                {...getInputProps({})} 
+                hidden/>
+            }
             <Box
                 key={_id + 10724}
-                h={width}
-                w={height}
+                h={height}
+                w={width}
                 cursor="pointer"
                 overflow={'hidden'}
                 position="relative"
                 {...getCheckboxProps()}
-                opacity={state.isChecked ? '50%' : '100%'}
+                opacity={state.isChecked ? '70%' : '100%'}
                 {...getLabelProps()}
             >
                 <link
@@ -93,7 +112,7 @@ const ImageCarousel = (
                     href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
                 />
                 {/* DELETE MENU */}
-                <Menu placement="bottom-start">
+                {/* <Menu placement="bottom-start">
                     <MenuButton
                         border="none"
                         as={IconButton}
@@ -114,7 +133,7 @@ const ImageCarousel = (
                             Delete
                         </MenuItem>
                     </MenuList>
-                </Menu>
+                </Menu> */}
                 {/* Left Icon */}
                 <IconButton
                     aria-label="left-arrow"
@@ -147,6 +166,8 @@ const ImageCarousel = (
                 <Slider {...settings} ref={(slider: any) => setSlider(slider)}>
                     {postImage ?
                         <Image
+                            h={height}
+                            w={width}
                             key={_id + 512}
                             position="relative"
                             alt="Picture of top"
@@ -157,26 +178,32 @@ const ImageCarousel = (
                         null
                     }
                     <Image
+                        h={height}
+                        w={width}
                         key={_id + 512}
                         position="relative"
                         alt="Picture of top"
                         objectFit="cover"
-                        src={top.image}
+                        src={topImage}
                     />
                     <Image
+                        h={height}
+                        w={width}
                         key={_id + 512}
                         position="relative"
                         alt="Picture of bottom"
                         objectFit="cover"
-                        src={bottom.image}
+                        src={bottomImage}
                     />
-                    {footwear ?
+                    {footwearImage ?
                         <Image
+                            h={height}
+                            w={width}
                             key={_id + 512}
                             position="relative"
                             alt="Picture of footwear"
                             objectFit="cover"
-                            src={footwear.image}
+                            src={footwearImage}
                         />
                         :
                         null

@@ -20,7 +20,6 @@ const commentSchema = new Schema<comment>(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: (date: Date) => date.toString().match(/[A-Za-z]{3}\s\d{2}\s\d{4}/)?.[0]
         }
     },
     {

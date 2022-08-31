@@ -112,9 +112,9 @@ export const typeDefs = gql`
     createPost(outfitId: ID!, postImage: String!, description: String): Post
     likePost(postId: ID!): Post
     unlikePost(postId: ID!): Post
-    deletePost(postId: ID! postOwnerId: ID!) : Post
+    deletePost(postId: ID! postOwnerId: ID!): Post
     # COMMENTS
-    addPostComment(postId: ID!, commentBody: String!) : Post
+    addPostComment(postId: ID!, commentBody: String!): Post
     deletePostComment(commentId: ID!, postId: ID!, postOwnerId: ID!, commentOwnerId: ID!) : Post
     # OUTFIT
     addTop(image: String!): User
@@ -133,7 +133,7 @@ export const typeDefs = gql`
 // 6304534f398f0aad018769a5 top
 // bottom 6304534f398f0aad018769a5
 // footwear 6304534f398f0aad018769a5
-// 630465aa398f0aad018769c0 outfit 
+// 630465aa398f0aad018769c0 outfit
 // 630467bbd727656bdb22c33d postid
 
 // 63006e91339dd7cfb9ab73d0

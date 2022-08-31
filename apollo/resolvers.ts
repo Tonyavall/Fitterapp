@@ -145,12 +145,16 @@ export const resolvers = {
                 if (context.user) {
                     const [post] = await Post
                         .find({ _id: postId })
-                        .populate(['userId', {
-                            path: 'comments',
-                            populate: ['userId']
-                        }, 'outfit'])
-
+                        .populate([
+                            'userId',
+                            {
+                                path: 'comments',
+                                populate: ['userId']
+                            }, 
+                            'outfit'
+                        ])
                     if (!post) throw new UserInputError(`Post not found.`)
+                    post.comments = post.comments.sort((a:any,b:any) => b.createdAt-a.createdAt)
                     return post
                 }
             } catch (error) {
@@ -231,7 +235,6 @@ export const resolvers = {
                     outfit: outfitId,
                     description: description,
                 })
-                console.log(createdPost)
                 await User.findOneAndUpdate(
                     { _id: userId },
                     { $push: { posts: createdPost._id } },
@@ -285,11 +288,19 @@ export const resolvers = {
                         { $push: { comments: { commentBody, userId } } },
                         { runValidators: true, new: true }
                     )
-                    .populate(['userId', {
-                        path: 'comments',
-                        populate: ['userId']
-                    }, 'outfit'])
+                    .populate([
+                        'userId',
+                        {
+                            path: 'comments',
+                            populate: {
+                                path: 'userId',
+                                populate: ['userImage', 'username']
+                            }
+                        },
+                        'outfit'
+                    ])
                 if (!updatedPost) throw new UserInputError(`Post not found.`)
+                updatedPost.comments = updatedPost.comments.sort((a:any,b:any) => b.createdAt-a.createdAt)
                 return updatedPost
             } catch (error) {
                 console.log(error)
