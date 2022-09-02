@@ -5,9 +5,9 @@ import { resolvers } from '../../apollo/resolvers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import cors from 'micro-cors'
 
-console.log("VERCEL URL", process.env.VERCEL_URL)
+const isProd = process.env.NODE_ENV === 'production'
 const Cors = cors({
-    origin: process.env.VERCEL_URL || 'http://localhost:3000/api/graphql',
+    origin: isProd ? 'https://fitterapp.vercel.app/' : 'http://localhost:3000/api/graphql',
     allowCredentials: true,
 })
 
