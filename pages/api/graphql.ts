@@ -4,9 +4,11 @@ import { typeDefs } from '../../apollo/typeDefs';
 import { resolvers } from '../../apollo/resolvers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import cors from 'micro-cors'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const Cors = cors({
-    origin: 'fitterapp-mi7iwmuw1-tonyavall.vercel.app',
+    origin: process.env.VERCEL_URL || 'http://localhost:3000/api/graphql',
     allowCredentials: true,
 })
 
