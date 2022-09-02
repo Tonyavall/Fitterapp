@@ -27,7 +27,10 @@ export function removeTokenCookie(res: NextApiResponse) {
 }
 
 export function getTokenCookie(req: NextApiRequest) {
-    const token = req.headers.authorization
-        
+    // taking bearer out
+    let token = req?.headers?.authorization?.split(' ')[1]
+
+    if (!token) token = req.headers.cookie?.split('=')[1]
+
     return token
 }

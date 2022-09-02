@@ -66,7 +66,7 @@ export const resolvers = {
             try {
                 await connectDb()
                 const { data } = await getLoginSession(context.req) as JwtPayload
-
+                console.log(data)
                 if (data) {
                     const user = await User
                         .findById(data._id)
@@ -98,6 +98,26 @@ export const resolvers = {
                     if (!user) {
                         throw new UserInputError(`Username ${username} was not found.`)
                     }
+                    return user;
+                }
+            } catch (error) {
+                return error
+            }
+            throw new AuthenticationError('You have to be logged in!')
+        },
+        findFits: async (
+            parent: undefined,
+            args: undefined,
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
+                    const user = await User
+                        .findById(data._id)
+                        .populate('outfits')
                     return user;
                 }
             } catch (error) {
@@ -239,7 +259,8 @@ export const resolvers = {
                     lastName,
                     password
                 })
-                return { user }
+                console.log(user)
+                return user
             } catch (error) {
                 console.log(error)
                 return error
@@ -424,7 +445,6 @@ export const resolvers = {
             try {
                 await connectDb()
                 const { data } = await getLoginSession(context.req) as JwtPayload
-
                 const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
@@ -433,6 +453,7 @@ export const resolvers = {
                     { runValidators: true, new: true }
                 )
                 if (!updatedUser) return { status: 404, message: 'User not found.' }
+
                 return updatedUser
             } catch (error) {
                 console.log(error)

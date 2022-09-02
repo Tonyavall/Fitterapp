@@ -16,17 +16,20 @@ import { useMutation, useQuery } from "@apollo/client"
 import { ADD_OUTFIT } from "../api/mutations"
 import FitsRadioGroup from "../../components/fitsRadioGroups"
 import { checkProps } from "../../utils/functions"
+import { GetServerSideProps } from "next"
+import createClient from '../../apollo/client'
+import { IS_LOGGED_IN } from "../api/queries"
 
 const Fits = () => {
     const [selectedFits, setSelectedFits] = useState({ top: null, bottom: null, footwear: null })
     const toast = useToast()
     const { data, loading } = useQuery(FIND_FITS);
-    
+
     const {
         bottoms = [],
         footwear = [],
         tops = []
-    } = data?.findMe || {}
+    } = data?.findFits || {}
 
     const [
         addOutfit,
@@ -34,14 +37,14 @@ const Fits = () => {
     ] = useMutation(ADD_OUTFIT, {
         update(cache, { data: { addOutfit: { outfits } } }) {
             //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
+            const { findFits }: any = cache.readQuery({
                 query: FIND_FITS
             })
             cache.writeQuery({
                 query: FIND_FITS,
                 data: {
-                    findMe: {
-                        ...findMe,
+                    findFits: {
+                        ...findFits,
                         outfits: outfits,
                     }
                 }
@@ -93,7 +96,7 @@ const Fits = () => {
                 flexDirection="column"
                 alignItems="start"
             >
-                <Box 
+                <Box
                     w="full"
                     display="flex"
                     flexDirection="column"
@@ -285,6 +288,29 @@ const Fits = () => {
             </Box>
         </Layout>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const client = createClient(context)
+
+    try {
+        await client.query<any, any>({
+            query: IS_LOGGED_IN,
+        })
+
+        return {
+            props: {
+                initialApolloState: client.cache.extract()
+            }
+        }
+    } catch (error) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: true
+            }
+        }
+    }
 }
 
 export default Fits

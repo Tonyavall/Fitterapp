@@ -12,16 +12,18 @@ import {
     Text,
     useColorModeValue,
 } from '@chakra-ui/react';
+import Router from 'next/router';
 
 const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
     
     return (
         <Flex
-            h={'100vh'}
+            h={'92vh'}
+            w="375px"
             display="flex"
             alignItems="center"
         >
-            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+            <Stack spacing={8} mx={'auto'} maxW={'2xl'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'}>Fitter</Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
@@ -33,26 +35,21 @@ const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
                     bg={useColorModeValue('white', 'gray.700')}
                     boxShadow={'lg'}
                     p={8}>
-                    <Stack spacing={4}>
+                    <Stack spacing={4} w="full">
                         <FormControl id="username" isRequired>
-                            <FormLabel>Username</FormLabel>
-                            <Input type="username" onChange={handleChange} data-input="username"/>
+                            <FormLabel fontSize="sm">Username</FormLabel>
+                            <Input type="username" onChange={handleChange} data-input="username" size="sm" w="275px"/>
 
                         </FormControl>
                         <FormControl id="password" isRequired>
-                            <FormLabel>Password</FormLabel>
-                            <Input type="password" onChange={handleChange} data-input="password"/>
+                            <FormLabel fontSize="sm">Password</FormLabel>
+                            <Input type="password" onChange={handleChange} data-input="password" size="sm"/>
                         </FormControl>
                         <Stack spacing={10}>
-                            <Stack
-                                direction={{ base: 'column', sm: 'row' }}
-                                align={'start'}
-                                justify={'space-between'}>
-                                <Checkbox>Remember me</Checkbox>
-                                <Link color={'blue.400'}>Forgot password?</Link>
-                            </Stack>
+                            <Text fontSize="sm">{"Don't have an account? "}<Link color="twitter.500" onClick={()=> Router.push('/signup')}>Signup</Link></Text>
                             <Button
                                 isLoading={loading ? true : false}
+                                size="sm"
                                 loadingText='Logging in...'
                                 bg={'blue.400'}
                                 color={'white'}

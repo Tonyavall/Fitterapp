@@ -94,6 +94,7 @@ export const typeDefs = gql`
     findPostComments(postId: ID!): Post
     isLoggedIn: Boolean
     loginRedirect: Boolean
+    findFits: User
   }
 
   type Mutation {

@@ -41,7 +41,7 @@ export async function getLoginSession(req: NextApiRequest) {
 
     try {
         // splitting token to not include bearer
-        const data = jwt.verify(token?.split(' ')[1], secret, { maxAge: expiration });
+        const data = jwt.verify(token, secret, { maxAge: expiration });
 
         return data
     } catch (error) {

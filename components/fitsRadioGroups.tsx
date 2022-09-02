@@ -34,15 +34,15 @@ function FitsRadio(props: any) {
     const [deleteTop] = useMutation(DELETE_TOP, {
         update(cache, { data: { deleteTop: { tops } } }) {
             //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
+            const { findFits }: any = cache.readQuery({
                 query: FIND_FITS
             });
             //manipulate fitsQueryResult, writeQuery
             cache.writeQuery({
                 query: FIND_FITS,
                 data: {
-                    findMe: {
-                        ...findMe,
+                    findFits: {
+                        ...findFits,
                         tops: tops,
                     }
                 }
@@ -52,15 +52,15 @@ function FitsRadio(props: any) {
     const [deleteBottom] = useMutation(DELETE_BOTTOM, {
         update(cache, { data: { deleteBottom: { bottoms } } }) {
             //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
+            const { findFits }: any = cache.readQuery({
                 query: FIND_FITS
             });
             //manipulate fitsQueryResult, writeQuery
             cache.writeQuery({
                 query: FIND_FITS,
                 data: {
-                    findMe: {
-                        ...findMe,
+                    findFits: {
+                        ...findFits,
                         bottoms: bottoms,
                     }
                 }
@@ -71,15 +71,15 @@ function FitsRadio(props: any) {
     const [deleteFootwear] = useMutation(DELETE_FOOTWEAR, {
         update(cache, { data: { deleteFootwear: { footwear } } }) {
             //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
+            const { findFits }: any = cache.readQuery({
                 query: FIND_FITS
             });
             //manipulate fitsQueryResult, writeQuery
             cache.writeQuery({
                 query: FIND_FITS,
                 data: {
-                    findMe: {
-                        ...findMe,
+                    findFits: {
+                        ...findFits,
                         footwear: footwear,
                     }
                 }

@@ -86,8 +86,8 @@ query($postId: ID!) {
 `
 
 export const FIND_FITS = gql`
-query {
-  findMe {
+query findFits{
+  findFits {
 		outfits {
       _id
       top {

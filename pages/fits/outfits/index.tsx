@@ -11,11 +11,12 @@ import {
     useRadioGroup,
     Spinner
 } from "@chakra-ui/react"
-import { FIND_FITS } from "../../api/queries"
 import OutfitCarousel from "../../../components/imageCarousel"
 import { useQuery } from "@apollo/client"
-import AddPostModal from "../../../components/postOutfitModal"
 import PostOutfitModal from "../../../components/postOutfitModal"
+import { GetServerSideProps } from "next"
+import createClient from '../../../apollo/client'
+import { IS_LOGGED_IN, FIND_FITS } from "../../api/queries"
 
 interface outfitObject {
     top: {
@@ -39,7 +40,7 @@ const Outfits = () => {
 
     const {
         outfits = []
-    } = data?.findMe || {}
+    } = data?.findFits || {}
 
     const handleOutfitChange = (value: any) => {
         const currentOutfit = JSON.parse(value)
@@ -148,6 +149,29 @@ const Outfits = () => {
             </Box>
         </Layout>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const client = createClient(context)
+
+    try {
+        await client.query<any, any>({
+            query: IS_LOGGED_IN,
+        })
+
+        return {
+            props: {
+                initialApolloState: client.cache.extract()
+            }
+        }
+    } catch (error) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: true
+            }
+        }
+    }
 }
 
 export default Outfits

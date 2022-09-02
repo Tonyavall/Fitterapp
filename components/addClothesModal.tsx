@@ -59,15 +59,15 @@ function AddClothesModal() {
     const [addTop] = useMutation(ADD_TOP, {
         update(cache, { data: { addTop: { tops } } }) {
             //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
+            const { findFits }: any = cache.readQuery({
                 query: FIND_FITS
             });
             //manipulate fitsQueryResult, writeQuery
             cache.writeQuery({
                 query: FIND_FITS,
                 data: {
-                    findMe: {
-                        ...findMe,
+                    findFits: {
+                        ...findFits,
                         tops: tops,
                     }
                 }
@@ -78,15 +78,15 @@ function AddClothesModal() {
     const [addBottom] = useMutation(ADD_BOTTOM, {
         update(cache, { data: { addBottom: { bottoms } } }) {
             //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
+            const { findFits }: any = cache.readQuery({
                 query: FIND_FITS
             });
             //manipulate fitsQueryResult, writeQuery
             cache.writeQuery({
                 query: FIND_FITS,
                 data: {
-                    findMe: {
-                        ...findMe,
+                    findFits: {
+                        ...findFits,
                         bottoms: bottoms,
                     }
                 }
@@ -97,15 +97,15 @@ function AddClothesModal() {
     const [addFootwear] = useMutation(ADD_FOOTWEAR, {
         update(cache, { data: { addFootwear: { footwear } } }) {
             //retrieve cached query value from memory
-            const { findMe }: any = cache.readQuery({
+            const { findFits }: any = cache.readQuery({
                 query: FIND_FITS
             });
             //manipulate fitsQueryResult, writeQuery
             cache.writeQuery({
                 query: FIND_FITS,
                 data: {
-                    findMe: {
-                        ...findMe,
+                    findFits: {
+                        ...findFits,
                         footwear: footwear,
                     }
                 }

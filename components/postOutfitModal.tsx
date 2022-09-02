@@ -41,8 +41,8 @@ function PostOutfitModal({ outfitId, topImage, bottomImage, footwearImage = null
     const initialRef = useRef(null)
     const finalRef = useRef(null)
     const toast = useToast()
-    // @ts-ignore
-    const { userImage, username } = useAtomValue(userProfileAtom)
+    const userProfile = useAtomValue(userProfileAtom)
+
     const [captionData, setCaptionData] = useState('')
     const [createPost, { error }] = useMutation(CREATE_POST)
     // tab index starts at 0
@@ -262,12 +262,12 @@ function PostOutfitModal({ outfitId, topImage, bottomImage, footwearImage = null
                                                 flexDirection="row"
                                                 alignItems="center"
                                             >
-                                                <Avatar src={userImage} size="sm" mr="1em" />
+                                                <Avatar src={userProfile?.userImage} size="sm" mr="1em" />
                                                 <Text
                                                     fontWeight="bold"
                                                     fontSize=".95em"
                                                 >
-                                                    {username}
+                                                    {userProfile?.username}
                                                 </Text>
                                             </Box>
 
