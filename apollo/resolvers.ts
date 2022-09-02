@@ -4,6 +4,8 @@ import Outfit from '../models/Outfit'
 import { UserInputError, AuthenticationError } from "apollo-server-micro"
 import connectDb from "../lib/connection"
 import { setLoginSession, getLoginSession } from '../utils/auth'
+import { JwtPayload } from "jsonwebtoken"
+import { removeTokenCookie } from '../utils/authCookies'
 
 type UserInput = {
     username: string
@@ -15,21 +17,45 @@ type UserInput = {
 
 export const resolvers = {
     Query: {
-        viewer: async (
+        isLoggedIn: async (
             parent: undefined,
             args: undefined,
             context: any
         ) => {
             try {
-                const session = await getLoginSession(context.req)
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
 
-                if (session) {
-                    return await User.findOne({ _id: session._id })
+                if (data) {
+                    return true
                 }
             } catch (error) {
-                throw new AuthenticationError(
-                    'Authentication token is invalid, please log in'
-                )
+                console.log(error)
+                return error
+            }
+            throw new AuthenticationError(
+                'Authentication token is invalid, please log in'
+            )
+        },
+        loginRedirect: async (
+            parent: undefined,
+            args: undefined,
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
+                    throw new AuthenticationError(
+                        'User is already logged in.'
+                    )
+                } else {
+                    return true
+                }
+            } catch (error) {
+                console.log(error)
+                return error
             }
         },
         findMe: async (
@@ -37,11 +63,13 @@ export const resolvers = {
             args: undefined,
             context: any
         ) => {
-            await connectDb()
             try {
-                if (context.user) {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
                     const user = await User
-                        .findById(context.user._id)
+                        .findById(data._id)
                         .populate('outfits')
                     return user;
                 }
@@ -49,16 +77,20 @@ export const resolvers = {
                 console.log(error)
                 return error
             }
-            throw new AuthenticationError('You have to be logged in!')
+            // cant throw auth error because navbar does a query and ofc the user isnt signed
+            // in so this error stops the user from logging in
+            // throw new AuthenticationError('You have to be logged in!')
         },
         findUser: async (
             parent: undefined,
             { username }: { username: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                if (context.user) {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+                console.log(data)
+                if (data) {
                     const [user] = await User
                         .find({ username: username })
                         .populate(['posts'])
@@ -86,11 +118,13 @@ export const resolvers = {
             args: undefined,
             context: any
         ) => {
-            await connectDb()
-            if (context.user) {
-                try {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
                     const { following = [] }: any = await User
-                        .find({ _id: context.user._id })
+                        .find({ _id: data._id })
                         .populate({
                             path: 'following',
                             select: ['_id']
@@ -100,9 +134,9 @@ export const resolvers = {
                         .sort({ createdAt: -1 })
                         .limit(10)
                     return tenPosts;
-                } catch (error) {
-                    return error
                 }
+            } catch (error) {
+                return error
             }
             throw new AuthenticationError('You have to be logged in!')
         },
@@ -112,17 +146,24 @@ export const resolvers = {
             context: any
         ) => {
             // I have no idea if this code even works
-            await connectDb()
-            if (context.user) {
-                const postCount: number = await Post.count()
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
 
-                const grabRandomPost = async () => {
-                    const random = Math.floor(Math.random() * postCount)
-                    return await Post
-                        .findOne()
-                        .skip(random)
+                if (data) {
+                    const postCount: number = await Post.count()
+
+                    const grabRandomPost = async () => {
+                        const random = Math.floor(Math.random() * postCount)
+                        return await Post
+                            .findOne()
+                            .skip(random)
+                    }
+                    return Array.apply(null, Array(12)).map(grabRandomPost)
                 }
-                return Array.apply(null, Array(12)).map(grabRandomPost)
+            } catch (error) {
+                console.log(error)
+                return error
             }
             throw new AuthenticationError('You have to be logged in!')
         },
@@ -132,7 +173,10 @@ export const resolvers = {
             context: any
         ) => {
             try {
-                if (context.user) {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
                     const [post] = await Post
                         .find({ _id: postId })
                         .populate(['userId', {
@@ -155,7 +199,10 @@ export const resolvers = {
             context: any
         ) => {
             try {
-                if (context.user) {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
                     const [post] = await Post
                         .find({ _id: postId })
                         .populate([
@@ -184,6 +231,7 @@ export const resolvers = {
         ) => {
             try {
                 await connectDb()
+
                 const user = await User.create({
                     email,
                     username,
@@ -231,16 +279,26 @@ export const resolvers = {
 
             await setLoginSession(context.res, user)
 
-            return { user }
+            return user
+        },
+        logout: async (
+            parent: undefined,
+            args: undefined,
+            context: any
+        ) => {
+            removeTokenCookie(context.res)
+            return true
         },
         createPost: async (
             parent: undefined,
             { outfitId, postImage, description }: { outfitId: string[], postImage: string, description: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
                 const createdPost = await Post.create({
                     userId: userId,
                     postImage: postImage,
@@ -263,11 +321,13 @@ export const resolvers = {
             { postId, postOwnerId }: { postId: string, postOwnerId: string },
             context: any
         ) => {
-            await connectDb()
             try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
                 // Checking the current user
-                const { isAdmin } = await User.findById(context.user._id)
-                const userId = context.user._id
+                const { isAdmin } = await User.findById(data._id)
+                const userId = data._id
 
                 if (userId === postOwnerId || isAdmin === true) {
                     const deletedPost = await Post.findOneAndDelete({ _id: postId })
@@ -292,7 +352,10 @@ export const resolvers = {
         ) => {
             await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedPost = await Post
                     .findOneAndUpdate(
@@ -325,17 +388,19 @@ export const resolvers = {
                 { commentId: string, postId: string, postOwnerId: string, commentOwnerId: string },
             context: any
         ) => {
-            await connectDb()
             try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
                 // Checking the current user
-                const { isAdmin } = await User.findById(context.user._id)
+                const { isAdmin } = await User.findById(data._id)
                 // Can delete comment only if 
                 // 1. the user is the owner of the post
                 // 2. the user is the owner of the comment
                 // 3. the user is an admin
                 if (
-                    context.user._id === postOwnerId ||
-                    context.user._id === commentOwnerId ||
+                    data._id === postOwnerId ||
+                    data._id === commentOwnerId ||
                     isAdmin === true
                 ) {
                     await Post.findOneAndUpdate(
@@ -356,9 +421,11 @@ export const resolvers = {
             { image }: { image: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
@@ -377,9 +444,11 @@ export const resolvers = {
             { image }: { image: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
@@ -398,9 +467,11 @@ export const resolvers = {
             { image }: { image: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
@@ -419,9 +490,11 @@ export const resolvers = {
             { top, bottom, footwear = null }: { top: string, bottom: string, footwear: string | null },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const createdOutfit = await Outfit.create({
                     userId,
@@ -447,9 +520,11 @@ export const resolvers = {
             { topId }: { topId: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
                     { $pull: { tops: { _id: topId } } },
@@ -467,9 +542,11 @@ export const resolvers = {
             { bottomId }: { bottomId: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
@@ -488,9 +565,11 @@ export const resolvers = {
             { footwearId }: { footwearId: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
@@ -509,14 +588,16 @@ export const resolvers = {
             { outfitId }: { outfitId: string },
             context: any
         ) => {
-            await connectDb()
             try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
                 // HANDLE OUTFIT DELETION HERE
                 const deletedOutfit = await Outfit.findOneAndDelete({ _id: outfitId })
                 if (!deletedOutfit) throw new UserInputError(`Outfit was not found.`)
                 const updatedUser = await User
                     .findOneAndUpdate(
-                        { _id: context.user._id },
+                        { _id: data._id },
                         { $pull: { outfits: outfitId } },
                         { runValidators: true, new: true }
                     )
@@ -532,9 +613,11 @@ export const resolvers = {
             { bioBody }: { bioBody: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },
@@ -553,9 +636,11 @@ export const resolvers = {
             { image }: { image: string },
             context: any
         ) => {
-            await connectDb()
             try {
-                const userId = context.user._id
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const userId = data._id
 
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: userId },

@@ -1,5 +1,11 @@
 import { atom } from "jotai"
 
-const tokenLayout = { email: '', username: '', _id: '', isAdmin: false, userImage: '' }
+type tokenLayout = {
+    email: string
+    username: string
+    _id: string
+    isAdmin: boolean
+    userImage: string
+}
 
-export const userProfileAtom = atom(tokenLayout)
+export const userProfileAtom = atom<tokenLayout | null>(null)

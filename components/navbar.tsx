@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Router from "next/router";
 import {
     Avatar,
@@ -30,9 +30,11 @@ import {
     AiOutlineHome,
 } from "react-icons/ai";
 import { TbShirt } from "react-icons/tb"
-import { useAtom } from "jotai";
+import { LOGOUT } from '../pages/api/mutations'
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+import { FIND_ME } from "../pages/api/queries";
 import { userProfileAtom } from "../lib/globalAtoms";
-
+import { useAtom } from "jotai";
 // https://choc-ui.com/docs/packages/autocomplete\
 // https://stackoverflow.com/questions/65460085/open-a-page-in-a-next-js-website-as-an-overlay
 // SEARCH OPTIONS UP TOP
@@ -40,13 +42,23 @@ import { userProfileAtom } from "../lib/globalAtoms";
 const Navbar = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
+    const client = useApolloClient()
+    const [logout] = useMutation(LOGOUT)
+    const { data: userProfileData } = useQuery(FIND_ME)
     const [userProfile, setUserProfile] = useAtom(userProfileAtom)
-    // search abr stuff here
+
+    useEffect(() => {
+        setUserProfile(userProfileData?.findMe)
+    }, [userProfileData, setUserProfile])
+
+    // search bar stuff here
     // const { loading, error, data } = useQuery(FIND_ALL_USERS)
 
-    // have to do a usemutation
-    const handleLogout = () => {
-        
+    const handleLogout = async () => {
+        await logout()
+        await client.resetStore()
+        setUserProfile(null)
+        Router.push('/login')
     }
 
     return (
@@ -57,6 +69,7 @@ const Navbar = () => {
             shadow="md"
             width="100vw"
             maxW="100%"
+            hidden={!(!!userProfile)}
         >
             <Flex alignItems="center" justifyContent="space-between" mx="auto" maxW={955} height="27.5px">
                 <HStack display="flex" spacing={3} alignItems="center">
@@ -163,7 +176,7 @@ const Navbar = () => {
                             <Avatar
                                 size={'sm'}
                                 objectFit="scale-down"
-                                src={userProfile.userImage}
+                                src={userProfile?.userImage}
                             />
                         </MenuButton>
                         <MenuList alignItems={'center'} zIndex={3}>
@@ -172,16 +185,16 @@ const Navbar = () => {
                                 <Avatar
                                     size={'2xl'}
                                     objectFit="scale-down"
-                                    src={userProfile.userImage}
+                                    src={userProfile?.userImage}
                                 />
                             </Center>
                             <br />
                             <Center>
-                                <p>{userProfile.username}</p>
+                                <p>{userProfile?.username}</p>
                             </Center>
                             <br />
                             <MenuDivider />
-                            <MenuItem as="button" onClick={() => Router.push(`/${userProfile.username}`)}>Profile</MenuItem>
+                            <MenuItem as="button" onClick={() => Router.push(`/${userProfile?.username}`)}>Profile</MenuItem>
                             <MenuItem as="button" onClick={() => Router.push('/settings')}>Account Settings</MenuItem>
                             <MenuItem as="button" onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>

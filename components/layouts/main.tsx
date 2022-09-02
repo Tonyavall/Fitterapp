@@ -1,8 +1,13 @@
 import Navbar from '../navbar'
 import { Box } from '@chakra-ui/react'
 import Head from 'next/head'
-import React from 'react'
+import React from 'react';
+// import {GET_USER} from '../queries'
+import { useAtomValue } from 'jotai'
+import { userProfileAtom } from '../../lib/globalAtoms'
+
 const Main = ({ children }: React.PropsWithChildren) => {
+
     return (
         <Box>
             <Head>

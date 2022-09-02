@@ -27,10 +27,10 @@ import generateUploadURL from "../utils/s3"
 import { CREATE_POST } from "../pages/api/mutations"
 import { useMutation } from "@apollo/client"
 import PostCarousel from "./postOutfitModalCarousel"
-import { userProfileAtom } from "../utils/globalAtoms"
+import { userProfileAtom } from "../lib/globalAtoms"
 import { useAtomValue } from "jotai"
 
-function AddOutfitModal({ outfitId, topImage, bottomImage, footwearImage = null }: any) {
+function PostOutfitModal({ outfitId, topImage, bottomImage, footwearImage = null }: any) {
     // THIS DISCLOSURE IS FOR THE MODAL ITSELF
     const { isOpen, onOpen, onClose } = useDisclosure()
     // THIS DISCLOSURE IS FOR SLIDE OUT TRANSITION ON TAB INDEX 2
@@ -41,6 +41,7 @@ function AddOutfitModal({ outfitId, topImage, bottomImage, footwearImage = null 
     const initialRef = useRef(null)
     const finalRef = useRef(null)
     const toast = useToast()
+    // @ts-ignore
     const { userImage, username } = useAtomValue(userProfileAtom)
     const [captionData, setCaptionData] = useState('')
     const [createPost, { error }] = useMutation(CREATE_POST)
@@ -291,4 +292,4 @@ function AddOutfitModal({ outfitId, topImage, bottomImage, footwearImage = null 
     )
 }
 
-export default AddOutfitModal
+export default PostOutfitModal

@@ -3,47 +3,57 @@ import {
     InMemoryCache,
     createHttpLink,
 } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import { concatPagination } from '@apollo/client/utilities'
+import { setContext } from '@apollo/client/link/context'
+import cookie from 'next-cookies'
+import { useMemo } from 'react'
+import merge from 'deepmerge'
 
-export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__'
+let apolloClient: any
 
-const httpLink = createHttpLink({
-    uri: 'http://localhost:3000/api/graphql',
-});
+const createClient = (context: any, isToken = false) => {
+    // in the initial apollo provider client we just pass the token itself
+    const token = isToken ? context : cookie(context).token
 
-const authLink = setContext((_, { headers }) => {
-    // let token = (typeof window !== 'undefined') ? localStorage.getItem('id_token') : ''
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoidG9ueUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InRvbnlhdmFsbCIsIl9pZCI6IjYzMDA2ZTkxMzM5ZGQ3Y2ZiOWFiNzNkMCIsImlzQWRtaW4iOmZhbHNlLCJ1c2VySW1hZ2UiOiJodHRwczovL3ByM3NvY21lZGFwcC5zMy51cy13ZXN0LTEuYW1hem9uYXdzLmNvbS9JTUdfMjc0MisoMSkuanBnIn0sImlhdCI6MTY2MTkwNzUyMiwiZXhwIjoxNjYxOTkzOTIyfQ.OKnXkd82QhiW4FqTRUph81UP_IgDgIGVe24X-SjydZQ"
-    return {
-        headers: {
-            ...headers,
-            authorization: token ? `Bearer ${token}` : '',
-        },
-    };
-});
+    const httpLink = createHttpLink({
+        uri: 'http://localhost:3000/api/graphql',
+        credentials: 'same-origin',
+    });
 
-const client = new ApolloClient({
-    ssrMode: typeof window === 'undefined',
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache({
-        typePolicies: {
-            Query: {
-                fields: {
-                    allPosts: concatPagination(),
-                },
-            },
-        },
-    }),
-});
+    const authLink = setContext((req, { headers }) => {
+        return {
+            headers: {
+                ...headers,
+                authorization: token ? `Bearer ${token}` : "",
+            }
+        }
+    });
 
-// export function addClientState(client: any, pageProps: any) {
-//     if (pageProps?.props) {
-//         pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract()
-//         console.log(pageProps.props[APOLLO_STATE_PROP_NAME])
-//     }
+    return new ApolloClient({
+        ssrMode: typeof window === 'undefined',
+        link: authLink.concat(httpLink),
+        cache: new InMemoryCache(),
+    });
+}
 
-//     return pageProps
-// }
+export function initializeApollo(context: any, isToken = false, initialState = null) {
+    const _apolloClient = apolloClient ?? createClient(context, isToken)
 
-export default client
+    // Merging existing cache 
+    if (initialState) {
+        const existingCache = _apolloClient.extract()
+        const data = merge(initialState, existingCache)
+        _apolloClient.cache.restore(data)
+    }
+    if (typeof window === 'undefined') return _apolloClient
+    if (!apolloClient) apolloClient = _apolloClient
+
+    return _apolloClient
+}
+
+export function useApollo(context: any, isToken = false, initialState: any) {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const store = useMemo(() => initializeApollo(context, isToken, initialState), [initialState])
+    return store
+}
+
+export default createClient

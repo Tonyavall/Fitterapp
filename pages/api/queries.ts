@@ -18,16 +18,31 @@ export const FIND_USER = gql`
       }
     }
   }
-`;
+`
 
 export const FIND_ME = gql`
   query {
     findMe {
       _id
+      username
       userImage
+      email
+      isAdmin
     }
   }
-`;
+`
+
+export const IS_LOGGED_IN = gql`
+  query isLoggedIn {
+    isLoggedIn
+  }
+`
+
+export const LOGIN_REDIRECT = gql`
+  query loginRedirect {
+    loginRedirect
+  }
+`
 
 export const FIND_POST = gql`
 query($postId: ID!) {

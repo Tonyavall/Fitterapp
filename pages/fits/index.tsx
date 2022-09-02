@@ -21,7 +21,7 @@ const Fits = () => {
     const [selectedFits, setSelectedFits] = useState({ top: null, bottom: null, footwear: null })
     const toast = useToast()
     const { data, loading } = useQuery(FIND_FITS);
-
+    
     const {
         bottoms = [],
         footwear = [],

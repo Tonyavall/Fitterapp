@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/layouts/article'
-import { useAtom } from 'jotai'
-import Router from 'next/router';
 import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button, Spinner } from '@chakra-ui/react';
 import { AiOutlineHeart } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
-import client from '../../../apollo/client';
+import createClient from '../../../apollo/client';
 import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
@@ -37,7 +35,7 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                 query: FIND_POST_COMMENTS,
                 variables: { postId: _id }
             });
-            console.log(comments)
+
             cache.writeQuery({
                 query: FIND_POST_COMMENTS,
                 data: {
@@ -255,8 +253,8 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                             w="250px" h="35px"
                             border="none"
                             onChange={handleCommentInputChange}
-                            value={commentBody} 
-                            onKeyDown={(e)=> {
+                            value={commentBody}
+                            onKeyDown={(e) => {
                                 if (e.key === 'Enter') handleCommentAddition()
                             }}
                         />
@@ -282,6 +280,7 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const postId = context?.params?.post
+    const client = createClient(context)
 
     try {
         const data = await client.query<any, any>({

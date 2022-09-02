@@ -20,6 +20,7 @@ export const typeDefs = gql`
     followingCount: Int
     postCount: Int
     bio: String
+    isAdmin: Boolean
   }
 
   type Top {
@@ -91,7 +92,8 @@ export const typeDefs = gql`
     grabRandomTwelvePosts: [Post]
     findSinglePost(postId: ID!): Post
     findPostComments(postId: ID!): Post
-    viewer: User
+    isLoggedIn: Boolean
+    loginRedirect: Boolean
   }
 
   type Mutation {
@@ -99,6 +101,7 @@ export const typeDefs = gql`
     createUser(username: String!, email: String!, firstName: String!, lastName: String!, password: String!): User
     updateUser(email: String!, username: String!, firstName: String!, lastName: String!, password: String!): User 
     login(username: String!, password: String!): User
+    logout: Boolean
     addBio(bioBody: String!): User
     addProfilePicture(image: String!): User
     # SOCIAL

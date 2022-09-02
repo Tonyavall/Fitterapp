@@ -1,8 +1,6 @@
 import { useAtom } from "jotai"
-import { loggedInAtom } from "../../../utils/globalAtoms"
 import { useEffect, useState } from "react"
 import Router from "next/router"
-import Auth from "../../../utils/clientAuth"
 import Layout from "../../../components/layouts/article"
 import {
     Box,
@@ -36,21 +34,12 @@ interface outfitObject {
 }
 
 const Outfits = () => {
-    const [loggedIn, setLoggedIn] = useAtom(loggedInAtom)
     const { data, loading } = useQuery(FIND_FITS);
     const [selectedOutfit, setSelectedOutfit] = useState<outfitObject|null>(null)
 
     const {
         outfits = []
     } = data?.findMe || {}
-
-    useEffect(() => {
-        if (Auth.loggedIn()) {
-            return setLoggedIn(true)
-        }
-        setLoggedIn(false)
-        Router.push('/login')
-    }, [setLoggedIn])
 
     const handleOutfitChange = (value: any) => {
         const currentOutfit = JSON.parse(value)

@@ -13,14 +13,14 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
-const LoginForm = ({ handleChange, error, handleFormSubmit }: any) => {
+const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
     
     return (
         <Flex
-            minH={'100vh'}
-            align={'center'}
-            justify={'center'}
-            bg={useColorModeValue('gray.50', 'gray.800')}>
+            h={'100vh'}
+            display="flex"
+            alignItems="center"
+        >
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'}>Fitter</Heading>
@@ -52,6 +52,8 @@ const LoginForm = ({ handleChange, error, handleFormSubmit }: any) => {
                                 <Link color={'blue.400'}>Forgot password?</Link>
                             </Stack>
                             <Button
+                                isLoading={loading ? true : false}
+                                loadingText='Logging in...'
                                 bg={'blue.400'}
                                 color={'white'}
                                 _hover={{

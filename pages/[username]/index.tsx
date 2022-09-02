@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Layout from '../../components/layouts/article'
 import Router from 'next/router';
 import { FIND_USER } from '../api/queries';
-import client from '../../apollo/client'
+import createClient from '../../apollo/client'
 import { GetServerSideProps } from 'next'
 import {
     Avatar,
@@ -162,11 +162,12 @@ const User = ({ data: { data: { findUser } } }: any) => {
 // error.networkError.result.errors
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const username = context?.params?.username
+    const client = createClient(context)
 
     try {
         const data = await client.query<UserData, any>({
             query: FIND_USER,
-            variables: { username }
+            variables: { username },
         })
 
         return {

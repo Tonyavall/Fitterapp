@@ -1,9 +1,10 @@
-import Iron from '@hapi/iron'
-import { MAX_AGE, setTokenCookie, getTokenCookie } from './authCookies'
+import jwt from 'jsonwebtoken'
+import { setTokenCookie, getTokenCookie } from './authCookies'
 import { NextApiRequest, NextApiResponse } from 'next'
 import Types from 'mongoose'
 
-const TOKEN_SECRET = 'rejeanissofineong'
+const secret = '178390hdioandowaghd8921y39bndjkasl'
+const expiration = '24h';
 
 interface userSessionPayload {
     _id: Types.ObjectId
@@ -17,35 +18,34 @@ export async function setLoginSession(
     res: NextApiResponse,
     { _id, email, username, isAdmin = false, userImage }: userSessionPayload
 ) {
-    const createdAt = Date.now()
-
-    const tokenPayload = { 
-        _id, 
-        email, 
-        username, 
-        isAdmin, 
-        userImage, 
-        createdAt, 
-        maxAge: MAX_AGE 
+    const tokenPayload = {
+        _id,
+        email,
+        username,
+        isAdmin,
+        userImage,
     }
-    
-    const token = await Iron.seal(tokenPayload, TOKEN_SECRET, Iron.defaults)
+
+    const token = jwt.sign(
+        { data: tokenPayload },
+        secret,
+        { expiresIn: expiration }
+    )
 
     setTokenCookie(res, token)
 }
 
 export async function getLoginSession(req: NextApiRequest) {
     const token = getTokenCookie(req)
+    if (!token) return { data: null }
 
-    if (!token) return
+    try {
+        // splitting token to not include bearer
+        const data = jwt.verify(token?.split(' ')[1], secret, { maxAge: expiration });
 
-    const session = await Iron.unseal(token, TOKEN_SECRET, Iron.defaults)
-    const expiresAt = session.createdAt + session.maxAge * 1000
-
-    // Validate the expiration date of the session
-    if (Date.now() > expiresAt) {
-        throw new Error('Session expired')
+        return data
+    } catch (error) {
+        console.log('Invalid Token')
+        return
     }
-
-    return session
 }
