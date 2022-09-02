@@ -4,8 +4,6 @@ import { typeDefs } from '../../apollo/typeDefs';
 import { resolvers } from '../../apollo/resolvers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import cors from 'micro-cors'
-import dotenv from 'dotenv'
-dotenv.config()
 
 console.log("VERCEL URL", process.env.VERCEL_URL)
 const Cors = cors({

@@ -1,6 +1,4 @@
 import mongoose from 'mongoose'
-import dotenv from 'dotenv'
-dotenv.config()
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Fitter'
 
@@ -10,11 +8,6 @@ if (!MONGODB_URI) {
   )
 }
 
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
 //@ts-ignore
 let cached = global.mongoose
 
