@@ -7,8 +7,6 @@ import { setContext } from '@apollo/client/link/context'
 import cookie from 'next-cookies'
 import { useMemo } from 'react'
 import merge from 'deepmerge'
-import dotenv from 'dotenv'
-dotenv.config()
 
 let apolloClient: any
 const local = process.env.NODE_ENV !== "production"
