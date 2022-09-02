@@ -7,15 +7,18 @@ import { setContext } from '@apollo/client/link/context'
 import cookie from 'next-cookies'
 import { useMemo } from 'react'
 import merge from 'deepmerge'
+import dotenv from 'dotenv'
+dotenv.config()
 
 let apolloClient: any
+const local = process.env.NODE_ENV !== "production"
 
 const createClient = (context: any, isToken = false) => {
     // in the initial apollo provider client we just pass the token itself
     const token = isToken ? context : cookie(context).token
 
     const httpLink = createHttpLink({
-        uri: process.env.VERCEL_URL || 'http://localhost:3000/api/graphql',
+        uri: local ? 'http://localhost:3000/api/graphql' : 'https://fitterapp.vercel.app',
         credentials: 'same-origin',
     });
 
