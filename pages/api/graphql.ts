@@ -7,6 +7,7 @@ import cors from 'micro-cors'
 import dotenv from 'dotenv'
 dotenv.config()
 
+console.log("VERCEL URL", process.env.VERCEL_URL)
 const Cors = cors({
     origin: process.env.VERCEL_URL || 'http://localhost:3000/api/graphql',
     allowCredentials: true,
