@@ -175,7 +175,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     } catch (error) {
         // @ts-ignore
-        if (error.graphQLErrors[0].extensions.code === 'UNAUTHENTICATED') {
+        if (error?.graphQLErrors[0]?.extensions?.code === 'UNAUTHENTICATED') {
             return {
                 redirect: {
                     destination: '/login',

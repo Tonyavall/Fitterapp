@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import cors from 'micro-cors'
 
 const Cors = cors({
-    origin: 'http://localhost:3000/api/graphql',
+    origin: 'fitterapp-mi7iwmuw1-tonyavall.vercel.app',
     allowCredentials: true,
 })
 

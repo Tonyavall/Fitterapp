@@ -15,7 +15,7 @@ const createClient = (context: any, isToken = false) => {
     const token = isToken ? context : cookie(context).token
 
     const httpLink = createHttpLink({
-        uri: 'http://localhost:3000/api/graphql',
+        uri: 'fitterapp-mi7iwmuw1-tonyavall.vercel.app',
         credentials: 'same-origin',
     });
 
