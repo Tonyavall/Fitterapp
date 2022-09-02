@@ -7,7 +7,6 @@ import cors from 'micro-cors'
 
 const isProd = process.env.NODE_ENV === 'production'
 const Cors = cors({
-    origin: isProd ? 'https://fitterapp.vercel.app/' : 'http://localhost:3000/api/graphql',
     allowCredentials: true,
 })
 
