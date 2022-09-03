@@ -61,7 +61,7 @@ const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
                             </Button>
                             {error ? (
                                 <div>
-                                    <p className="error-text" fontSize="sm">The provided credentials are incorrect</p>
+                                    <p className="error-text">The provided credentials are incorrect</p>
                                 </div>
                             ) : null}
                         </Stack>
