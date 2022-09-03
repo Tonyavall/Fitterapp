@@ -33,8 +33,9 @@ const Search = () => {
                             onClick={() => Router.push(`/${user.username}`)}
                             w="full"
                             mb={0}
+                            fontSize="sm"
                         >
-                            <Avatar size="sm" src={user.userImage} />
+                            <Avatar size="sm" src={user.userImage} mr={5}/>
                             {user.username}
                         </AutoCompleteItem>
                     ))}

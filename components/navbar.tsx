@@ -21,14 +21,17 @@ import {
     InputGroup,
     InputLeftElement,
     Input,
-    Tooltip
+    Tooltip,
+    Image
 } from "@chakra-ui/react";
+
 import {
     AiOutlineMenu,
     AiOutlineInbox,
     AiOutlineSearch,
     AiOutlineHome,
 } from "react-icons/ai";
+
 import { TbShirt } from "react-icons/tb"
 import { LOGOUT } from '../pages/api/mutations'
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
@@ -48,7 +51,7 @@ const Navbar = () => {
     const [logout] = useMutation(LOGOUT)
     const { data: userProfileData } = useQuery(FIND_ME)
     const [userProfile, setUserProfile] = useAtom(userProfileAtom)
-    
+
     useEffect(() => {
         setUserProfile(userProfileData?.findMe)
     }, [userProfileData, setUserProfile])
@@ -69,15 +72,21 @@ const Navbar = () => {
             px={{ base: 2, sm: 4 }}
             py={4}
             shadow="md"
-            width="100vw"
+            w="100vw"
             maxW="100%"
             hidden={!(!!userProfile)}
         >
             <Flex alignItems="center" justifyContent="space-between" mx="auto" maxW={955} height="27.5px">
                 <HStack display="flex" spacing={3} alignItems="center">
-                    <Box width="4em" fontSize="1.6rem" fontWeight="medium" fontFamily="cursive" letterSpacing="1.5px">
-                        Fitter
-                    </Box>
+                    <Image
+                        src="https://fitterapp.s3.us-west-1.amazonaws.com/fitter-text.png"
+                        alt="fitter-text-logo"
+                        objectFit="contain"
+                        w="80px"
+                        p="5px"
+                        cursor="pointer"
+                        onClick={()=> Router.push('/')}
+                    />
                     <Box display={{ base: "inline-flex", md: "none" }}>
                         <IconButton
                             display={{ base: "flex", md: "none" }}
@@ -140,8 +149,8 @@ const Navbar = () => {
                         </VStack>
                     </Box>
                 </HStack>
-                <InputGroup width={[150, 275]} display={mobileNav.isOpen ? "none" : "flex"}>
-                    {userProfile && <Search/>}
+                <InputGroup width={[150, 275]} ml="6.5em" display={mobileNav.isOpen ? "none" : "flex"}>
+                    {userProfile && <Search />}
                 </InputGroup>
                 <HStack
                     spacing={3}

@@ -60,7 +60,7 @@ const SocialCard = ({ user }: { user: userObj }) => {
                         <Stack spacing={0} align={'center'}>
                             <Text fontWeight={600}>{user?.followingCount}</Text>
                             <Text fontSize={'sm'} color={'gray.500'}>
-                                Followers
+                                Following
                             </Text>
                         </Stack>
                     </Stack>

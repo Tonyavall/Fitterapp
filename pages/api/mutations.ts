@@ -211,3 +211,13 @@ export const UNFOLLOW_USER = gql`
         }
     }
 `
+
+export const UPDATE_USER = gql`
+    mutation updateUser($bio: String!, $userImage: String){
+        updateUser(bio: $bio, userImage: $userImage) {
+            _id
+            userImage
+            bio
+        }
+    }
+`

@@ -65,7 +65,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
                 query: FIND_USER_FOLLOW,
                 variables: { username }
             })
-            console.log(followerCount)
+
             cache.writeQuery({
                 query: FIND_USER_FOLLOW,
                 data: {
@@ -86,7 +86,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
                 query: FIND_USER_FOLLOW,
                 variables: { username }
             })
-            console.log(followerCount)
+            console.log(followers)
             cache.writeQuery({
                 query: FIND_USER_FOLLOW,
                 data: {
@@ -169,7 +169,11 @@ const User = ({ data: { data: { findUser } } }: any) => {
                             </Box>
                             :
                             <Box mb="-.5">
-                                <Button colorScheme="twitter" size="sm" height={27.5} mr={2.5} w="85px" mb={-.5}>Edit profile</Button>
+                                <Button colorScheme="twitter" size="sm" height={27.5} mr={2.5} w="85px" mb={-.5}
+                                    onClick={() => Router.push('/settings')}
+                                >
+                                    Edit profile
+                                </Button>
                             </Box>
                         }
                     </Box>

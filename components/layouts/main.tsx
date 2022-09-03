@@ -8,9 +8,9 @@ const Main = ({ children }: React.PropsWithChildren) => {
     return (
         <Box>
             <Head>
-                <title>Fitter</title>
+                <title>Fitterapp</title>
                 <meta name="Fitter" content="Post your fits!" />
-                <link rel="icon" href="/favicon.ico" />
+                <link rel="icon" href="/fitter-logo.png" />
             </Head>
 
             <Box as="main"

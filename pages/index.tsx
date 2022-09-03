@@ -16,13 +16,16 @@ import Router from 'next/router'
 import { AiOutlineHeart } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { FIND_THREE_RECOMMENDED } from './api/queries'
 import SocialCard from '../components/socialCard'
+import { userProfileAtom } from '../lib/globalAtoms'
+import { useAtomValue } from 'jotai'
 
 const Home: NextPage = ({ data }: any) => {
   const posts = data?.data?.homeRecentPosts
+  const userProfile = useAtomValue(userProfileAtom)
   const { data: recData } = useQuery(FIND_THREE_RECOMMENDED)
 
   return (
@@ -38,6 +41,7 @@ const Home: NextPage = ({ data }: any) => {
               w="475px"
               h="fit-content"
               pb=".8em"
+              mb="1em"
             >
               <Box
                 w="full"
@@ -46,8 +50,8 @@ const Home: NextPage = ({ data }: any) => {
                 alignItems="center"
                 p=".8em"
               >
-                <Avatar size="sm" src={post.userId?.userImage} mr=".8em" />
-                <Text fontSize="sm" fontWeight="medium">{post.userId.username}</Text>
+                <Avatar size="sm" src={post.userId?.userImage} mr=".8em" onClick={() => Router.push(`/${post.userId.username}`)} cursor="pointer"/>
+                <Text fontSize="sm" fontWeight="medium" onClick={() => Router.push(`/${post.userId.username}`)} cursor="pointer">{post.userId.username}</Text>
               </Box>
               <Image
                 w="475px"
@@ -115,6 +119,9 @@ const Home: NextPage = ({ data }: any) => {
                   fontSize="sm"
                   fontWeight="normal"
                   color="gray"
+                  data-postid={post._id}
+                  onClick={(e) => Router.push(`/${post.userId.username}/post/${e.currentTarget.dataset.postid}`)}
+                  cursor="pointer"
                 >
                   Be the first to comment!
                 </Heading>
@@ -123,7 +130,7 @@ const Home: NextPage = ({ data }: any) => {
               {post?.comments?.slice(0, 3).map((comment: any) => {
                 return (
                   <Box
-                    key=""
+                    key={comment._id}
                     display="flex"
                     flexDirection="row"
                     ml="1.25em"
@@ -160,10 +167,12 @@ const Home: NextPage = ({ data }: any) => {
             alignItems="center"
           >
             {recData?.findThreeRecommended?.map((user: any) => {
+              if (user.username === userProfile?.username) return null
               return (
-                <SocialCard key={user._id} user={user} />
+                <SocialCard key={user.username} user={user} />
               )
-            })}
+            })
+            }
           </Box>
         </>
       }
@@ -182,7 +191,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const data = await client.query<any, any>({
       query: HOME_RECENT_POSTS,
     })
-    console.log(data)
+
     return {
       props: { data }
     }

@@ -354,15 +354,46 @@ export const resolvers = {
                 return error
             }
         },
-        deleteUser: async (
+        // Need to update later
+        // deleteUser: async (
+        //     parent: undefined,
+        //     { userId }: { userId: string },
+        //     context: any
+        // ) => {
+        //     try {
+        //         await connectDb()
+        //         await User.findOneAndDelete({ _id: userId })
+        //         return { status: 200 }
+        //     } catch (error) {
+        //         console.log(error)
+        //         return error
+        //     }
+        // },
+        updateUser: async (
             parent: undefined,
-            { userId }: { userId: string },
+            { bio, userImage }: { bio: string, userImage: string },
             context: any
         ) => {
             try {
                 await connectDb()
-                await User.findOneAndDelete({ _id: userId })
-                return { status: 200 }
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (userImage) {
+                    const updatedUser = await User.findOneAndUpdate(
+                        { _id: data._id },
+                        { $set: { bio: bio, userImage: userImage } },
+                        { runValidators: true, new: true }
+                    )
+
+                    return updatedUser
+                }
+                const updatedUser = await User.findOneAndUpdate(
+                    { _id: data._id },
+                    { $set: { bio: bio } },
+                    { runValidators: true, new: true }
+                )
+                console.log(updatedUser)
+                return updatedUser
             } catch (error) {
                 console.log(error)
                 return error
@@ -775,7 +806,7 @@ export const resolvers = {
                 const contextUserId = data._id
 
                 // Updating to follow the user
-                await User.findOneAndUpdate(
+                const updatedContextUser = await User.findOneAndUpdate(
                     { _id: contextUserId },
                     { $set: { following: { _id: userId } } },
                     { runValidators: true, new: true }

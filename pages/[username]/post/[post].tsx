@@ -10,6 +10,7 @@ import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
 import ImageCarousel from '../../../components/imageCarousel'
+import Router from 'next/router';
 
 const Post = ({ data: { data: { findSinglePost } } }: any) => {
     const [commentBody, setCommentBody] = useState('')
@@ -189,6 +190,8 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                                             m="1.25em"
                                             alignSelf="start"
                                             src={comment.userId.userImage}
+                                            onClick={() => Router.push(`/${comment.userId.username}`)}
+                                            cursor="pointer"
                                         />
                                         <Text
                                             fontWeight="normal"
@@ -198,6 +201,8 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                                                 as="span"
                                                 mr=".3em"
                                                 fontWeight="medium"
+                                                onClick={() => Router.push(`/${comment.userId.username}`)}
+                                                cursor="pointer"
                                             >
                                                 {comment.userId.username}
                                             </Text>

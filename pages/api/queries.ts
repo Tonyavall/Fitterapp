@@ -42,6 +42,7 @@ export const FIND_ME = gql`
       userImage
       email
       isAdmin
+      bio
     }
   }
 `
