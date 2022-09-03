@@ -160,7 +160,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
                         </Heading>
                         {userProfile?._id !== _id ?
                             <Box mb="-.5">
-                                <Button colorScheme="twitter" size="sm" height={27.5} mr={2.5} w="85px" mb={-.5}>Message</Button>
+                                <Button colorScheme="twitter" size="sm" height={27.5} mr={2.5} w="85px" mb={-.5} disabled>Message</Button>
                                 {isFollowing ?
                                     <Button colorScheme="twitter" size="sm" height={27.5} w="85px" onClick={handleUserUnfollow} mb={-.5}>Following</Button>
                                     :

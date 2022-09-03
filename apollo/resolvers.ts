@@ -804,11 +804,11 @@ export const resolvers = {
                 const { data } = await getLoginSession(context.req) as JwtPayload
 
                 const contextUserId = data._id
-
+                
                 // Updating to follow the user
-                const updatedContextUser = await User.findOneAndUpdate(
+                await User.findOneAndUpdate(
                     { _id: contextUserId },
-                    { $set: { following: { _id: userId } } },
+                    { $push: { following: userId } },
                     { runValidators: true, new: true }
                 )
 
@@ -816,10 +816,9 @@ export const resolvers = {
                 const updatedFollowedUser = await User
                     .findOneAndUpdate(
                         { _id: userId },
-                        { $set: { followers: { _id: contextUserId } } },
+                        { $push: { followers: contextUserId } },
                         { runValidators: true, new: true }
                     )
-                    .populate('followers')
 
                 return updatedFollowedUser
             } catch (error) {
@@ -838,22 +837,20 @@ export const resolvers = {
 
                 const contextUserId = data._id
 
-                // Updating to follow the user
                 await User.findOneAndUpdate(
                     { _id: contextUserId },
-                    { $pull: { following: { _id: userId } } },
+                    { $pull: { following: userId } },
                     { runValidators: true, new: true }
                 )
 
-                // Updating the followed user 
-                const updatedFollowedUser = await User
+                const updatedUnFollowedUser = await User
                     .findOneAndUpdate(
                         { _id: userId },
-                        { $pull: { followers: { _id: contextUserId } } },
+                        { $pull: { followers: contextUserId } },
                         { runValidators: true, new: true }
                     )
-
-                return updatedFollowedUser
+                
+                return updatedUnFollowedUser
             } catch (error) {
                 console.log(error)
                 return error

@@ -151,7 +151,7 @@ const Home: NextPage = ({ data }: any) => {
             mt={10}
 
           >
-            {"No posts found since you're not following anyone :( "}
+            {"No posts found since you're not following anyone, or following has no posts  :("}
           </Text>
           <Text
             fontWeight="light"

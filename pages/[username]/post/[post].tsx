@@ -105,11 +105,15 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                             size="sm"
                             m="1.25em"
                             src={userId.userImage}
+                            onClick={()=> Router.push(`/${userId.username}`)}
+                            cursor="pointer"
                         />
 
                         <Text
                             fontWeight="medium"
                             fontSize="sm"
+                            onClick={()=> Router.push(`/${userId.username}`)}
+                            cursor="pointer"
                         >
                             {userId.username}
                         </Text>
@@ -146,6 +150,8 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                                     m="1.25em"
                                     alignSelf="start"
                                     src={userId.userImage}
+                                    onClick={()=> Router.push(`/${userId.username}`)}
+                                    cursor="pointer"
                                 />
                                 <Text
                                     fontWeight="normal"
@@ -155,6 +161,8 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                                         as="span"
                                         mr=".3em"
                                         fontWeight="medium"
+                                        onClick={()=> Router.push(`/${userId.username}`)}
+                                        cursor="pointer"
                                     >
                                         {userId.username}
                                     </Text>

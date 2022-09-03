@@ -1,6 +1,7 @@
 // Note- This is only available in production
 import { NextPage } from 'next'
 import { Box, Heading, Text, Button } from '@chakra-ui/react';
+import Router from 'next/router'
 
 interface Props {
     statusCode?: Number;
@@ -28,7 +29,9 @@ const Error: NextPage<Props> = ({ statusCode }) => {
                 h="35px"
                 colorScheme="twitter"
                 color="white"
-                variant="solid">
+                variant="solid"
+                onClick={()=> Router.push('/')}
+                >
                 Go to Home
             </Button>
         </Box>
