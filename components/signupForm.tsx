@@ -44,29 +44,29 @@ export default function SignupForm({handleChange, handleFormSubmit, errorMessage
                         <HStack>
                             <Box>
                                 <FormControl id="firstName" onChange={handleChange} isRequired>
-                                    <FormLabel>First Name</FormLabel>
-                                    <Input type="firstName" data-input={'firstName'}/>
+                                    <FormLabel fontSize="sm">First Name</FormLabel>
+                                    <Input type="firstName" data-input={'firstName'} size="sm"/>
                                 </FormControl>
                             </Box>
                             <Box>
                                 <FormControl id="lastName" onChange={handleChange} isRequired>
-                                    <FormLabel>Last Name</FormLabel>
-                                    <Input type="lastName" data-input={'lastName'}/>
+                                    <FormLabel fontSize="sm">Last Name</FormLabel>
+                                    <Input type="lastName" data-input={'lastName'} size="sm"/>
                                 </FormControl>
                             </Box>
                         </HStack>
                         <FormControl id="username" onChange={handleChange} isRequired>
-                            <FormLabel>Username</FormLabel>
-                            <Input type="username" data-input={'username'}/>
+                            <FormLabel fontSize="sm">Username</FormLabel>
+                            <Input type="username" data-input={'username'} size="sm"/>
                         </FormControl>
                         <FormControl id="email" onChange={handleChange} isRequired>
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="email" data-input={'email'}/>
+                            <FormLabel fontSize="sm">Email address</FormLabel>
+                            <Input type="email" data-input={'email'} size="sm"/>
                         </FormControl>
                         <FormControl id="password" onChange={handleChange} isRequired>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel fontSize="sm">Password</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} data-input={'password'}/>
+                                <Input type={showPassword ? 'text' : 'password'} data-input={'password'} size="sm"/>
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
@@ -81,7 +81,7 @@ export default function SignupForm({handleChange, handleFormSubmit, errorMessage
                         <Stack spacing={10} pt={2}>
                             <Button
                                 loadingText="Submitting"
-                                size="lg"
+                                size="sm"
                                 bg={'blue.400'}
                                 color={'white'}
                                 _hover={{
@@ -93,8 +93,8 @@ export default function SignupForm({handleChange, handleFormSubmit, errorMessage
                             {errorMessage ? <Text>{errorMessage}</Text> : null}
                         </Stack>
                         <Stack pt={6}>
-                            <Text align={'center'}>
-                                Already a user? <Link href="/login" color={'blue.400'}>Login</Link>
+                            <Text align={'center'} fontSize="sm">
+                                Already a user? <Link fontSize="sm" href="/login" color={'blue.400'}>Login</Link>
                             </Text>
                         </Stack>
                     </Stack>
