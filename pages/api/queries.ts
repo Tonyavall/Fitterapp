@@ -9,13 +9,27 @@ export const FIND_USER = gql`
       lastName
       userImage
       postCount
-      followerCount
-      followingCount
       bio
       posts {
         _id
         postImage
       }
+    }
+  }
+`
+
+export const FIND_USER_FOLLOW = gql`
+  query($username: String!) {
+    findUserFollow(username:$username) {
+      _id
+      followers {
+        _id
+      }
+      following {
+        _id
+      }
+      followerCount
+      followingCount
     }
   }
 `
@@ -28,6 +42,16 @@ export const FIND_ME = gql`
       userImage
       email
       isAdmin
+    }
+  }
+`
+
+export const FIND_ALL_USERNAMES = gql`
+  query {
+    findAllUsernames {
+      _id
+      username
+      userImage
     }
   }
 `
@@ -115,6 +139,39 @@ query findFits{
       _id
       image
     }
+  }
+}
+`
+
+export const HOME_RECENT_POSTS = gql`
+  query {
+    homeRecentPosts {
+      _id
+      userId {
+        username
+        userImage
+      }
+      description
+      postImage
+      comments {
+        _id
+        userId {
+          username
+          userImage
+        }
+        commentBody
+      }
+    }
+  }
+`
+
+export const FIND_THREE_RECOMMENDED = gql`
+query {
+  findThreeRecommended {
+  	username
+    userImage
+    followerCount
+    followingCount
   }
 }
 `

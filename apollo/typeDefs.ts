@@ -88,13 +88,16 @@ export const typeDefs = gql`
     findMe: User
     findUser(username: String!): User
     findAllUsers: [User]
-    homeRecentTenPosts: [Post]
+    homeRecentPosts: [Post]
     grabRandomTwelvePosts: [Post]
     findSinglePost(postId: ID!): Post
     findPostComments(postId: ID!): Post
     isLoggedIn: Boolean
     loginRedirect: Boolean
     findFits: User
+    findUserFollow(username: String!): User
+    findAllUsernames: [User]
+    findThreeRecommended: [User]
   }
 
   type Mutation {
@@ -106,8 +109,8 @@ export const typeDefs = gql`
     addBio(bioBody: String!): User
     addProfilePicture(image: String!): User
     # SOCIAL
-    followUser(followingId: ID!): User
-    unfollowUser(followingId: ID!): User
+    followUser(userId: ID!): User
+    unFollowUser(userId: ID!): User
     # POSTS
     createPost(outfitId: ID!, postImage: String!, description: String): Post
     likePost(postId: ID!): Post

@@ -57,10 +57,11 @@ const PostOutfitModalCarousel = ({ outfitId, topImage, bottomImage, footwearImag
                     position="absolute"
                     left={side}
                     top={topSide}
-                    transform={'translate(-75%, -50%)'}
+                    transform={'translate(-150%, -50%)'}
                     zIndex={2}
                     onClick={() => slider?.slickPrev()}
-                    size="sm"
+                    size="xs"
+                    borderRadius="full"
                 >
                     <BiLeftArrowAlt size="20px" />
                 </IconButton>
@@ -71,10 +72,11 @@ const PostOutfitModalCarousel = ({ outfitId, topImage, bottomImage, footwearImag
                     position="absolute"
                     right={side}
                     top={topSide}
-                    transform={'translate(75%, -50%)'}
+                    transform={'translate(150%, -50%)'}
                     zIndex={2}
                     onClick={() => slider?.slickNext()}
-                    size="sm"
+                    size="xs"
+                    borderRadius="full"
                 >
                     <BiRightArrowAlt size="20px" />
                 </IconButton>

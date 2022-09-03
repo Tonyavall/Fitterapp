@@ -179,3 +179,35 @@ export const ADD_POST_COMMENT = gql`
         }
     }
 `
+
+export const FOLLOW_USER = gql`
+    mutation followUser($userId: ID!) {
+        followUser(userId: $userId) {
+            _id
+            followers {
+                _id
+            }
+            following {
+                _id
+            }
+            followerCount
+            followingCount
+        }
+    }
+`
+
+export const UNFOLLOW_USER = gql`
+    mutation unFollowUser($userId: ID!) {
+        unFollowUser(userId: $userId) {
+            _id
+            followers {
+                _id
+            }
+            following {
+                _id
+            }
+            followerCount
+            followingCount
+        }
+    }
+`

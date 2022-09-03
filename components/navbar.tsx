@@ -35,6 +35,8 @@ import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { FIND_ME } from "../pages/api/queries";
 import { userProfileAtom } from "../lib/globalAtoms";
 import { useAtom } from "jotai";
+import Search from './search'
+
 // https://choc-ui.com/docs/packages/autocomplete\
 // https://stackoverflow.com/questions/65460085/open-a-page-in-a-next-js-website-as-an-overlay
 // SEARCH OPTIONS UP TOP
@@ -46,7 +48,7 @@ const Navbar = () => {
     const [logout] = useMutation(LOGOUT)
     const { data: userProfileData } = useQuery(FIND_ME)
     const [userProfile, setUserProfile] = useAtom(userProfileAtom)
-
+    
     useEffect(() => {
         setUserProfile(userProfileData?.findMe)
     }, [userProfileData, setUserProfile])
@@ -56,7 +58,7 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         await logout()
-        await client.resetStore()
+        await client.cache.reset()
         setUserProfile(null)
         Router.push('/login')
     }
@@ -123,6 +125,7 @@ const Navbar = () => {
                                 colorScheme="brand"
                                 leftIcon={<AiOutlineInbox />}
                                 onClick={() => Router.push('/direct')}
+                                disabled
                             >
                                 Inbox
                             </Button>
@@ -138,10 +141,7 @@ const Navbar = () => {
                     </Box>
                 </HStack>
                 <InputGroup width={[150, 275]} display={mobileNav.isOpen ? "none" : "flex"}>
-                    <InputLeftElement pointerEvents="none" height="2em">
-                        <AiOutlineSearch />
-                    </InputLeftElement>
-                    <Input type="tel" placeholder="Search" bg="#EFEFEF" height="2em" />
+                    {userProfile && <Search/>}
                 </InputGroup>
                 <HStack
                     spacing={3}
@@ -154,8 +154,8 @@ const Navbar = () => {
                                 <AiOutlineHome cursor="pointer" size={25} />
                             </button>
                         </Tooltip>
-                        <Tooltip hasArrow label='Messages' bg='gray.300' color='black'>
-                            <button onClick={() => Router.push('/direct')}>
+                        <Tooltip hasArrow label='Under Maintenance: Messages' bg='gray.300' color='black'>
+                            <button>
                                 <AiOutlineInbox cursor="pointer" size={25} />
                             </button>
                         </Tooltip>

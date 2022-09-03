@@ -2,7 +2,6 @@ import { Schema, model, models } from "mongoose"
 import Top from './Top'
 import Bottom from './Bottom'
 import Footwear from './Footwear'
-import Outfit from './Outfit'
 import bcrypt from 'bcrypt'
 
 interface UserInput {

@@ -6,6 +6,7 @@ import connectDb from "../lib/connection"
 import { setLoginSession, getLoginSession } from '../utils/auth'
 import { JwtPayload } from "jsonwebtoken"
 import { removeTokenCookie } from '../utils/authCookies'
+import { ObjectId } from "mongoose"
 
 type UserInput = {
     username: string
@@ -105,6 +106,86 @@ export const resolvers = {
             }
             throw new AuthenticationError('You have to be logged in!')
         },
+        findAllUsernames: async (
+            parent: undefined,
+            args: undefined,
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+                console.log(data)
+                if (data) {
+                    const allUsers = await User.find()
+
+                    return allUsers
+                }
+            } catch (error) {
+                return error
+            }
+            throw new AuthenticationError('You have to be logged in!')
+        },
+        findUserFollow: async (
+            parent: undefined,
+            { username }: { username: string },
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
+                    const [user] = await User
+                        .find({ username: username })
+
+                    if (!user) {
+                        throw new UserInputError(`Username ${username} was not found.`)
+                    }
+                    return user;
+                }
+            } catch (error) {
+                return error
+            }
+            throw new AuthenticationError('You have to be logged in!')
+        },
+        findThreeRecommended: async (
+            parent: undefined,
+            args: undefined,
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                if (data) {
+                    const userCount: number = await User.count()
+                    // Theres probably a better way to do this
+                    let random = Math.floor(Math.random() * userCount)
+                    const randomUserOne = await User
+                        .findOne()
+                        .skip(random)
+                    random = Math.floor(Math.random() * userCount)
+                    const randomUserTwo = await User
+                        .findOne()
+                        .skip(random)
+                    random = Math.floor(Math.random() * userCount)
+                    const randomUserThree = await User
+                        .findOne()
+                        .skip(random)
+
+                    let data = new Map();
+
+                    for (let obj of [randomUserOne, randomUserTwo, randomUserThree]) {
+                        data.set(obj.username, obj);
+                    }
+                    // @ts-ignore
+                    return [...data.values()];
+                }
+            } catch (error) {
+                return error
+            }
+            throw new AuthenticationError('You have to be logged in!')
+        },
         findFits: async (
             parent: undefined,
             args: undefined,
@@ -133,7 +214,7 @@ export const resolvers = {
             await connectDb()
             return await User.find({});
         },
-        homeRecentTenPosts: async (
+        homeRecentPosts: async (
             parent: undefined,
             args: undefined,
             context: any
@@ -143,17 +224,24 @@ export const resolvers = {
                 const { data } = await getLoginSession(context.req) as JwtPayload
 
                 if (data) {
-                    const { following = [] }: any = await User
-                        .find({ _id: data._id })
+                    const { following } = await User
+                        .findOne({ _id: data._id })
                         .populate({
                             path: 'following',
                             select: ['_id']
                         })
-                    const tenPosts = await Post
-                        .find({ _id: following })
+
+                    const posts = await Post
+                        .find({ userId: following.map(({ _id }: { _id: ObjectId }) => _id) })
+                        .populate([
+                            'userId',
+                            {
+                                path: 'comments',
+                                populate: ['userId']
+                            }
+                        ])
                         .sort({ createdAt: -1 })
-                        .limit(10)
-                    return tenPosts;
+                    return posts;
                 }
             } catch (error) {
                 return error
@@ -670,6 +758,71 @@ export const resolvers = {
                 )
 
                 return updatedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        followUser: async (
+            parent: undefined,
+            { userId }: { userId: string },
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const contextUserId = data._id
+
+                // Updating to follow the user
+                await User.findOneAndUpdate(
+                    { _id: contextUserId },
+                    { $set: { following: { _id: userId } } },
+                    { runValidators: true, new: true }
+                )
+
+                // Updating the followed user 
+                const updatedFollowedUser = await User
+                    .findOneAndUpdate(
+                        { _id: userId },
+                        { $set: { followers: { _id: contextUserId } } },
+                        { runValidators: true, new: true }
+                    )
+                    .populate('followers')
+
+                return updatedFollowedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        unFollowUser: async (
+            parent: undefined,
+            { userId }: { userId: string },
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const contextUserId = data._id
+
+                // Updating to follow the user
+                await User.findOneAndUpdate(
+                    { _id: contextUserId },
+                    { $pull: { following: { _id: userId } } },
+                    { runValidators: true, new: true }
+                )
+
+                // Updating the followed user 
+                const updatedFollowedUser = await User
+                    .findOneAndUpdate(
+                        { _id: userId },
+                        { $pull: { followers: { _id: contextUserId } } },
+                        { runValidators: true, new: true }
+                    )
+
+                return updatedFollowedUser
             } catch (error) {
                 console.log(error)
                 return error
