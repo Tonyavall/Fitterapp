@@ -113,8 +113,8 @@ const Fits = () => {
                         pb={['.25em', '.25em', '1em']}
                     >
                         <Heading
-                            fontWeight="light"
-                            fontSize={["1.5rem", "2rem"]}
+                            fontWeight="normal"
+                            fontSize={["1.25rem", "1.5rem"]}
                             textAlign="left"
                         >
                             tops
@@ -194,11 +194,13 @@ const Fits = () => {
                         alignItems="center"
                         p={['.5em', '1em', '2em']}
                         pb={['.25em', '.25em', '1em']}
+                        w="full"
                     >
                         <Heading
-                            fontWeight="light"
-                            fontSize={["1.5rem", "2rem"]}
+                            fontWeight="normal"
+                            fontSize={["1.25rem", "1.5rem"]}
                             textAlign="left"
+                            w="full"
                         >
                             bottoms
                         </Heading>
@@ -247,11 +249,13 @@ const Fits = () => {
                         alignItems="center"
                         p={['.5em', '1em', '2em']}
                         pb={['.25em', '.25em', '1em']}
+                        w="full"
                     >
                         <Heading
-                            fontWeight="light"
-                            fontSize={["1.5rem", "2rem"]}
+                            fontWeight="normal"
+                            fontSize={["1.25rem", "1.5rem"]}
                             textAlign="left"
+                            w="full"
                         >
                             footwear
                         </Heading>

@@ -28,13 +28,19 @@ import { useQuery, useMutation } from "@apollo/client"
 import { useState } from 'react'
 import { UPDATE_USER } from "../api/mutations"
 import generateUploadURL from "../../utils/s3"
+import { GetServerSideProps } from "next"
+import createClient from '../../apollo/client'
+import { IS_LOGGED_IN } from "../api/queries"
 
 const Settings = () => {
     const [croppedImageDataUrl, setCroppedImageDataUrl] = useState('')
     const [croppedImageBlob, setCroppedImageBlob] = useState({})
-    const [bioInput, setBioInput] = useState('')
+
     const toast = useToast()
+    
     const { data } = useQuery(FIND_ME)
+    const [bioInput, setBioInput] = useState(data?.findMe?.bio)
+    
     const [updateUser] = useMutation(UPDATE_USER, {
         update(cache, { data: { updateUser: { bio, userImage } } }) {
             const { findMe }: any = cache.readQuery({
@@ -104,8 +110,7 @@ const Settings = () => {
                         md: 2,
                     }}
                 >
-                    <chakra.form
-                        method="POST"
+                    <Box
                         shadow="base"
                         rounded={[null, "md"]}
                         overflow={{
@@ -130,8 +135,7 @@ const Settings = () => {
                                     md: 2,
                                 }}
                             >
-                                <chakra.form
-                                    method="POST"
+                                <Box
                                     shadow="base"
                                     rounded={[null, "md"]}
                                     overflow={{
@@ -234,7 +238,7 @@ const Settings = () => {
                                             </FormControl>
                                         </SimpleGrid>
                                     </Stack>
-                                </chakra.form>
+                                </Box>
                             </GridItem>
 
                             <div>
@@ -259,7 +263,7 @@ const Settings = () => {
                                         fontSize="sm"
                                         onChange={(e) => handleBioInputChange(e.currentTarget.value)}
                                         defaultValue={data?.findMe?.bio}
-                                    >{data?.findMe?.bio}</Textarea>
+                                    />
                                 </FormControl>
                             </div>
 
@@ -312,11 +316,34 @@ const Settings = () => {
                                 Save
                             </Button>
                         </Box>
-                    </chakra.form>
+                    </Box>
                 </GridItem>
             </SimpleGrid >
         </Layout >
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context:any) => {
+    const client = createClient(context)
+
+    try {
+        await client.query<any, any>({
+            query: IS_LOGGED_IN,
+        })
+
+        return {
+            props: {
+                initialApolloState: client.cache.extract()
+            }
+        }
+    } catch (error) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: true
+            }
+        }
+    }
 }
 
 export default Settings
