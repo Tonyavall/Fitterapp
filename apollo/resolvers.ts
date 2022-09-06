@@ -287,11 +287,16 @@ export const resolvers = {
                 if (data) {
                     const [post] = await Post
                         .find({ _id: postId })
-                        .populate(['userId', {
-                            path: 'comments',
-                            populate: ['userId']
-                        }, 'outfit'])
-
+                        .populate([
+                            'userId',
+                            'outfit',
+                            {
+                                path: 'comments',
+                                populate: ['userId']
+                            },
+                            'likedBy'
+                        ])
+                        console.log(post)
                     if (!post) throw new UserInputError(`Post not found.`)
                     return post
                 }
@@ -804,7 +809,7 @@ export const resolvers = {
                 const { data } = await getLoginSession(context.req) as JwtPayload
 
                 const contextUserId = data._id
-                
+
                 // Updating to follow the user
                 await User.findOneAndUpdate(
                     { _id: contextUserId },
@@ -849,8 +854,55 @@ export const resolvers = {
                         { $pull: { followers: contextUserId } },
                         { runValidators: true, new: true }
                     )
-                
+
                 return updatedUnFollowedUser
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        likePost: async (
+            parent: undefined,
+            { postId }: { postId: string },
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const contextUserId = data._id
+
+                const updatedPost = await Post
+                    .findOneAndUpdate(
+                        { _id: postId },
+                        { $addToSet: { likedBy: contextUserId } },
+                        { runValidators: true, new: true }
+                    )
+                return updatedPost
+            } catch (error) {
+                console.log(error)
+                return error
+            }
+        },
+        unlikePost: async (
+            parent: undefined,
+            { postId }: { postId: string },
+            context: any
+        ) => {
+            try {
+                await connectDb()
+                const { data } = await getLoginSession(context.req) as JwtPayload
+
+                const contextUserId = data._id
+
+                const updatedPost = await Post
+                    .findOneAndUpdate(
+                        { _id: postId },
+                        { $pull: { likedBy: contextUserId } },
+                        { runValidators: true, new: true }
+                    )
+
+                return updatedPost
             } catch (error) {
                 console.log(error)
                 return error

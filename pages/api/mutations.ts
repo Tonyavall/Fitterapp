@@ -221,3 +221,19 @@ export const UPDATE_USER = gql`
         }
     }
 `
+
+export const LIKE_POST = gql`
+    mutation likePost($postId: ID!){
+        likePost(postId: $postId) {
+            _id
+        }
+    }
+`
+
+export const UNLIKE_POST = gql`
+    mutation unlikePost($postId: ID!){
+        unlikePost(postId: $postId) {
+            _id
+        }
+    }
+`

@@ -5,7 +5,6 @@ import { resolvers } from '../../apollo/resolvers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import cors from 'micro-cors'
 
-const isProd = process.env.NODE_ENV === 'production'
 const Cors = cors({
     allowCredentials: true,
 })

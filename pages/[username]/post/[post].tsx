@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../../../components/layouts/article'
 import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button, Spinner } from '@chakra-ui/react';
-import { AiOutlineHeart } from 'react-icons/ai'
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
@@ -11,6 +11,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
 import ImageCarousel from '../../../components/imageCarousel'
 import Router from 'next/router';
+import { HandlePostLikeState } from '../../../utils/customHooks/HandlePostLikeState';
 
 const Post = ({ data: { data: { findSinglePost } } }: any) => {
     const [commentBody, setCommentBody] = useState('')
@@ -21,8 +22,13 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
         description,
         userImage,
         userId,
-        outfit
+        outfit,
+        likedBy,
+        likes
     } = findSinglePost
+
+    // pass props here
+    const { isLiked, setIsLiked } = HandlePostLikeState({ likedBy, _id })
 
     const {
         loading,
@@ -105,14 +111,14 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                             size="sm"
                             m="1.25em"
                             src={userId.userImage}
-                            onClick={()=> Router.push(`/${userId.username}`)}
+                            onClick={() => Router.push(`/${userId.username}`)}
                             cursor="pointer"
                         />
 
                         <Text
                             fontWeight="medium"
                             fontSize="sm"
-                            onClick={()=> Router.push(`/${userId.username}`)}
+                            onClick={() => Router.push(`/${userId.username}`)}
                             cursor="pointer"
                         >
                             {userId.username}
@@ -150,7 +156,7 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                                     m="1.25em"
                                     alignSelf="start"
                                     src={userId.userImage}
-                                    onClick={()=> Router.push(`/${userId.username}`)}
+                                    onClick={() => Router.push(`/${userId.username}`)}
                                     cursor="pointer"
                                 />
                                 <Text
@@ -161,7 +167,7 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                                         as="span"
                                         mr=".3em"
                                         fontWeight="medium"
-                                        onClick={()=> Router.push(`/${userId.username}`)}
+                                        onClick={() => Router.push(`/${userId.username}`)}
                                         cursor="pointer"
                                     >
                                         {userId.username}
@@ -232,18 +238,20 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
                         h="50px"
                         borderY="1px solid #EFEFEF"
                     >
-                        <Icon as={AiOutlineHeart} h={7} w={7} ml="1em" mr={4} />
+                        <Icon as={isLiked ? AiFillHeart : AiOutlineHeart}
+                            color={isLiked ? "#ED4956" : "black"}
+                            h={7} w={7}
+                            ml="1em"
+                            mr={4}
+                            onClick={() => setIsLiked(!isLiked)}
+                        />
                         <Icon as={BsChat} h="22px" w="22px" strokeWidth=".5px" mr={4} />
                         <Icon as={IoPaperPlaneOutline} h={6} w={6} />
                     </Box>
 
-                    <Text
-                        ml="1.25em"
-                        mt={1}
-                        fontSize="sm"
-                    >
-                        Liked by <Text as="span" fontWeight="bold">logic</Text> here.
-                    </Text>
+                    {
+
+                    }
                     <Text
                         ml="1.6em"
                         mt={1}

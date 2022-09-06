@@ -75,6 +75,12 @@ query($postId: ID!) {
     _id
     postImage
     description
+    likedBy {
+      _id
+      username
+      userImage
+    }
+    likes
     userId {
       username
       userImage
