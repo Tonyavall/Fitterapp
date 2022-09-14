@@ -296,7 +296,7 @@ export const resolvers = {
                             },
                             'likedBy'
                         ])
-                        console.log(post)
+
                     if (!post) throw new UserInputError(`Post not found.`)
                     return post
                 }
@@ -878,6 +878,7 @@ export const resolvers = {
                         { $addToSet: { likedBy: contextUserId } },
                         { runValidators: true, new: true }
                     )
+
                 return updatedPost
             } catch (error) {
                 console.log(error)
