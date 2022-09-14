@@ -10,7 +10,7 @@ import {
     Button,
     Heading,
     Text,
-    useColorModeValue,
+    useColorModeValue
 } from '@chakra-ui/react';
 import Router from 'next/router';
 
@@ -36,7 +36,7 @@ const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
                     boxShadow={'lg'}
                     p={8}>
                     <Stack spacing={4} w="full">
-                        <FormControl id="username" isRequired>
+                        <FormControl as="form" id="username" isRequired>
                             <FormLabel fontSize="sm">Username</FormLabel>
                             <Input
                                 type="username"
@@ -47,9 +47,10 @@ const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') handleFormSubmit(e)
                                 }}
+                                autoComplete="username"
                             />
                         </FormControl>
-                        <FormControl id="password" isRequired>
+                        <FormControl as="form" id="password" isRequired>
                             <FormLabel fontSize="sm">Password</FormLabel>
                             <Input
                                 type="password"
@@ -59,6 +60,7 @@ const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') handleFormSubmit(e)
                                 }}
+                                autoComplete="current-password"
                             />
                         </FormControl>
                         <Stack spacing={10}>

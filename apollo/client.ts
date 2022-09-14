@@ -38,7 +38,7 @@ const createClient = (context: any, isToken = false) => {
 
 export function initializeApollo(context: any, isToken = false, initialState = null) {
     const _apolloClient = apolloClient ?? createClient(context, isToken)
-
+    console.log(initialState)
     // Merging existing cache 
     if (initialState) {
         const existingCache = _apolloClient.extract()
