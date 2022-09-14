@@ -17,7 +17,7 @@ import { ADD_OUTFIT } from "../api/mutations"
 import FitsRadioGroup from "../../components/fitsRadioGroups"
 import { checkProps } from "../../utils/functions"
 import { GetServerSideProps } from "next"
-import createClient from '../../apollo/client'
+import initializeApollo from '../../apollo/client'
 import { IS_LOGGED_IN } from "../api/queries"
 
 const Fits = () => {
@@ -295,13 +295,15 @@ const Fits = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const client = createClient(context)
+    const client = initializeApollo(context)
 
     try {
-        await client.query<any, any>({
+        // A query is sent and cached into apollo client
+        await client.query({
             query: IS_LOGGED_IN,
         })
 
+        // We return and change initialApolloState that is initially null to the current client cache that INCLUDES the query above
         return {
             props: {
                 initialApolloState: client.cache.extract()

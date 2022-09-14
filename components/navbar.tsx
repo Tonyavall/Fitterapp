@@ -56,12 +56,9 @@ const Navbar = () => {
         setUserProfile(userProfileData?.findMe)
     }, [userProfileData, setUserProfile])
 
-    // search bar stuff here
-    // const { loading, error, data } = useQuery(FIND_ALL_USERS)
-
     const handleLogout = async () => {
-        await logout()
-        await client.cache.reset()
+        await client.resetStore()
+        logout()
         setUserProfile(null)
         Router.push('/login')
     }
@@ -85,7 +82,7 @@ const Navbar = () => {
                         w="80px"
                         p="5px"
                         cursor="pointer"
-                        onClick={()=> Router.push('/')}
+                        onClick={() => Router.push('/')}
                     />
                     <Box display={{ base: "inline-flex", md: "none" }}>
                         <IconButton

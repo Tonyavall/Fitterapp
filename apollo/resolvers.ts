@@ -64,10 +64,11 @@ export const resolvers = {
             args: undefined,
             context: any
         ) => {
+
             try {
                 await connectDb()
                 const { data } = await getLoginSession(context.req) as JwtPayload
-                console.log(data)
+
                 if (data) {
                     const user = await User
                         .findById(data._id)
@@ -90,7 +91,7 @@ export const resolvers = {
             try {
                 await connectDb()
                 const { data } = await getLoginSession(context.req) as JwtPayload
-                console.log(data)
+
                 if (data) {
                     const [user] = await User
                         .find({ username: username })
@@ -114,7 +115,7 @@ export const resolvers = {
             try {
                 await connectDb()
                 const { data } = await getLoginSession(context.req) as JwtPayload
-                console.log(data)
+
                 if (data) {
                     const allUsers = await User.find()
 

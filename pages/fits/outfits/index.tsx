@@ -15,7 +15,7 @@ import OutfitCarousel from "../../../components/imageCarousel"
 import { useQuery } from "@apollo/client"
 import PostOutfitModal from "../../../components/postOutfitModal"
 import { GetServerSideProps } from "next"
-import createClient from '../../../apollo/client'
+import initializeApollo from '../../../apollo/client'
 import { IS_LOGGED_IN, FIND_FITS } from "../../api/queries"
 
 interface outfitObject {
@@ -36,7 +36,7 @@ interface outfitObject {
 
 const Outfits = () => {
     const { data, loading } = useQuery(FIND_FITS);
-    const [selectedOutfit, setSelectedOutfit] = useState<outfitObject|null>(null)
+    const [selectedOutfit, setSelectedOutfit] = useState<outfitObject | null>(null)
 
     const {
         outfits = []
@@ -152,10 +152,10 @@ const Outfits = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const client = createClient(context)
+    const client = initializeApollo(context)
 
     try {
-        await client.query<any, any>({
+        await client.query({
             query: IS_LOGGED_IN,
         })
 

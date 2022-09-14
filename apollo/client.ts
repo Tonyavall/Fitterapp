@@ -20,6 +20,7 @@ const createClient = (context: any, isToken = false) => {
     });
 
     const authLink = setContext((req, { headers }) => {
+
         return {
             headers: {
                 ...headers,
@@ -50,10 +51,11 @@ export function initializeApollo(context: any, isToken = false, initialState = n
     return _apolloClient
 }
 
+// typing - initialState = current cache | is initially null
 export function useApollo(context: any, isToken = false, initialState: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const store = useMemo(() => initializeApollo(context, isToken, initialState), [initialState])
     return store
 }
 
-export default createClient
+export default initializeApollo

@@ -5,16 +5,31 @@ import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
-import createClient from '../../../apollo/client';
+import initializeApollo from '../../../apollo/client';
 import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
 import ImageCarousel from '../../../components/imageCarousel'
-import Router from 'next/router';
-import { HandlePostLikeState } from '../../../utils/customHooks/HandlePostLikeState';
+import { useRouter } from 'next/router';
+import usePostLike from '../../../utils/customHooks/usePostLike';
 
-const Post = ({ data: { data: { findSinglePost } } }: any) => {
+interface InitialApolloState {
+    [key: string]: {
+        _id: string;
+        postImage: string;
+        userImage: string;
+        userId: string;
+        outfit: object[];
+        likedBy: object[];
+        likes: number;
+    }
+
+}
+
+const Post = ({ initialApolloState }: InitialApolloState) => {
     const [commentBody, setCommentBody] = useState('')
+    const Router = useRouter()
+    const postQueryId = Router.query.post
 
     const {
         _id,
@@ -25,10 +40,10 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
         outfit,
         likedBy,
         likes
-    } = findSinglePost
+    } = initialApolloState[`Post:${postQueryId}`]
 
     // pass props here
-    const { isLiked, setIsLiked } = HandlePostLikeState({ likedBy, _id })
+    const { isLiked, setIsLiked } = usePostLike({ likedBy, _id })
 
     const {
         loading,
@@ -301,16 +316,18 @@ const Post = ({ data: { data: { findSinglePost } } }: any) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const postId = context?.params?.post
-    const client = createClient(context)
+    const client = initializeApollo(context)
 
     try {
-        const data = await client.query<any, any>({
+        await client.query({
             query: FIND_POST,
             variables: { postId }
         })
 
         return {
-            props: { data },
+            props: {
+                initialApolloState: client.cache.extract()
+            }
         }
     } catch (error) {
         // @ts-ignore

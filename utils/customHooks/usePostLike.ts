@@ -1,13 +1,12 @@
-import Router from 'next/router';
 import { useEffect, useState, useRef } from 'react';
 import { LIKE_POST, UNLIKE_POST } from '../../pages/api/mutations';
-import { likedByUsers } from '../../ts/types';
+import { LikedByUsers } from '../../ts/types';
 import { userProfileAtom } from '../../lib/globalAtoms';
 import { useAtomValue } from 'jotai';
 import { useMutation } from '@apollo/client';
 
-export const HandlePostLikeState = (
-    { likedBy, _id }: { likedBy: likedByUsers[], _id: string }
+const usePostLike = (
+    { likedBy, _id }: { likedBy: LikedByUsers[], _id: string }
 ) => {
     // handling optimistic updates through react state instead of apollo
     const [isLiked, setIsLiked] = useState(false)
@@ -16,11 +15,12 @@ export const HandlePostLikeState = (
     // mutations 
     const [likePost] = useMutation(LIKE_POST)
     const [unlikePost] = useMutation(UNLIKE_POST)
+    // global states
     const userProfile = useAtomValue(userProfileAtom)
 
     useEffect(() => {
         const isCurrentlyLiked = !!likedBy
-            .find((user: likedByUsers) => user._id === userProfile?._id)
+            .find((user: LikedByUsers) => user._id === userProfile?._id)
 
         if (isCurrentlyLiked) {
             setIsLiked(true)
@@ -41,3 +41,5 @@ export const HandlePostLikeState = (
 
     return { isLiked, setIsLiked }
 }
+
+export default usePostLike;

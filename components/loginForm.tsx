@@ -15,7 +15,7 @@ import {
 import Router from 'next/router';
 
 const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
-    
+
     return (
         <Flex
             h={'92vh'}
@@ -38,15 +38,31 @@ const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
                     <Stack spacing={4} w="full">
                         <FormControl id="username" isRequired>
                             <FormLabel fontSize="sm">Username</FormLabel>
-                            <Input type="username" onChange={handleChange} data-input="username" size="sm" w="275px"/>
-
+                            <Input
+                                type="username"
+                                onChange={handleChange}
+                                data-input="username"
+                                size="sm"
+                                w="275px"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleFormSubmit(e)
+                                }}
+                            />
                         </FormControl>
                         <FormControl id="password" isRequired>
                             <FormLabel fontSize="sm">Password</FormLabel>
-                            <Input type="password" onChange={handleChange} data-input="password" size="sm"/>
+                            <Input
+                                type="password"
+                                onChange={handleChange}
+                                data-input="password"
+                                size="sm"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleFormSubmit(e)
+                                }}
+                            />
                         </FormControl>
                         <Stack spacing={10}>
-                            <Text fontSize="sm">{"Don't have an account? "}<Link color="twitter.500" onClick={()=> Router.push('/signup')}>Signup</Link></Text>
+                            <Text fontSize="sm">{"Don't have an account? "}<Link color="twitter.500" onClick={() => Router.push('/signup')}>Signup</Link></Text>
                             <Button
                                 isLoading={loading ? true : false}
                                 size="sm"
@@ -56,7 +72,9 @@ const LoginForm = ({ handleChange, error, handleFormSubmit, loading }: any) => {
                                 _hover={{
                                     bg: 'blue.500',
                                 }}
-                                onClick={(e) => handleFormSubmit(e)}>
+                                onClick={(e) => handleFormSubmit(e)}
+                            >
+
                                 Sign in
                             </Button>
                             {error ? (

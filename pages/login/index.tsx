@@ -65,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = createClient(context)
 
     try {
-        await client.query<any, any>({
+        await client.query({
             query: LOGIN_REDIRECT,
         })
 

@@ -13,7 +13,7 @@ interface AppPropsWithToken extends AppProps {
 
 function MyApp({ Component, pageProps, token }: AppPropsWithToken,) {
   const client = useApollo(token, true, pageProps.initialApolloState)
-  
+
   return (
     <ApolloProvider client={client}>
       <JotaiProvider>

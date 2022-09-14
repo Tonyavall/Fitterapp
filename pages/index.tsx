@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Layout from '../components/layouts/article'
 import { GetServerSideProps } from "next"
-import createClient from '../apollo/client'
+import initializeApollo from '../apollo/client'
 import { IS_LOGGED_IN } from "./api/queries"
 import { HOME_RECENT_POSTS } from './api/queries'
 import {
@@ -50,7 +50,7 @@ const Home: NextPage = ({ data }: any) => {
                 alignItems="center"
                 p=".8em"
               >
-                <Avatar size="sm" src={post.userId?.userImage} mr=".8em" onClick={() => Router.push(`/${post.userId.username}`)} cursor="pointer"/>
+                <Avatar size="sm" src={post.userId?.userImage} mr=".8em" onClick={() => Router.push(`/${post.userId.username}`)} cursor="pointer" />
                 <Text fontSize="sm" fontWeight="medium" onClick={() => Router.push(`/${post.userId.username}`)} cursor="pointer">{post.userId.username}</Text>
               </Box>
               <Image
@@ -181,14 +181,14 @@ const Home: NextPage = ({ data }: any) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const client = createClient(context)
+  const client = initializeApollo(context)
 
   try {
-    await client.query<any, any>({
+    await client.query({
       query: IS_LOGGED_IN,
     })
 
-    const data = await client.query<any, any>({
+    const data = await client.query({
       query: HOME_RECENT_POSTS,
     })
 

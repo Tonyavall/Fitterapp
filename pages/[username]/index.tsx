@@ -3,7 +3,7 @@ import Layout from '../../components/layouts/article'
 import Router from 'next/router';
 import { FIND_USER, FIND_USER_FOLLOW } from '../api/queries';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../api/mutations';
-import createClient from '../../apollo/client'
+import initializeApollo from '../../apollo/client'
 import { GetServerSideProps } from 'next'
 import {
     Avatar,
@@ -33,7 +33,7 @@ import { userProfileAtom } from '../../lib/globalAtoms';
 const User = ({ data: { data: { findUser } } }: any) => {
     const userProfile = useAtomValue(userProfileAtom)
     const [isFollowing, setIsfollowing] = useState(false)
-    
+
     const {
         _id,
         bio = '',
@@ -253,10 +253,10 @@ const User = ({ data: { data: { findUser } } }: any) => {
 // error.networkError.result.errors
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const username = context?.params?.username
-    const client = createClient(context)
+    const client = initializeApollo(context)
 
     try {
-        const data = await client.query<UserData, any>({
+        const data = await client.query({
             query: FIND_USER,
             variables: { username },
         })
