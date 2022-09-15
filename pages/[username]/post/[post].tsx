@@ -6,50 +6,63 @@ import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
 import initializeApollo from '../../../apollo/client';
-import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
+import { FIND_POST, FIND_POST_COMMENTS, FIND_USER_FOLLOW } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
 import ImageCarousel from '../../../components/imageCarousel'
 import { useRouter } from 'next/router';
 import usePostLike from '../../../utils/customHooks/usePostLike';
+import { LikedByUser } from '../../../ts/types'
 
-interface InitialApolloState {
-    [key: string]: {
-        _id: string;
-        postImage: string;
-        userImage: string;
-        userId: string;
-        outfit: object[];
-        likedBy: object[];
-        likes: number;
-    }
-
+interface Outfit {
+    top: {
+        image: string;
+    };
+    bottom: {
+        image: string;
+    };
+    footwear: {
+        image: string;
+    };
 }
 
-const Post = ({ initialApolloState }: InitialApolloState) => {
+interface userId {
+    userImage: string;
+    username: string;
+}
+
+interface PostData {
+    _id: string;
+    postImage: string;
+    userId: userId;
+    outfit: Outfit;
+    likedBy: LikedByUser[];
+    likes: number;
+    description: string;
+}
+
+const Post = ({ postData }: { postData: PostData }) => {
     const [commentBody, setCommentBody] = useState('')
     const Router = useRouter()
-    const postQueryId = Router.query.post
 
     const {
         _id,
         postImage,
         description,
-        userImage,
         userId,
         outfit,
         likedBy,
         likes
-    } = initialApolloState[`Post:${postQueryId}`]
+    } = postData
 
     // pass props here
     const { isLiked, setIsLiked } = usePostLike({ likedBy, _id })
 
     const {
         loading,
-        error,
         data
     } = useQuery(FIND_POST_COMMENTS, { variables: { postId: _id } })
+
 
     const [addPostComment] = useMutation(ADD_POST_COMMENT, {
         update(cache, { data: { addPostComment: { comments } } }) {
@@ -78,6 +91,21 @@ const Post = ({ initialApolloState }: InitialApolloState) => {
     const handleCommentAddition = () => {
         addPostComment({ variables: { postId: _id, commentBody: commentBody } })
         setCommentBody('')
+    }
+
+    const getLikedByNames = () => {
+        return likedBy.map(({ username }: { username: string }, i: number) => {
+            if (i === likedBy.length - 1) return (
+                <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
+                    {username}
+                </Text>
+            )
+            return (
+                <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
+                    {`${username}, `}
+                </Text>
+            )
+        })
     }
 
     return (
@@ -264,9 +292,32 @@ const Post = ({ initialApolloState }: InitialApolloState) => {
                         <Icon as={IoPaperPlaneOutline} h={6} w={6} />
                     </Box>
 
-                    {
-
+                    {!likedBy.length ?
+                        <Text
+                            ml="1.25em"
+                            mt={1}
+                            fontSize="sm"
+                        >
+                            {`Be the first to like ${userId.username}'s post!`}
+                        </Text>
+                        : likedBy.length <= 2 ?
+                            <Text
+                                ml="1.25em"
+                                mt={1}
+                                fontSize="sm"
+                            >
+                                Liked by {getLikedByNames()}
+                            </Text>
+                            :
+                            <Text
+                                ml="1.25em"
+                                mt={1}
+                                fontSize="sm"
+                            >
+                                Liked by {getLikedByNames()} and <Text as="span" fontWeight="bold">others</Text>.
+                            </Text>
                     }
+
                     <Text
                         ml="1.6em"
                         mt={1}
@@ -319,13 +370,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = initializeApollo(context)
 
     try {
-        await client.query({
+        const { data: { findSinglePost } } = await client.query({
             query: FIND_POST,
             variables: { postId }
         })
 
         return {
             props: {
+                postData: findSinglePost,
                 initialApolloState: client.cache.extract()
             }
         }

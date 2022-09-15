@@ -37,10 +37,10 @@ const Settings = () => {
     const [croppedImageBlob, setCroppedImageBlob] = useState({})
 
     const toast = useToast()
-    
+
     const { data } = useQuery(FIND_ME)
     const [bioInput, setBioInput] = useState(data?.findMe?.bio)
-    
+
     const [updateUser] = useMutation(UPDATE_USER, {
         update(cache, { data: { updateUser: { bio, userImage } } }) {
             const { findMe }: any = cache.readQuery({
@@ -78,7 +78,7 @@ const Settings = () => {
                 body: croppedImageBlob
             })
             const s3ImageUrl = uploadUrl.split('?')[0]
-    
+
             updateUser({ variables: { bio: bioInput, userImage: s3ImageUrl } })
         } else {
             updateUser({ variables: { bio: bioInput } })
@@ -323,11 +323,11 @@ const Settings = () => {
     )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context:any) => {
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
     const client = createClient(context)
 
     try {
-        await client.query<any, any>({
+        await client.query({
             query: IS_LOGGED_IN,
         })
 

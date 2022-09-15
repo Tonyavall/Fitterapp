@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { LIKE_POST, UNLIKE_POST } from '../../pages/api/mutations';
-import { LikedByUsers } from '../../ts/types';
+import { LikedByUser } from '../../ts/types';
 import { userProfileAtom } from '../../lib/globalAtoms';
 import { useAtomValue } from 'jotai';
 import { useMutation } from '@apollo/client';
 
 const usePostLike = (
-    { likedBy, _id }: { likedBy: LikedByUsers[], _id: string }
+    { likedBy, _id }: { likedBy: LikedByUser[], _id: string }
 ) => {
     // handling optimistic updates through react state instead of apollo
     const [isLiked, setIsLiked] = useState(false)
@@ -19,9 +19,9 @@ const usePostLike = (
     const userProfile = useAtomValue(userProfileAtom)
 
     useEffect(() => {
-        const isCurrentlyLiked = !!likedBy
-            .find((user: LikedByUsers) => user._id === userProfile?._id)
-
+        const isCurrentlyLiked = likedBy
+            .find((user: LikedByUser) => user._id === userProfile?._id)
+        console.log(likedBy)
         if (isCurrentlyLiked) {
             setIsLiked(true)
         } else {

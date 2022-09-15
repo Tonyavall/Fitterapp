@@ -24,9 +24,11 @@ export const FIND_USER_FOLLOW = gql`
       _id
       followers {
         _id
+        username
       }
       following {
         _id
+        username
       }
       followerCount
       followingCount

@@ -30,7 +30,7 @@ interface UserData {
 import { useAtomValue } from 'jotai';
 import { userProfileAtom } from '../../lib/globalAtoms';
 
-const User = ({ data: { data: { findUser } } }: any) => {
+const User = ({ userData }: any) => {
     const userProfile = useAtomValue(userProfileAtom)
     const [isFollowing, setIsfollowing] = useState(false)
 
@@ -43,7 +43,7 @@ const User = ({ data: { data: { findUser } } }: any) => {
         posts = [],
         userImage = '',
         username = 'John Doe',
-    } = findUser
+    } = userData
 
     // current users following
     const { data: userFollowData } = useQuery(FIND_USER_FOLLOW, {
@@ -256,13 +256,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = initializeApollo(context)
 
     try {
-        const data = await client.query({
+        const { data: { findUser } } = await client.query({
             query: FIND_USER,
-            variables: { username },
+            variables: { username }
         })
 
         return {
-            props: { data },
+            props: {
+                userData: findUser,
+                initialApolloState: client.cache.extract()
+            }
         }
     } catch (error) {
         // @ts-ignore
