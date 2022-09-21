@@ -9,7 +9,7 @@ import Router from "next/router";
 import Layout from "../../components/layouts/article";
 import { GetServerSideProps } from "next";
 import { LOGIN_REDIRECT } from "../api/queries";
-import createClient from "../../apollo/client";
+import initializeApollo from "../../apollo/client";
 
 const Login = () => {
     const [formState, setFormState] = useState({ username: '', password: '' });
@@ -62,7 +62,7 @@ const Login = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const client = createClient(context)
+    const client = initializeApollo(context)
 
     try {
         await client.query({

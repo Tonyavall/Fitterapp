@@ -4,8 +4,8 @@ import { ApolloProvider } from '@apollo/client';
 import Layout from '../components/layouts/main';
 import { Provider as JotaiProvider } from 'jotai';
 import { useApollo } from '../apollo/client';
-import cookie from 'next-cookies'
-import App from 'next/app'
+import cookie from 'next-cookies';
+import App from 'next/app';
 
 interface AppPropsWithToken extends AppProps {
   token: string

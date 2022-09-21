@@ -1,9 +1,9 @@
-import type { NextPage } from 'next'
-import Layout from '../components/layouts/article'
-import { GetServerSideProps } from "next"
-import initializeApollo from '../apollo/client'
-import { IS_LOGGED_IN } from "./api/queries"
-import { HOME_RECENT_POSTS } from './api/queries'
+import type { NextPage } from 'next';
+import Layout from '../components/layouts/article';
+import { GetServerSideProps } from "next";
+import initializeApollo from '../apollo/client';
+import { IS_LOGGED_IN } from "./api/queries";
+import { HOME_RECENT_POSTS } from './api/queries';
 import {
   Box,
   Avatar,
@@ -11,17 +11,16 @@ import {
   Image,
   Icon,
   Heading,
-} from '@chakra-ui/react'
-import Router from 'next/router'
-import { AiOutlineHeart } from 'react-icons/ai'
-import { BsChat } from 'react-icons/bs'
-import { IoPaperPlaneOutline } from 'react-icons/io5'
-import { useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
-import { FIND_THREE_RECOMMENDED } from './api/queries'
-import SocialCard from '../components/socialCard'
-import { userProfileAtom } from '../lib/globalAtoms'
-import { useAtomValue } from 'jotai'
+} from '@chakra-ui/react';
+import Router from 'next/router';
+import { AiOutlineHeart } from 'react-icons/ai';
+import { BsChat } from 'react-icons/bs';
+import { IoPaperPlaneOutline } from 'react-icons/io5';
+import { useQuery } from '@apollo/client';
+import { FIND_THREE_RECOMMENDED } from './api/queries';
+import SocialCard from '../components/socialCard';
+import { userProfileAtom } from '../lib/globalAtoms';
+import { useAtomValue } from 'jotai';
 
 const Home: NextPage = ({ data }: any) => {
   const posts = data?.data?.homeRecentPosts

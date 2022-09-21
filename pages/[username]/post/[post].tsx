@@ -13,6 +13,8 @@ import ImageCarousel from '../../../components/imageCarousel'
 import { useRouter } from 'next/router';
 import usePostLike from '../../../utils/customHooks/usePostLike';
 import { LikedByUser } from '../../../ts/types'
+import { useAtomValue } from 'jotai'
+import { userProfileAtom } from '../../../lib/globalAtoms'
 
 interface Outfit {
     top: {
@@ -37,12 +39,12 @@ interface PostData {
     userId: userId;
     outfit: Outfit;
     likedBy: LikedByUser[];
-    likes: number;
     description: string;
 }
 
 const Post = ({ postData }: { postData: PostData }) => {
     const [commentBody, setCommentBody] = useState('')
+    const userProfile = useAtomValue(userProfileAtom)
     const Router = useRouter()
 
     const {
@@ -51,12 +53,12 @@ const Post = ({ postData }: { postData: PostData }) => {
         description,
         userId,
         outfit,
-        likedBy,
-        likes
+        likedBy
     } = postData
 
     // pass props here
-    const { isLiked, setIsLiked } = usePostLike({ likedBy, _id })
+    const [likedByUsers, setLikedByUsers] = useState<LikedByUser[] | []>(likedBy)
+    const { isLiked, setIsLiked } = usePostLike({ likedBy, _id, userProfile })
 
     const {
         loading,
@@ -94,8 +96,8 @@ const Post = ({ postData }: { postData: PostData }) => {
     }
 
     const getLikedByNames = () => {
-        return likedBy.map(({ username }: { username: string }, i: number) => {
-            if (i === likedBy.length - 1) return (
+        return likedByUsers.map(({ username }: { username: string }, i: number) => {
+            if (i === likedByUsers.length - 1) return (
                 <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
                     {username}
                 </Text>
@@ -286,13 +288,34 @@ const Post = ({ postData }: { postData: PostData }) => {
                             h={7} w={7}
                             ml="1em"
                             mr={4}
-                            onClick={() => setIsLiked(!isLiked)}
+                            onClick={() => {
+                                if (!userProfile) return;
+                                setIsLiked(!isLiked);
+
+                                if (isLiked) {
+                                    setLikedByUsers((likedByUsers: LikedByUser[]) => (
+                                        // .filter could pose problems in the long run when likes
+                                        // count of users is much larger 
+                                        likedByUsers.filter(({ _id }) => _id !== userProfile._id)
+                                    ));
+                                } else {
+                                    const currentUser = {
+                                        _id: userProfile._id,
+                                        username: userProfile.username,
+                                        userImage: userProfile.userImage,
+                                        __typename: "User"
+                                    }
+                                    setLikedByUsers((likedByUsers: LikedByUser[]) => (
+                                        [...likedByUsers, currentUser]
+                                    ))
+                                }
+                            }}
                         />
                         <Icon as={BsChat} h="22px" w="22px" strokeWidth=".5px" mr={4} />
                         <Icon as={IoPaperPlaneOutline} h={6} w={6} />
                     </Box>
 
-                    {!likedBy.length ?
+                    {!likedByUsers.length ?
                         <Text
                             ml="1.25em"
                             mt={1}
@@ -300,7 +323,7 @@ const Post = ({ postData }: { postData: PostData }) => {
                         >
                             {`Be the first to like ${userId.username}'s post!`}
                         </Text>
-                        : likedBy.length <= 2 ?
+                        : likedByUsers.length <= 2 ?
                             <Text
                                 ml="1.25em"
                                 mt={1}
@@ -314,7 +337,7 @@ const Post = ({ postData }: { postData: PostData }) => {
                                 mt={1}
                                 fontSize="sm"
                             >
-                                Liked by {getLikedByNames()} and <Text as="span" fontWeight="bold">others</Text>.
+                                Liked by {getLikedByNames()} and <Text as="span" fontWeight="bold">{likedByUsers.length} others</Text>.
                             </Text>
                     }
 

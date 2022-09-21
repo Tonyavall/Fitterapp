@@ -1,6 +1,6 @@
 import { atom } from "jotai"
 
-type tokenLayout = {
+export type UserProfile = {
     email: string
     username: string
     _id: string
@@ -8,4 +8,4 @@ type tokenLayout = {
     userImage: string
 }
 
-export const userProfileAtom = atom<tokenLayout | null>(null)
+export const userProfileAtom = atom<UserProfile | null>(null)

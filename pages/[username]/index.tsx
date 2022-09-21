@@ -15,27 +15,28 @@ import {
     Box,
     Grid,
     GridItem,
-    Img
 } from "@chakra-ui/react";
 import { useQuery, useMutation } from '@apollo/client'
-interface UserData {
-    _id: string
-    username: string
-    firstName: string
-    lastName: string
-    userImage: string
-    postCount: string
-    posts: object[]
-}
 import { useAtomValue } from 'jotai';
 import { userProfileAtom } from '../../lib/globalAtoms';
 
-const User = ({ userData }: any) => {
+interface UserData {
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    userImage: string;
+    postCount: string;
+    posts: object[];
+    bio: string;
+}
+
+const User = ({ findUser }: { findUser: UserData }) => {
     const userProfile = useAtomValue(userProfileAtom)
     const [isFollowing, setIsfollowing] = useState(false)
 
     const {
-        _id,
+        _id = '',
         bio = '',
         firstName = 'John',
         lastName = 'Doe',
@@ -43,7 +44,7 @@ const User = ({ userData }: any) => {
         posts = [],
         userImage = '',
         username = 'John Doe',
-    } = userData
+    } = findUser
 
     // current users following
     const { data: userFollowData } = useQuery(FIND_USER_FOLLOW, {
@@ -250,6 +251,7 @@ const User = ({ userData }: any) => {
         </Layout >
     )
 }
+
 // error.networkError.result.errors
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const username = context?.params?.username
@@ -263,7 +265,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
         return {
             props: {
-                userData: findUser,
+                findUser,
                 initialApolloState: client.cache.extract()
             }
         }

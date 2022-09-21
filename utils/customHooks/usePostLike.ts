@@ -1,14 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import { LIKE_POST, UNLIKE_POST } from '../../pages/api/mutations';
 import { LikedByUser } from '../../ts/types';
-import { userProfileAtom } from '../../lib/globalAtoms';
-import { useAtomValue } from 'jotai';
+import { UserProfile } from '../../lib/globalAtoms'
 import { useMutation } from '@apollo/client';
 
 const usePostLike = (
-    { likedBy, _id }: { likedBy: LikedByUser[], _id: string }
+    { likedBy, _id, userProfile }:
+        { likedBy: LikedByUser[], _id: string, userProfile: UserProfile | null }
 ) => {
     // handling optimistic updates through react state instead of apollo
+    // the reason being I don't want to send a request on every button click
+    // instead, the request is being sent evertime the user leaves the page
+    // based on the isLiked state value
     const [isLiked, setIsLiked] = useState(false)
     const isLikedRef = useRef(false)
     isLikedRef.current = isLiked;
@@ -16,27 +19,28 @@ const usePostLike = (
     const [likePost] = useMutation(LIKE_POST)
     const [unlikePost] = useMutation(UNLIKE_POST)
     // global states
-    const userProfile = useAtomValue(userProfileAtom)
 
     useEffect(() => {
         const isCurrentlyLiked = likedBy
             .find((user: LikedByUser) => user._id === userProfile?._id)
-        console.log(likedBy)
+
         if (isCurrentlyLiked) {
             setIsLiked(true)
         } else {
             setIsLiked(false)
         }
 
-        const handleWindowUnload = () => {
+        const handlePostStateOnLeave = () => {
             if (isLikedRef.current) {
                 likePost({ variables: { postId: _id } })
             } else {
                 unlikePost({ variables: { postId: _id } })
             }
         }
-        window.addEventListener('beforeunload', handleWindowUnload)
-
+        // if the user leaves the window we send a request to the backend
+        window.addEventListener('beforeunload', handlePostStateOnLeave)
+        // likewise, we do the same for when this component unloads 
+        return handlePostStateOnLeave
     }, [_id, likePost, likedBy, unlikePost, userProfile])
 
     return { isLiked, setIsLiked }
