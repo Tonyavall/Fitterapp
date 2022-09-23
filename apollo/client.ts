@@ -9,13 +9,13 @@ import { useMemo } from 'react';
 import merge from 'deepmerge';
 import { GetServerSidePropsContext } from 'next';
 
-let apolloClient: any
-const local = process.env.NODE_ENV !== "production"
+let apolloClient: any;
+const local = process.env.NODE_ENV !== "production";
 
-export const createClient = (context: GetServerSidePropsContext | string, isToken = false) => {
+const createClient = (context: GetServerSidePropsContext | string, isToken = false) => {
     // in the initial apollo provider client we just pass the token itself
     // @ts-ignore
-    const token = isToken ? context : cookie(context).token
+    const token = isToken ? context : cookie(context).token;
 
     const httpLink = createHttpLink({
         uri: local ? 'http://localhost:3000/api/graphql' : 'https://fitterapp.vercel.app/api/graphql'
@@ -38,18 +38,18 @@ export const createClient = (context: GetServerSidePropsContext | string, isToke
     });
 }
 
-export function initializeApollo(context: GetServerSidePropsContext | string, isToken = false, initialState = null) {
+function initializeApollo(context: GetServerSidePropsContext | string, isToken = false, initialState = null) {
     const _apolloClient = apolloClient ?? createClient(context, isToken)
 
     // Merging existing cache
     if (initialState) {
-        const existingCache = _apolloClient.extract()
-        const data = merge(initialState, existingCache)
-        _apolloClient.cache.restore(data)
+        const existingCache = _apolloClient.extract();
+        const data = merge(initialState, existingCache);
+        _apolloClient.cache.restore(data);
     }
-    // note- always create a new client for ssr
-    if (typeof window === 'undefined') return _apolloClient
-    if (!apolloClient) apolloClient = _apolloClient
+    // note- always creates a new client for ssr
+    if (typeof window === 'undefined') return _apolloClient;
+    if (!apolloClient) apolloClient = _apolloClient;
 
     return _apolloClient
 }
@@ -57,8 +57,8 @@ export function initializeApollo(context: GetServerSidePropsContext | string, is
 // typing - initialState = current cache | is initially null
 export function useApollo(context: GetServerSidePropsContext | string, isToken = false, initialState = null) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const store = useMemo(() => initializeApollo(context, isToken, initialState), [initialState])
-    return store
+    const store = useMemo(() => initializeApollo(context, isToken, initialState), [initialState]);
+    return store;
 }
 
 export default initializeApollo

@@ -15,28 +15,33 @@ import usePostLike from '../../../utils/customHooks/usePostLike';
 import { LikedByUser } from '../../../ts/types'
 import { useAtomValue } from 'jotai'
 import { userProfileAtom } from '../../../lib/globalAtoms'
+import { UserProfile } from '../../../ts/types'
 
 interface Outfit {
     top: {
         image: string;
+        __typename: string;
     };
     bottom: {
         image: string;
+        __typename: string;
     };
     footwear: {
         image: string;
+        __typename: string;
     };
 }
 
-interface userId {
+interface UserId {
     userImage: string;
     username: string;
+    __typename: string;
 }
 
 interface PostData {
     _id: string;
     postImage: string;
-    userId: userId;
+    userId: UserId;
     outfit: Outfit;
     likedBy: LikedByUser[];
     description: string;
@@ -44,7 +49,7 @@ interface PostData {
 
 const Post = ({ postData }: { postData: PostData }) => {
     const [commentBody, setCommentBody] = useState('')
-    const userProfile = useAtomValue(userProfileAtom)
+    const userProfile: UserProfile | null | undefined = useAtomValue(userProfileAtom)
     const Router = useRouter()
 
     const {
@@ -97,11 +102,13 @@ const Post = ({ postData }: { postData: PostData }) => {
 
     const getLikedByNames = () => {
         return likedByUsers.map(({ username }: { username: string }, i: number) => {
+            // if its the last index
             if (i === likedByUsers.length - 1) return (
                 <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
                     {username}
                 </Text>
             )
+            // otherwise
             return (
                 <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
                     {`${username}, `}

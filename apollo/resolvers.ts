@@ -73,6 +73,7 @@ export const resolvers = {
                     const user = await User
                         .findById(data._id)
                         .populate('outfits')
+                    console.log(user.username)
                     return user;
                 }
             } catch (error) {

@@ -1,11 +1,4 @@
-import { atom } from "jotai"
+import { atom } from "jotai";
+import { UserProfile } from '../ts/types';
 
-export type UserProfile = {
-    email: string
-    username: string
-    _id: string
-    isAdmin: boolean
-    userImage: string
-}
-
-export const userProfileAtom = atom<UserProfile | null>(null)
+export const userProfileAtom = atom<UserProfile | null | undefined>(null)

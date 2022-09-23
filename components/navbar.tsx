@@ -39,6 +39,7 @@ import { FIND_ME } from "../pages/api/queries";
 import { userProfileAtom } from "../lib/globalAtoms";
 import { useAtom } from "jotai";
 import Search from './search'
+import { FindMeUserData } from "../ts/types";
 
 // https://choc-ui.com/docs/packages/autocomplete\
 // https://stackoverflow.com/questions/65460085/open-a-page-in-a-next-js-website-as-an-overlay
@@ -49,7 +50,7 @@ const Navbar = () => {
     const mobileNav = useDisclosure();
     const client = useApolloClient()
     const [logout] = useMutation(LOGOUT)
-    const { data: userProfileData } = useQuery(FIND_ME)
+    const { data: userProfileData } = useQuery<FindMeUserData>(FIND_ME)
     const [userProfile, setUserProfile] = useAtom(userProfileAtom)
 
     useEffect(() => {

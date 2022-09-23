@@ -20,18 +20,25 @@ import { useQuery, useMutation } from '@apollo/client'
 import { useAtomValue } from 'jotai';
 import { userProfileAtom } from '../../lib/globalAtoms';
 
+type Post = {
+    postImage: string;
+    __typename: string;
+    _id: string;
+}
+
 interface UserData {
     _id: string;
+    __typename: string;
     username: string;
     firstName: string;
     lastName: string;
     userImage: string;
-    postCount: string;
-    posts: object[];
+    postCount: number;
+    posts: Post[];
     bio: string;
 }
 
-const User = ({ findUser }: { findUser: UserData }) => {
+const User = ({ userData }: { userData: UserData }) => {
     const userProfile = useAtomValue(userProfileAtom)
     const [isFollowing, setIsfollowing] = useState(false)
 
@@ -44,7 +51,7 @@ const User = ({ findUser }: { findUser: UserData }) => {
         posts = [],
         userImage = '',
         username = 'John Doe',
-    } = findUser
+    } = userData
 
     // current users following
     const { data: userFollowData } = useQuery(FIND_USER_FOLLOW, {
@@ -258,14 +265,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const client = initializeApollo(context)
 
     try {
-        const { data: { findUser } } = await client.query({
+        const { data: { findUser } }: { data: { findUser: UserData } } = await client.query({
             query: FIND_USER,
             variables: { username }
         })
 
         return {
             props: {
-                findUser,
+                userData: findUser,
                 initialApolloState: client.cache.extract()
             }
         }

@@ -28,15 +28,15 @@ const Search = () => {
                     {data?.findAllUsernames?.map((user: any, oid: any) => (
                         <AutoCompleteItem
                             key={`fruits-${oid}`}
-                            value={user.username}
+                            value={user.username || ''}
                             textTransform="capitalize"
                             onClick={() => Router.push(`/${user.username}`)}
                             w="full"
                             mb={0}
                             fontSize="sm"
                         >
-                            <Avatar size="sm" src={user.userImage} mr={5}/>
-                            {user.username}
+                            <Avatar size="sm" src={user.userImage} mr={5} />
+                            {user.username || ''}
                         </AutoCompleteItem>
                     ))}
                 </AutoCompleteGroup>

@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { LIKE_POST, UNLIKE_POST } from '../../pages/api/mutations';
 import { LikedByUser } from '../../ts/types';
-import { UserProfile } from '../../lib/globalAtoms'
+import { UserProfile } from '../../ts/types'
 import { useMutation } from '@apollo/client';
 
 const usePostLike = (
     { likedBy, _id, userProfile }:
-        { likedBy: LikedByUser[], _id: string, userProfile: UserProfile | null }
+        { likedBy: LikedByUser[], _id: string, userProfile: UserProfile | null | undefined }
 ) => {
     // handling optimistic updates through react state instead of apollo
     // the reason being I don't want to send a request on every button click
