@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactElement, MouseEvent } from 'react';
 import Layout from '../../components/layouts/article'
 import Router from 'next/router';
 import { FIND_USER, FIND_USER_FOLLOW } from '../api/queries';
@@ -38,7 +38,11 @@ interface UserData {
     bio: string;
 }
 
-const User = ({ userData }: { userData: UserData }) => {
+interface Props {
+    userData: UserData;
+}
+
+const User: React.FC<Props> = ({ userData }: { userData: UserData }): ReactElement => {
     const userProfile = useAtomValue(userProfileAtom)
     const [isFollowing, setIsfollowing] = useState(false)
 
@@ -94,7 +98,7 @@ const User = ({ userData }: { userData: UserData }) => {
                 query: FIND_USER_FOLLOW,
                 variables: { username }
             })
-            console.log(followers)
+
             cache.writeQuery({
                 query: FIND_USER_FOLLOW,
                 data: {
@@ -108,19 +112,19 @@ const User = ({ userData }: { userData: UserData }) => {
         }
     })
 
-    const handlePostClick = (e: any) => {
-        const postId = e.target.dataset.postid
-        Router.push(`${username}/post/${postId}`)
+    const handlePostClick = (e: MouseEvent<HTMLElement>): void => {
+        const postId: string | undefined = (e.target as HTMLTextAreaElement).dataset.postid;
+        Router.push(`${username}/post/${postId}`);
     }
 
-    const handleUserFollow = () => {
-        followUser({ variables: { userId: _id } })
-        setIsfollowing(true)
+    const handleUserFollow = (): void => {
+        followUser({ variables: { userId: _id } });
+        setIsfollowing(true);
     }
 
-    const handleUserUnfollow = () => {
-        unFollowUser({ variables: { userId: _id } })
-        setIsfollowing(false)
+    const handleUserUnfollow = (): void => {
+        unFollowUser({ variables: { userId: _id } });
+        setIsfollowing(false);
     }
 
     return (

@@ -1,18 +1,24 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, SetStateAction } from 'react';
 import { LIKE_POST, UNLIKE_POST } from '../../pages/api/mutations';
 import { LikedByUser } from '../../ts/types';
 import { UserProfile } from '../../ts/types'
 import { useMutation } from '@apollo/client';
+import { UsePostLikeReturnValues } from '../../ts/types'
+
+interface Props {
+    likedBy: LikedByUser[];
+    _id: string;
+    userProfile: UserProfile | null | undefined;
+}
 
 const usePostLike = (
-    { likedBy, _id, userProfile }:
-        { likedBy: LikedByUser[], _id: string, userProfile: UserProfile | null | undefined }
-) => {
+    { likedBy, _id, userProfile }: Props
+): UsePostLikeReturnValues => {
     // handling optimistic updates through react state instead of apollo
     // the reason being I don't want to send a request on every button click
-    // instead, the request is being sent evertime the user leaves the page
+    // instead, the request is being sent everytime the user leaves the page
     // based on the isLiked state value
-    const [isLiked, setIsLiked] = useState(false)
+    const [isLiked, setIsLiked] = useState<boolean>(false)
     const isLikedRef = useRef(false)
     isLikedRef.current = isLiked;
     // mutations 
@@ -30,7 +36,7 @@ const usePostLike = (
             setIsLiked(false)
         }
 
-        const handlePostStateOnLeave = () => {
+        const handlePostStateOnLeave = (): void => {
             if (isLikedRef.current) {
                 likePost({ variables: { postId: _id } })
             } else {

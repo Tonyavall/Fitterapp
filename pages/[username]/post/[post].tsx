@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ReactElement, ChangeEvent } from 'react';
 import Layout from '../../../components/layouts/article'
 import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button, Spinner } from '@chakra-ui/react';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
@@ -6,16 +6,16 @@ import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
 import initializeApollo from '../../../apollo/client';
-import { FIND_POST, FIND_POST_COMMENTS, FIND_USER_FOLLOW } from '../../api/queries';
+import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
-import ImageCarousel from '../../../components/imageCarousel'
+import ImageCarousel from '../../../components/imageCarousel';
 import { useRouter } from 'next/router';
 import usePostLike from '../../../utils/customHooks/usePostLike';
-import { LikedByUser } from '../../../ts/types'
-import { useAtomValue } from 'jotai'
-import { userProfileAtom } from '../../../lib/globalAtoms'
-import { UserProfile } from '../../../ts/types'
+import { LikedByUser } from '../../../ts/types';
+import { useAtomValue } from 'jotai';
+import { userProfileAtom } from '../../../lib/globalAtoms';
+import { UserProfile, UsePostLikeReturnValues } from '../../../ts/types';
 
 interface Outfit {
     top: {
@@ -47,8 +47,23 @@ interface PostData {
     description: string;
 }
 
-const Post = ({ postData }: { postData: PostData }) => {
-    const [commentBody, setCommentBody] = useState('')
+interface Props {
+    postData: PostData;
+}
+
+interface Comment {
+    commentBody: string;
+    userId: UserId;
+    __typename: string;
+    _id: string;
+}
+
+interface CommentsQuery {
+    findPostComments: Comment[];
+}
+
+const Post: React.FC<Props> = ({ postData }): ReactElement => {
+    const [commentBody, setCommentBody] = useState<string>('')
     const userProfile: UserProfile | null | undefined = useAtomValue(userProfileAtom)
     const Router = useRouter()
 
@@ -63,17 +78,16 @@ const Post = ({ postData }: { postData: PostData }) => {
 
     // pass props here
     const [likedByUsers, setLikedByUsers] = useState<LikedByUser[] | []>(likedBy)
-    const { isLiked, setIsLiked } = usePostLike({ likedBy, _id, userProfile })
+    const { isLiked, setIsLiked }: UsePostLikeReturnValues = usePostLike({ likedBy, _id, userProfile })
 
     const {
         loading,
         data
     } = useQuery(FIND_POST_COMMENTS, { variables: { postId: _id } })
 
-
     const [addPostComment] = useMutation(ADD_POST_COMMENT, {
         update(cache, { data: { addPostComment: { comments } } }) {
-            const { findPostComments }: any = cache.readQuery({
+            const data: CommentsQuery | null = cache.readQuery({
                 query: FIND_POST_COMMENTS,
                 variables: { postId: _id }
             });
@@ -82,7 +96,7 @@ const Post = ({ postData }: { postData: PostData }) => {
                 query: FIND_POST_COMMENTS,
                 data: {
                     findPostComments: {
-                        ...findPostComments,
+                        ...data?.findPostComments,
                         comments: comments
                     }
                 }
@@ -90,31 +104,48 @@ const Post = ({ postData }: { postData: PostData }) => {
         }
     })
 
-    const handleCommentInputChange = (e: any) => {
+    const handleCommentInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const commentBody = e.target.value
         setCommentBody(commentBody)
     }
 
-    const handleCommentAddition = () => {
+    const handleCommentAddition = (): void => {
         addPostComment({ variables: { postId: _id, commentBody: commentBody } })
         setCommentBody('')
     }
 
-    const getLikedByNames = () => {
-        return likedByUsers.map(({ username }: { username: string }, i: number) => {
-            // if its the last index
-            if (i === likedByUsers.length - 1) return (
-                <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
-                    {username}
-                </Text>
-            )
-            // otherwise
+    const getLikedByNames = (getSingleName: boolean = false): JSX.Element | JSX.Element[] => {
+        if (getSingleName) {
+            // randomizing the user triggers a hydration error
+            // const randomNumber: number = Math.floor(Math.random() * likedByUsers.length)
+            // setting randomUsername to first index till fixed
+            const randomUsername: string = likedByUsers[0].username
+
             return (
-                <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
-                    {`${username}, `}
+                <Text key={randomUsername} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${randomUsername}`)}>
+                    {randomUsername}
                 </Text>
             )
-        })
+        } else {
+            const likedByUsersElements: JSX.Element[] = likedByUsers.map(({ username }: { username: string }, i: number) => {
+                // if its the last index
+                if (i === likedByUsers.length - 1) {
+                    return (
+                        <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
+                            {username}
+                        </Text>
+                    )
+                }
+                // otherwise
+                return (
+                    <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
+                        {`${username}, `}
+                    </Text>
+                )
+            })
+
+            return likedByUsersElements;
+        }
     }
 
     return (
@@ -344,7 +375,7 @@ const Post = ({ postData }: { postData: PostData }) => {
                                 mt={1}
                                 fontSize="sm"
                             >
-                                Liked by {getLikedByNames()} and <Text as="span" fontWeight="bold">{likedByUsers.length} others</Text>.
+                                Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likedByUsers.length - 1} others</Text>.
                             </Text>
                     }
 

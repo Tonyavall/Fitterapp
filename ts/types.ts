@@ -1,3 +1,5 @@
+import { SetStateAction } from "react";
+
 export interface LikedByUser {
     _id: string;
     userImage: string;
@@ -24,4 +26,10 @@ export interface FindMeUserData {
         __typename: string;
         _id: string;
     } | null | undefined
+}
+
+// this hook returns a state variable with a setter function
+export interface UsePostLikeReturnValues {
+    isLiked: boolean;
+    setIsLiked: React.Dispatch<SetStateAction<boolean>>;
 }
