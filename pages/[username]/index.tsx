@@ -4,7 +4,7 @@ import Router from 'next/router';
 import { FIND_USER, FIND_USER_FOLLOW } from '../api/queries';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../api/mutations';
 import initializeApollo from '../../apollo/client'
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import {
     Avatar,
     Heading,
@@ -42,7 +42,7 @@ interface Props {
     userData: UserData;
 }
 
-const User: React.FC<Props> = ({ userData }: { userData: UserData }): ReactElement => {
+const User: NextPage<Props> = ({ userData }): ReactElement => {
     const userProfile = useAtomValue(userProfileAtom)
     const [isFollowing, setIsfollowing] = useState(false)
 

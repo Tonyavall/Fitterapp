@@ -110,8 +110,9 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
     }
 
     const handleCommentAddition = (): void => {
-        addPostComment({ variables: { postId: _id, commentBody: commentBody } })
-        setCommentBody('')
+        if (!commentBody) return;
+        addPostComment({ variables: { postId: _id, commentBody: commentBody } });
+        setCommentBody('');
     }
 
     const getLikedByNames = (getSingleName: boolean = false): JSX.Element | JSX.Element[] => {
@@ -353,35 +354,40 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                         <Icon as={IoPaperPlaneOutline} h={6} w={6} />
                     </Box>
 
-                    {!likedByUsers.length ?
-                        <Text
-                            ml="1.25em"
-                            mt={1}
-                            fontSize="sm"
-                        >
-                            {`Be the first to like ${userId.username}'s post!`}
-                        </Text>
-                        : likedByUsers.length <= 2 ?
+                    <Box
+                        h="31px"
+                        overflow="auto"
+                    >
+                        {!likedByUsers.length ?
                             <Text
                                 ml="1.25em"
                                 mt={1}
                                 fontSize="sm"
                             >
-                                Liked by {getLikedByNames()}
+                                {`Be the first to like ${userId.username}'s post!`}
                             </Text>
-                            :
-                            <Text
-                                ml="1.25em"
-                                mt={1}
-                                fontSize="sm"
-                            >
-                                Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likedByUsers.length - 1} others</Text>.
-                            </Text>
-                    }
+                            : likedByUsers.length <= 2 ?
+                                <Text
+                                    ml="1.25em"
+                                    mt={1}
+                                    fontSize="sm"
+                                >
+                                    Liked by {getLikedByNames()}
+                                </Text>
+                                :
+                                <Text
+                                    ml="1.25em"
+                                    mt={1}
+                                    fontSize="sm"
+                                >
+                                    Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likedByUsers.length - 1} others</Text>.
+                                </Text>
+                        }
+                    </Box>
 
                     <Text
                         ml="1.6em"
-                        mt={1}
+                        mt="1.25px"
                         fontSize=".7em"
                         fontWeight="light"
                     >
@@ -398,8 +404,8 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                         <Input
                             placeholder='Add a comment'
                             fontSize="sm"
-                            w="250px" h="35px"
-                            border="none"
+                            w="250px" h="27.5px"
+                            borderRadius="none"
                             onChange={handleCommentInputChange}
                             value={commentBody}
                             onKeyDown={(e) => {
@@ -408,13 +414,15 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                         />
                         {/* @ts-ignore */}
                         <Button
-                            h="35px"
+                            h="27.5px"
                             border="none"
                             bg="white"
                             fontSize="sm"
                             color="twitter.600"
                             fontWeight="bold"
                             ml="1px"
+                            mt={0}
+                            borderRadius="none"
                             onClick={handleCommentAddition}
                         >
                             Post
