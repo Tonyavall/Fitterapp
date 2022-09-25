@@ -237,6 +237,7 @@ export const resolvers = {
                         .find({ userId: following.map(({ _id }: { _id: ObjectId }) => _id) })
                         .populate([
                             'userId',
+                            'likedBy',
                             {
                                 path: 'comments',
                                 populate: ['userId']

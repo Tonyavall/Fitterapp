@@ -32,7 +32,7 @@ interface Outfit {
     };
 }
 
-interface UserId {
+export interface UserId {
     userImage: string;
     username: string;
     __typename: string;
@@ -51,7 +51,7 @@ interface Props {
     postData: PostData;
 }
 
-interface Comment {
+export interface Comment {
     commentBody: string;
     userId: UserId;
     __typename: string;
@@ -77,8 +77,12 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
     } = postData
 
     // pass props here
-    const [likedByUsers, setLikedByUsers] = useState<LikedByUser[] | []>(likedBy)
-    const { isLiked, setIsLiked }: UsePostLikeReturnValues = usePostLike({ likedBy, _id, userProfile })
+    const {
+        isLiked,
+        getLikedByNames,
+        handleLikeBtnClick,
+        likesCount
+    }: UsePostLikeReturnValues = usePostLike({ likedBy, _id, userProfile })
 
     const {
         loading,
@@ -110,43 +114,9 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
     }
 
     const handleCommentAddition = (): void => {
-        if (!commentBody) return;
-        addPostComment({ variables: { postId: _id, commentBody: commentBody } });
-        setCommentBody('');
-    }
-
-    const getLikedByNames = (getSingleName: boolean = false): JSX.Element | JSX.Element[] => {
-        if (getSingleName) {
-            // randomizing the user triggers a hydration error
-            // const randomNumber: number = Math.floor(Math.random() * likedByUsers.length)
-            // setting randomUsername to first index till fixed
-            const randomUsername: string = likedByUsers[0].username
-
-            return (
-                <Text key={randomUsername} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${randomUsername}`)}>
-                    {randomUsername}
-                </Text>
-            )
-        } else {
-            const likedByUsersElements: JSX.Element[] = likedByUsers.map(({ username }: { username: string }, i: number) => {
-                // if its the last index
-                if (i === likedByUsers.length - 1) {
-                    return (
-                        <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
-                            {username}
-                        </Text>
-                    )
-                }
-                // otherwise
-                return (
-                    <Text key={username} cursor="pointer" as="span" fontWeight="bold" onClick={() => Router.push(`/${username}`)}>
-                        {`${username}, `}
-                    </Text>
-                )
-            })
-
-            return likedByUsersElements;
-        }
+        if (!commentBody) return
+        addPostComment({ variables: { postId: _id, commentBody: commentBody } })
+        setCommentBody('')
     }
 
     return (
@@ -276,9 +246,10 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                             />
                             :
                             data?.findPostComments?.comments.map((comment: any) => {
+
                                 return (
                                     <Box
-                                        key={comment._id}
+                                        key={comment._id + 1}
                                         display="flex"
                                         flexDirection="row"
                                         alignItems="center"
@@ -327,28 +298,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                             h={7} w={7}
                             ml="1em"
                             mr={4}
-                            onClick={() => {
-                                if (!userProfile) return;
-                                setIsLiked(!isLiked);
-
-                                if (isLiked) {
-                                    setLikedByUsers((likedByUsers: LikedByUser[]) => (
-                                        // .filter could pose problems in the long run when likes
-                                        // count of users is much larger 
-                                        likedByUsers.filter(({ _id }) => _id !== userProfile._id)
-                                    ));
-                                } else {
-                                    const currentUser = {
-                                        _id: userProfile._id,
-                                        username: userProfile.username,
-                                        userImage: userProfile.userImage,
-                                        __typename: "User"
-                                    }
-                                    setLikedByUsers((likedByUsers: LikedByUser[]) => (
-                                        [...likedByUsers, currentUser]
-                                    ))
-                                }
-                            }}
+                            onClick={handleLikeBtnClick}
                         />
                         <Icon as={BsChat} h="22px" w="22px" strokeWidth=".5px" mr={4} />
                         <Icon as={IoPaperPlaneOutline} h={6} w={6} />
@@ -358,7 +308,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                         h="31px"
                         overflow="auto"
                     >
-                        {!likedByUsers.length ?
+                        {!likesCount ?
                             <Text
                                 ml="1.25em"
                                 mt={1}
@@ -366,7 +316,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                             >
                                 {`Be the first to like ${userId.username}'s post!`}
                             </Text>
-                            : likedByUsers.length <= 2 ?
+                            : likesCount <= 2 ?
                                 <Text
                                     ml="1.25em"
                                     mt={1}
@@ -380,14 +330,14 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                                     mt={1}
                                     fontSize="sm"
                                 >
-                                    Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likedByUsers.length - 1} others</Text>.
+                                    Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likesCount - 1} others</Text>.
                                 </Text>
                         }
                     </Box>
 
                     <Text
                         ml="1.6em"
-                        mt="1.25px"
+                        mt={1}
                         fontSize=".7em"
                         fontWeight="light"
                     >
@@ -403,9 +353,10 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                     >
                         <Input
                             placeholder='Add a comment'
-                            fontSize="sm"
+                            fontSize="xs"
                             w="250px" h="27.5px"
-                            borderRadius="none"
+                            border="none"
+                            borderRadius={0}
                             onChange={handleCommentInputChange}
                             value={commentBody}
                             onKeyDown={(e) => {
@@ -416,13 +367,12 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                         <Button
                             h="27.5px"
                             border="none"
+                            borderRadius={0}
                             bg="white"
                             fontSize="sm"
                             color="twitter.600"
                             fontWeight="bold"
                             ml="1px"
-                            mt={0}
-                            borderRadius="none"
                             onClick={handleCommentAddition}
                         >
                             Post

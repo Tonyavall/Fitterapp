@@ -170,6 +170,11 @@ export const HOME_RECENT_POSTS = gql`
         }
         commentBody
       }
+      likedBy {
+        _id
+        username
+        userImage
+      }
     }
   }
 `

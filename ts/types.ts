@@ -31,5 +31,8 @@ export interface FindMeUserData {
 // this hook returns a state variable with a setter function
 export interface UsePostLikeReturnValues {
     isLiked: boolean;
-    setIsLiked: React.Dispatch<SetStateAction<boolean>>;
+    // setIsLiked: React.Dispatch<SetStateAction<boolean>>;
+    getLikedByNames: (getSingleName?: boolean) => JSX.Element[] | JSX.Element;
+    handleLikeBtnClick: () => void;
+    likesCount: number;
 }
