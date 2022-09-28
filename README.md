@@ -1,5 +1,6 @@
 # Fitterapp
 Fit up with Fitter!
+
 <img src="./public/fitter-logo.png" width="250px" height="250px">
 
 ## Table of Contents
