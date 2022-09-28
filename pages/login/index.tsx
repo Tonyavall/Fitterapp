@@ -1,4 +1,4 @@
-import LoginForm from "../../components/loginForm"
+import LoginForm from "../../components/LoginForm"
 import { SyntheticEvent } from "react";
 import { useState } from "react";
 import { useMutation, useApolloClient } from '@apollo/client';

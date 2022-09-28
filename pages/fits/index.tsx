@@ -10,11 +10,11 @@ import {
     Spinner
 } from "@chakra-ui/react"
 import { FIND_FITS } from "../api/queries"
-import AddClothesModal from "../../components/addClothesModal"
+import AddClothesModal from "../../components/AddClothesModal"
 import { useToast } from "@chakra-ui/react"
 import { useMutation, useQuery } from "@apollo/client"
 import { ADD_OUTFIT } from "../api/mutations"
-import FitsRadioGroup from "../../components/fitsRadioGroups"
+import FitsRadioGroup from "../../components/FitsRadioGroups"
 import { checkProps } from "../../utils/functions"
 import { GetServerSideProps } from "next"
 import initializeApollo from '../../apollo/client'

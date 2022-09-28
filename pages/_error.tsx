@@ -15,7 +15,7 @@ const Error: NextPage<Props> = ({ statusCode }) => {
                 as="h2"
                 size="2xl"
                 color="twitter.500"
-                >
+            >
                 {`${statusCode}`}
             </Heading>
             <Text fontSize="18px" mt={3} mb={2}>
@@ -30,8 +30,8 @@ const Error: NextPage<Props> = ({ statusCode }) => {
                 colorScheme="twitter"
                 color="white"
                 variant="solid"
-                onClick={()=> Router.push('/')}
-                >
+                onClick={() => Router.push('/')}
+            >
                 Go to Home
             </Button>
         </Box>

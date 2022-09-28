@@ -3,26 +3,18 @@ import {
     GridItem,
     Box,
     SimpleGrid,
-    Heading,
     Text,
-    chakra,
     Stack,
     FormControl,
     FormLabel,
-    InputGroup,
-    InputLeftAddon,
     Input,
     Textarea,
-    FormHelperText,
     Avatar,
-    Icon,
     Button,
     Flex,
-    VisuallyHidden,
-    Select,
     useToast
 } from "@chakra-ui/react"
-import UserSettingsModal from "../../components/userSettingsModa"
+import UserSettingsModal from "../../components/UserSettingsModal"
 import { FIND_ME } from "../api/queries"
 import { useQuery, useMutation } from "@apollo/client"
 import { useState } from 'react'
