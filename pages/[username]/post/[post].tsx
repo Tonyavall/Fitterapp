@@ -1,4 +1,4 @@
-import React, { useState, ReactElement, ChangeEvent } from 'react';
+import React, { useState, ReactElement, ChangeEvent, useEffect } from 'react';
 import Layout from '../../../components/layouts/article'
 import { Avatar, Box, Image, Text, Icon, Input, FormControl, Button, Spinner } from '@chakra-ui/react';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
@@ -6,7 +6,7 @@ import { BsChat } from 'react-icons/bs'
 import { IoPaperPlaneOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next';
 import initializeApollo from '../../../apollo/client';
-import { FIND_POST, FIND_POST_COMMENTS } from '../../api/queries';
+import { FIND_POST, FIND_POST_SOCIALS } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
 import ImageCarousel from '../../../components/imageCarousel';
@@ -59,12 +59,28 @@ export interface Comment {
 }
 
 interface CommentsQuery {
-    findPostComments: Comment[];
+    findPostSocials: Comment[];
 }
+
+/* For future reference:
+    When querying a post I want to serverside render whatever I can
+        This includes stuff that doesn't need to be optimistically updated
+        such as the post image
+
+    Stuff that needs to be handled as a normal query would be socials,
+    because it needs to be consistently updated based on the user's interactions.
+        I'm handling it now with the socials- likeCount/who has liked the post,
+        and the comments
+
+    So typically when we want to display the post we
+        ssr the post
+        then
+        do a query for the comments and likes
+*/
 
 const Post: React.FC<Props> = ({ postData }): ReactElement => {
     const [commentBody, setCommentBody] = useState<string>('')
-    const userProfile: UserProfile | null | undefined = useAtomValue(userProfileAtom)
+    const userProfile: UserProfile = useAtomValue(userProfileAtom)
     const Router = useRouter()
 
     const {
@@ -72,35 +88,36 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
         postImage,
         description,
         userId,
-        outfit,
-        likedBy
+        outfit
     } = postData
-
-    // pass props here
-    const {
-        isLiked,
-        getLikedByNames,
-        handleLikeBtnClick,
-        likesCount
-    }: UsePostLikeReturnValues = usePostLike({ likedBy, _id, userProfile })
 
     const {
         loading,
         data
-    } = useQuery(FIND_POST_COMMENTS, { variables: { postId: _id } })
+    } = useQuery(FIND_POST_SOCIALS, { variables: { postId: _id } })
+
+    const likedBy: LikedByUser[] = data?.findPostSocials?.likedBy || []
+    const comments: Comment[] = data?.findPostSocials?.comments || []
+
+    const {
+        isLiked,
+        getLikedByNames,
+        handleLikeBtn,
+        likeCount
+    }: UsePostLikeReturnValues = usePostLike({ likedBy, _id, userProfile })
 
     const [addPostComment] = useMutation(ADD_POST_COMMENT, {
         update(cache, { data: { addPostComment: { comments } } }) {
             const data: CommentsQuery | null = cache.readQuery({
-                query: FIND_POST_COMMENTS,
+                query: FIND_POST_SOCIALS,
                 variables: { postId: _id }
             });
 
             cache.writeQuery({
-                query: FIND_POST_COMMENTS,
+                query: FIND_POST_SOCIALS,
                 data: {
-                    findPostComments: {
-                        ...data?.findPostComments,
+                    findPostSocials: {
+                        ...data?.findPostSocials,
                         comments: comments
                     }
                 }
@@ -245,11 +262,11 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                                 alignSelf="center"
                             />
                             :
-                            data?.findPostComments?.comments.map((comment: any) => {
+                            comments.map((comment: any) => {
 
                                 return (
                                     <Box
-                                        key={comment._id + 1}
+                                        key={comment._id}
                                         display="flex"
                                         flexDirection="row"
                                         alignItems="center"
@@ -298,7 +315,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                             h={7} w={7}
                             ml="1em"
                             mr={4}
-                            onClick={handleLikeBtnClick}
+                            onClick={handleLikeBtn}
                         />
                         <Icon as={BsChat} h="22px" w="22px" strokeWidth=".5px" mr={4} />
                         <Icon as={IoPaperPlaneOutline} h={6} w={6} />
@@ -308,7 +325,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                         h="31px"
                         overflow="auto"
                     >
-                        {!likesCount ?
+                        {!likeCount ?
                             <Text
                                 ml="1.25em"
                                 mt={1}
@@ -316,7 +333,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                             >
                                 {`Be the first to like ${userId.username}'s post!`}
                             </Text>
-                            : likesCount <= 2 ?
+                            : likeCount <= 2 ?
                                 <Text
                                     ml="1.25em"
                                     mt={1}
@@ -330,7 +347,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                                     mt={1}
                                     fontSize="sm"
                                 >
-                                    Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likesCount - 1} others</Text>.
+                                    Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likeCount - 1} others</Text>.
                                 </Text>
                         }
                     </Box>

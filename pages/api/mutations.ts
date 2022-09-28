@@ -226,6 +226,20 @@ export const LIKE_POST = gql`
     mutation likePost($postId: ID!){
         likePost(postId: $postId) {
             _id
+            comments {
+                _id
+                commentBody
+                userId {
+                    _id
+                    username
+                    userImage
+                }
+            }
+            likedBy {
+                _id
+                userImage
+                username
+            }
         }
     }
 `
@@ -234,6 +248,20 @@ export const UNLIKE_POST = gql`
     mutation unlikePost($postId: ID!){
         unlikePost(postId: $postId) {
             _id
+            comments {
+                _id
+                commentBody
+                userId {
+                    _id
+                    username
+                    userImage
+                }
+            }
+            likedBy {
+                _id
+                userImage
+                username
+            }
         }
     }
 `

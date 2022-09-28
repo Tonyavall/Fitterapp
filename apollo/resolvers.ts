@@ -237,12 +237,14 @@ export const resolvers = {
                         .find({ userId: following.map(({ _id }: { _id: ObjectId }) => _id) })
                         .populate([
                             'userId',
-                            'likedBy',
+                            'outfit',
                             {
                                 path: 'comments',
                                 populate: ['userId']
-                            }
+                            },
+                            'likedBy'
                         ])
+
                         .sort({ createdAt: -1 })
                     return posts;
                 }
@@ -309,7 +311,7 @@ export const resolvers = {
             }
             throw new AuthenticationError('You have to be logged in!')
         },
-        findPostComments: async (
+        findPostSocials: async (
             parent: undefined,
             { postId }: { postId: string },
             context: any
@@ -327,10 +329,12 @@ export const resolvers = {
                                 path: 'comments',
                                 populate: ['userId']
                             },
-                            'outfit'
+                            'outfit',
+                            'likedBy'
                         ])
-                    if (!post) throw new UserInputError(`Post not found.`)
-                    post.comments = post.comments.sort((a: any, b: any) => b.createdAt - a.createdAt)
+
+                    if (!post) throw new UserInputError(`Post not found.`);
+                    post.comments = post.comments.sort((a: any, b: any) => b.createdAt - a.createdAt);
                     return post
                 }
             } catch (error) {
@@ -881,6 +885,15 @@ export const resolvers = {
                         { $addToSet: { likedBy: contextUserId } },
                         { runValidators: true, new: true }
                     )
+                    .populate([
+                        'userId',
+                        'outfit',
+                        {
+                            path: 'comments',
+                            populate: ['userId']
+                        },
+                        'likedBy'
+                    ])
 
                 return updatedPost
             } catch (error) {
@@ -905,6 +918,15 @@ export const resolvers = {
                         { $pull: { likedBy: contextUserId } },
                         { runValidators: true, new: true }
                     )
+                    .populate([
+                        'userId',
+                        'outfit',
+                        {
+                            path: 'comments',
+                            populate: ['userId']
+                        },
+                        'likedBy'
+                    ])
 
                 return updatedPost
             } catch (error) {

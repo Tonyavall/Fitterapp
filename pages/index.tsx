@@ -15,7 +15,7 @@ import { userProfileAtom } from '../lib/globalAtoms';
 import { useAtomValue } from 'jotai';
 import { ReactElement } from 'react'
 import { UserId, Comment } from '../pages/[username]/post/[post]';
-import HomePostCard from '../components/homePostCard';
+import HomePostCard from '../components/HomePostCard';
 import { LikedByUser, UserProfile } from '../ts/types'
 
 interface Props {
@@ -41,7 +41,7 @@ const Home: NextPage<Props> = ({ homeRecentPosts }): ReactElement => {
     <Layout>
       {homeRecentPosts.length ?
         homeRecentPosts?.map((post: HomeRecentPost) => (
-          <HomePostCard key={post._id + 'homepostcard'} {...post} userProfile={userProfile} />
+          <HomePostCard key={post._id + 307312} {...post} userProfile={userProfile} />
         ))
         :
         <>

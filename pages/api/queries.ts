@@ -77,24 +77,22 @@ query($postId: ID!) {
     _id
     postImage
     description
-    likedBy {
-      _id
-      username
-      userImage
-    }
-    likes
     userId {
+      _id
       username
       userImage
     }
     outfit {
       top {
+        _id
         image
       }
       bottom {
+        _id
         image
       }
       footwear {
+        _id
         image
       }
     }
@@ -102,17 +100,25 @@ query($postId: ID!) {
 }
 `
 
-export const FIND_POST_COMMENTS = gql`
+// finds post comments and like status.
+// for future- separate the two 
+export const FIND_POST_SOCIALS = gql`
 query($postId: ID!) {
-  findPostComments(postId: $postId) {
+  findPostSocials(postId: $postId) {
     _id
     comments {
       _id
       commentBody
       userId {
+        _id
         username
         userImage
       }
+    }
+    likedBy {
+      _id
+      userImage
+      username
     }
   }
 }
@@ -157,24 +163,12 @@ export const HOME_RECENT_POSTS = gql`
     homeRecentPosts {
       _id
       userId {
+        _id
         username
         userImage
       }
       description
       postImage
-      comments {
-        _id
-        userId {
-          username
-          userImage
-        }
-        commentBody
-      }
-      likedBy {
-        _id
-        username
-        userImage
-      }
     }
   }
 `

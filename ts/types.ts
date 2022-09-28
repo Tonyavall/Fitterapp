@@ -7,25 +7,17 @@ export interface LikedByUser {
 }
 
 export type UserProfile = {
+    __typename: string;
+    _id: string;
     email: string;
     username: string;
-    _id: string;
-    isAdmin: boolean;
-    userImage: string;
-    __typename: string;
     bio: string;
-}
+    userImage: string;
+    isAdmin: boolean;
+} | null | undefined
 
 export interface FindMeUserData {
-    findMe: {
-        bio: string;
-        email: string;
-        userImage: string;
-        isAdmin: boolean;
-        username: string;
-        __typename: string;
-        _id: string;
-    } | null | undefined
+    findMe: UserProfile;
 }
 
 // this hook returns a state variable with a setter function
@@ -33,6 +25,6 @@ export interface UsePostLikeReturnValues {
     isLiked: boolean;
     // setIsLiked: React.Dispatch<SetStateAction<boolean>>;
     getLikedByNames: (getSingleName?: boolean) => JSX.Element[] | JSX.Element;
-    handleLikeBtnClick: () => void;
-    likesCount: number;
+    handleLikeBtn: () => void;
+    likeCount: number;
 }

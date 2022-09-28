@@ -13,23 +13,33 @@ import { IoPaperPlaneOutline } from 'react-icons/io5';
 import { HomeRecentPost } from '../pages';
 import { UsePostLikeReturnValues } from '../ts/types';
 import usePostLike from '../utils/customHooks/usePostLike';
-import Link from 'next/link';
+import Link from 'next/link';;
+import { useQuery } from '@apollo/client';
+import { FIND_POST_SOCIALS } from '../pages/api/queries';
+import { Comment } from '../pages/[username]/post/[post]';
+import { LikedByUser } from '../ts/types';
 
 const HomePostCard: React.FC<HomeRecentPost> = ({
     _id,
     userId,
     description,
     postImage,
-    comments = [],
-    likedBy = [],
     userProfile
 }): JSX.Element => {
 
     const {
+        loading,
+        data
+    } = useQuery(FIND_POST_SOCIALS, { variables: { postId: _id } })
+
+    const comments: Comment[] = data?.findPostSocials?.comments || []
+    const likedBy: LikedByUser[] = data?.findPostSocials?.likedBy || []
+
+    const {
         isLiked,
         getLikedByNames,
-        handleLikeBtnClick,
-        likesCount
+        handleLikeBtn,
+        likeCount
     }: UsePostLikeReturnValues = usePostLike({ likedBy, _id, userProfile })
 
     return (
@@ -77,7 +87,7 @@ const HomePostCard: React.FC<HomeRecentPost> = ({
                     h={7} w={7}
                     ml="1em"
                     mr={4}
-                    onClick={handleLikeBtnClick}
+                    onClick={handleLikeBtn}
                 />
                 <Icon as={BsChat} h="22px" w="22px" strokeWidth=".5px" mr={4} />
                 <Icon as={IoPaperPlaneOutline} h={6} w={6} />
@@ -87,7 +97,7 @@ const HomePostCard: React.FC<HomeRecentPost> = ({
                 h="31px"
                 overflow="auto"
             >
-                {!likesCount ?
+                {!likeCount ?
                     <Text
                         ml="1.25em"
                         mt={1}
@@ -95,7 +105,7 @@ const HomePostCard: React.FC<HomeRecentPost> = ({
                     >
                         {`Be the first to like ${userId.username}'s post!`}
                     </Text>
-                    : likesCount <= 2 ?
+                    : likeCount <= 2 ?
                         <Text
                             ml="1.25em"
                             mt={1}
@@ -109,7 +119,7 @@ const HomePostCard: React.FC<HomeRecentPost> = ({
                             mt={1}
                             fontSize="sm"
                         >
-                            Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likesCount - 1} others</Text>.
+                            Liked by {getLikedByNames(true)} and <Text as="span" fontWeight="bold">{likeCount - 1} others</Text>.
                         </Text>
                 }
             </Box>

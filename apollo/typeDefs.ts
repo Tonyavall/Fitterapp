@@ -91,7 +91,7 @@ export const typeDefs = gql`
     homeRecentPosts: [Post]
     grabRandomTwelvePosts: [Post]
     findSinglePost(postId: ID!): Post
-    findPostComments(postId: ID!): Post
+    findPostSocials(postId: ID!): Post
     isLoggedIn: Boolean
     loginRedirect: Boolean
     findFits: User
