@@ -84,6 +84,7 @@ const HomePostCard: React.FC<HomeRecentPost> = ({
             >
                 <Icon as={isLiked ? AiFillHeart : AiOutlineHeart}
                     color={isLiked ? "#ED4956" : "black"}
+                    cursor="pointer"
                     h={7} w={7}
                     ml="1em"
                     mr={4}

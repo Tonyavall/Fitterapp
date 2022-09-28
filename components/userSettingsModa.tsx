@@ -20,12 +20,12 @@ import {
     Text,
 } from "@chakra-ui/react"
 import { useRef, useState } from "react"
-import MediaUpload from "./mediaUpload"
-import CropBox from "./cropBox"
+import MediaUpload from "./MediaUpload"
+import CropBox from "./CropBox"
 import generateUploadURL from "../utils/s3"
 import { CREATE_POST } from "../pages/api/mutations"
 import { useMutation } from "@apollo/client"
-import PostCarousel from "./postOutfitModalCarousel"
+import PostCarousel from "./{ostOutfitModalCarousel"
 import { userProfileAtom } from "../lib/globalAtoms"
 import { useAtomValue } from "jotai"
 
@@ -39,7 +39,7 @@ function UserSettingsModal({ setCroppedImageBlob, setCroppedImageDataUrl, croppe
     const finalRef = useRef(null)
     const toast = useToast()
     const userProfile = useAtomValue(userProfileAtom)
-    
+
     // tab index starts at 0
     const [tabIndex, setTabIndex] = useState(0)
     // Hardcoded tab value, if adding/removing tabs please change this.

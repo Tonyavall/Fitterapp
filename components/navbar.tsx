@@ -38,7 +38,7 @@ import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { FIND_ME } from "../pages/api/queries";
 import { userProfileAtom } from "../lib/globalAtoms";
 import { useAtom } from "jotai";
-import Search from './search'
+import Search from './Search'
 import { FindMeUserData } from "../ts/types";
 
 // https://choc-ui.com/docs/packages/autocomplete\

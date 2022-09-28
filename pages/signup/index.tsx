@@ -1,4 +1,4 @@
-import SignupForm from "../../components/signupForm";
+import SignupForm from "../../components/SignupForm";
 
 import { SyntheticEvent } from "react";
 import { useState } from "react";

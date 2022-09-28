@@ -9,7 +9,7 @@ import initializeApollo from '../../../apollo/client';
 import { FIND_POST, FIND_POST_SOCIALS } from '../../api/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { ADD_POST_COMMENT } from '../../api/mutations';
-import ImageCarousel from '../../../components/imageCarousel';
+import ImageCarousel from '../../../components/ImageCarousel';
 import { useRouter } from 'next/router';
 import usePostLike from '../../../utils/customHooks/usePostLike';
 import { LikedByUser } from '../../../ts/types';
@@ -311,6 +311,7 @@ const Post: React.FC<Props> = ({ postData }): ReactElement => {
                         borderY="1px solid #EFEFEF"
                     >
                         <Icon as={isLiked ? AiFillHeart : AiOutlineHeart}
+                            cursor="pointer"
                             color={isLiked ? "#ED4956" : "black"}
                             h={7} w={7}
                             ml="1em"

@@ -1,4 +1,4 @@
-import Navbar from '../navbar'
+import Navbar from '../Navbar'
 import { Box } from '@chakra-ui/react'
 import Head from 'next/head'
 import React from 'react';

@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from '@apollo/client';
 import { FIND_THREE_RECOMMENDED } from './api/queries';
-import SocialCard from '../components/socialCard';
+import SocialCard from '../components/SocialCard';
 import { userProfileAtom } from '../lib/globalAtoms';
 import { useAtomValue } from 'jotai';
 import { ReactElement } from 'react'
