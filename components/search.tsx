@@ -11,6 +11,7 @@ import { Avatar } from "@chakra-ui/react";
 import { FIND_ALL_USERNAMES } from "../pages/api/queries";
 import { useQuery } from "@apollo/client";
 
+// Search bar component
 const Search = () => {
     const { data } = useQuery(FIND_ALL_USERNAMES)
 

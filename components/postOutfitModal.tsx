@@ -1,6 +1,5 @@
 import {
     Button,
-    Input,
     Modal,
     ModalBody,
     ModalOverlay,
@@ -21,12 +20,12 @@ import {
     Textarea
 } from "@chakra-ui/react"
 import { useRef, useState } from "react"
-import MediaUpload from "./mediaUpload"
-import CropBox from "./cropBox"
+import MediaUpload from "./MediaUpload"
+import CropBox from "./CropBox"
 import generateUploadURL from "../utils/s3"
 import { CREATE_POST } from "../pages/api/mutations"
 import { useMutation } from "@apollo/client"
-import PostCarousel from "./postOutfitModalCarousel"
+import PostCarousel from "./PostOutfitModalCarousel"
 import { userProfileAtom } from "../lib/globalAtoms"
 import { useAtomValue } from "jotai"
 

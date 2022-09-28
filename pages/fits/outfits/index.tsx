@@ -1,5 +1,4 @@
-import { useAtom } from "jotai"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Router from "next/router"
 import Layout from "../../../components/layouts/article"
 import {
@@ -11,9 +10,9 @@ import {
     useRadioGroup,
     Spinner
 } from "@chakra-ui/react"
-import OutfitCarousel from "../../../components/imageCarousel"
+import OutfitCarousel from "../../../components/ImageCarousel"
 import { useQuery } from "@apollo/client"
-import PostOutfitModal from "../../../components/postOutfitModal"
+import PostOutfitModal from "../../../components/PostOutfitModal"
 import { GetServerSideProps } from "next"
 import initializeApollo from '../../../apollo/client'
 import { IS_LOGGED_IN, FIND_FITS } from "../../api/queries"

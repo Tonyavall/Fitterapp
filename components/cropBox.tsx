@@ -2,6 +2,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useRef } from "react";
 
+// Cropper component only
 const CropBox: React.FC = ({ image, setCroppedImageBlob, setCroppedImageDataUrl }: any) => {
   const cropperRef = useRef<HTMLImageElement>(null);
 

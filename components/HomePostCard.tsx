@@ -19,6 +19,7 @@ import { FIND_POST_SOCIALS } from '../pages/api/queries';
 import { Comment } from '../pages/[username]/post/[post]';
 import { LikedByUser } from '../ts/types';
 
+// Used in home page
 const HomePostCard: React.FC<HomeRecentPost> = ({
     _id,
     userId,

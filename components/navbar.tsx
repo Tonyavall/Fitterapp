@@ -19,8 +19,6 @@ import {
     IconButton,
     CloseButton,
     InputGroup,
-    InputLeftElement,
-    Input,
     Tooltip,
     Image
 } from "@chakra-ui/react";
@@ -28,7 +26,6 @@ import {
 import {
     AiOutlineMenu,
     AiOutlineInbox,
-    AiOutlineSearch,
     AiOutlineHome,
 } from "react-icons/ai";
 

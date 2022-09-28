@@ -17,7 +17,8 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-export default function SignupForm({handleChange, handleFormSubmit, errorMessage}: any) {
+// Signup form
+export default function SignupForm({ handleChange, handleFormSubmit, errorMessage }: any) {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
@@ -45,28 +46,28 @@ export default function SignupForm({handleChange, handleFormSubmit, errorMessage
                             <Box>
                                 <FormControl id="firstName" onChange={handleChange} isRequired>
                                     <FormLabel fontSize="sm">First Name</FormLabel>
-                                    <Input type="firstName" data-input={'firstName'} size="sm"/>
+                                    <Input type="firstName" data-input={'firstName'} size="sm" />
                                 </FormControl>
                             </Box>
                             <Box>
                                 <FormControl id="lastName" onChange={handleChange} isRequired>
                                     <FormLabel fontSize="sm">Last Name</FormLabel>
-                                    <Input type="lastName" data-input={'lastName'} size="sm"/>
+                                    <Input type="lastName" data-input={'lastName'} size="sm" />
                                 </FormControl>
                             </Box>
                         </HStack>
                         <FormControl id="username" onChange={handleChange} isRequired>
                             <FormLabel fontSize="sm">Username</FormLabel>
-                            <Input type="username" data-input={'username'} size="sm"/>
+                            <Input type="username" data-input={'username'} size="sm" />
                         </FormControl>
                         <FormControl id="email" onChange={handleChange} isRequired>
                             <FormLabel fontSize="sm">Email address</FormLabel>
-                            <Input type="email" data-input={'email'} size="sm"/>
+                            <Input type="email" data-input={'email'} size="sm" />
                         </FormControl>
                         <FormControl id="password" onChange={handleChange} isRequired>
                             <FormLabel fontSize="sm">Password</FormLabel>
                             <InputGroup>
-                                <Input type={showPassword ? 'text' : 'password'} data-input={'password'} size="sm"/>
+                                <Input type={showPassword ? 'text' : 'password'} data-input={'password'} size="sm" />
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}

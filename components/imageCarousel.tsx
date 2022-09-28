@@ -7,17 +7,9 @@ import {
     IconButton,
     useBreakpointValue,
     Image,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    Menu,
     useRadio,
     chakra
 } from "@chakra-ui/react";
-import { BiDotsHorizontalRounded } from 'react-icons/bi'
-import { DELETE_OUTFIT } from '../pages/api/mutations';
-import { useMutation } from '@apollo/client';
-import { FIND_FITS } from '../pages/api/queries';
 
 // WARNING------------------
 // I USE THIS FOR BOTH THE OUTFITS CAROUSELS AND POST CAROUSELS
@@ -85,9 +77,9 @@ const ImageCarousel = (
     return (
         <chakra.label {...htmlProps} cursor='pointer'>
             {radio &&
-                <input 
-                {...getInputProps({})} 
-                hidden/>
+                <input
+                    {...getInputProps({})}
+                    hidden />
             }
             <Box
                 key={_id + 10724}

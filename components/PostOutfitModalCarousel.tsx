@@ -7,12 +7,7 @@ import {
     IconButton,
     useBreakpointValue,
     Image,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    Menu,
 } from "@chakra-ui/react";
-import { BiDotsHorizontalRounded } from 'react-icons/bi'
 
 const settings = {
     dots: true,
@@ -26,90 +21,90 @@ const settings = {
     slidesToScroll: 1,
 };
 
-const PostOutfitModalCarousel = ({ outfitId, topImage, bottomImage, footwearImage = ''}: any) => {
+const PostOutfitModalCarousel = ({ outfitId, topImage, bottomImage, footwearImage = '' }: any) => {
     const [slider, setSlider] = useState<Slider | null>(null);
     const topSide = useBreakpointValue({ base: '90%', md: '50%' });
     const side = useBreakpointValue({ base: '30%', md: '40px' });
 
     return (
-            <Box
-                key={outfitId + 10724}
-                boxSize="340px"
-                cursor="pointer"
-                overflow={'hidden'}
-                position="relative"
+        <Box
+            key={outfitId + 10724}
+            boxSize="340px"
+            cursor="pointer"
+            overflow={'hidden'}
+            position="relative"
+        >
+            <link
+                rel="stylesheet"
+                type="text/css"
+                charSet="UTF-8"
+                href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+            />
+            <link
+                rel="stylesheet"
+                type="text/css"
+                href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+            />
+            {/* Left Icon */}
+            <IconButton
+                aria-label="left-arrow"
+                variant="ghost"
+                position="absolute"
+                left={side}
+                top={topSide}
+                transform={'translate(-150%, -50%)'}
+                zIndex={2}
+                onClick={() => slider?.slickPrev()}
+                size="xs"
+                borderRadius="full"
             >
-                <link
-                    rel="stylesheet"
-                    type="text/css"
-                    charSet="UTF-8"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+                <BiLeftArrowAlt size="20px" />
+            </IconButton>
+            {/* Right Icon */}
+            <IconButton
+                aria-label="right-arrow"
+                variant="ghost"
+                position="absolute"
+                right={side}
+                top={topSide}
+                transform={'translate(150%, -50%)'}
+                zIndex={2}
+                onClick={() => slider?.slickNext()}
+                size="xs"
+                borderRadius="full"
+            >
+                <BiRightArrowAlt size="20px" />
+            </IconButton>
+            {/* Slider */}
+            <Slider {...settings} ref={(slider: any) => setSlider(slider)}>
+                <Image
+                    key={outfitId + 513}
+                    position="relative"
+                    alt="Picture of top"
+                    objectFit="cover"
+                    src={topImage}
                 />
-                <link
-                    rel="stylesheet"
-                    type="text/css"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+                <Image
+                    key={outfitId + 514}
+                    position="relative"
+                    alt="Picture of bottom"
+                    objectFit="cover"
+                    src={bottomImage}
                 />
-                {/* Left Icon */}
-                <IconButton
-                    aria-label="left-arrow"
-                    variant="ghost"
-                    position="absolute"
-                    left={side}
-                    top={topSide}
-                    transform={'translate(-150%, -50%)'}
-                    zIndex={2}
-                    onClick={() => slider?.slickPrev()}
-                    size="xs"
-                    borderRadius="full"
-                >
-                    <BiLeftArrowAlt size="20px" />
-                </IconButton>
-                {/* Right Icon */}
-                <IconButton
-                    aria-label="right-arrow"
-                    variant="ghost"
-                    position="absolute"
-                    right={side}
-                    top={topSide}
-                    transform={'translate(150%, -50%)'}
-                    zIndex={2}
-                    onClick={() => slider?.slickNext()}
-                    size="xs"
-                    borderRadius="full"
-                >
-                    <BiRightArrowAlt size="20px" />
-                </IconButton>
-                {/* Slider */}
-                <Slider {...settings} ref={(slider: any) => setSlider(slider)}>
+                {footwearImage ?
                     <Image
-                        key={outfitId + 513}
+                        key={outfitId + 512}
                         position="relative"
-                        alt="Picture of top"
+                        alt="Picture of footwear"
                         objectFit="cover"
-                        src={topImage}
+                        src={footwearImage}
                     />
-                    <Image
-                        key={outfitId + 514}
-                        position="relative"
-                        alt="Picture of bottom"
-                        objectFit="cover"
-                        src={bottomImage}
-                    />
-                    {footwearImage ?
-                        <Image
-                            key={outfitId + 512}
-                            position="relative"
-                            alt="Picture of footwear"
-                            objectFit="cover"
-                            src={footwearImage}
-                        />
-                        :
-                        null
-                    }
+                    :
+                    null
+                }
 
-                </Slider>
-            </Box>
+            </Slider>
+        </Box>
     )
 }
 

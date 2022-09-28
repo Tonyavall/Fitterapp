@@ -1,12 +1,10 @@
 import {
     Button,
-    Input,
     Modal,
     ModalBody,
     ModalOverlay,
     ModalContent,
     ModalHeader,
-    Box,
     Heading,
     Tabs,
     Tab,
@@ -14,31 +12,19 @@ import {
     TabPanel,
     TabPanels,
     Image,
-    useToast,
     useDisclosure,
-    Avatar,
-    Text,
 } from "@chakra-ui/react"
 import { useRef, useState } from "react"
 import MediaUpload from "./MediaUpload"
 import CropBox from "./CropBox"
-import generateUploadURL from "../utils/s3"
-import { CREATE_POST } from "../pages/api/mutations"
-import { useMutation } from "@apollo/client"
-import PostCarousel from "./{ostOutfitModalCarousel"
-import { userProfileAtom } from "../lib/globalAtoms"
-import { useAtomValue } from "jotai"
 
 function UserSettingsModal({ setCroppedImageBlob, setCroppedImageDataUrl, croppedImageDataUrl }: any) {
     // THIS DISCLOSURE IS FOR THE MODAL ITSELF
     const { isOpen, onOpen, onClose } = useDisclosure()
     // THIS DISCLOSURE IS FOR SLIDE OUT TRANSITION ON TAB INDEX 2
     const [image, setImage] = useState([])
-    const [fitType, setFitType] = useState('')
     const initialRef = useRef(null)
     const finalRef = useRef(null)
-    const toast = useToast()
-    const userProfile = useAtomValue(userProfileAtom)
 
     // tab index starts at 0
     const [tabIndex, setTabIndex] = useState(0)

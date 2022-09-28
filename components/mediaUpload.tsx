@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { TbDragDrop } from 'react-icons/tb';
 
+// Drag and drop component
 const MediaUpload = ({ setImage, image, setTabIndex }: any) => {
     const onChange = (
         imageList: ImageListType
