@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/models/Thought"  ],
+, "src/models/Thought", "next.config.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,37 +1,44 @@
-import aws from 'aws-sdk'
-import crypto from 'crypto'
-import { promisify } from "util"
-const randomBytes = promisify(crypto.randomBytes)
+import aws from 'aws-sdk';
+import crypto from 'crypto';
+import { promisify } from "util";
+const randomBytes = promisify(crypto.randomBytes);
 
-const region = "us-west-1"
-const bucketName = "fitterapp"
-const accessKeyId = 'AKIAQ7BNSSTO426AWSNJ'
-const secretAccessKey = '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'
+export interface S3Vars {
+    accessKeyId: string;
+    secretAccessKey: string;
+    region: string;
+}
 
-// const region = process.env.S3_REGION
-// const bucketName = process.env.S3_BUCKET_NAME
-// const accessKeyId = process.env.S3_ACCESS_KEY_ID
-// const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY
+const bucketName = 'fitterapp';
 
-const s3 = new aws.S3({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    signatureVersion: 'v4'
-})
+let s3: any;
+
+export const initializeS3 = (
+    { accessKeyId, secretAccessKey, region }:
+        { region: string, accessKeyId: string, secretAccessKey: string }
+) => {
+    if (!s3) {
+        s3 = new aws.S3({
+            region,
+            accessKeyId,
+            secretAccessKey,
+            signatureVersion: 'v4'
+        })
+    }
+}
 
 async function generateUploadURL() {
-    const rawBytes = await randomBytes(16)
-    const imageName = rawBytes.toString('hex')
-    console.log(bucketName)
+    const rawBytes = await randomBytes(16);
+    const imageName = rawBytes.toString('hex');
+
     const params = ({
         Bucket: bucketName,
         Key: imageName,
         Expires: 60
-    })
+    });
 
-    const uploadURL = await s3.getSignedUrlPromise('putObject', params)
-    return uploadURL
-}
+    const uploadURL = await s3.getSignedUrlPromise('putObject', params);
+    return uploadURL;
+};
 
-export default generateUploadURL
+export default generateUploadURL;
