@@ -894,7 +894,7 @@ export const resolvers = {
                         },
                         'likedBy'
                     ])
-
+                updatedPost.comments = updatedPost.comments.sort((a: any, b: any) => b.createdAt - a.createdAt);
                 return updatedPost
             } catch (error) {
                 console.log(error)
@@ -927,7 +927,7 @@ export const resolvers = {
                         },
                         'likedBy'
                     ])
-
+                updatedPost.comments = updatedPost.comments.sort((a: any, b: any) => b.createdAt - a.createdAt);
                 return updatedPost
             } catch (error) {
                 console.log(error)
