@@ -56,3 +56,6 @@ In no particular order.
 * Fitter marketplace with STRIPE api.
 * Testing for backend.
 * Mobile implementation with React Native.
+### Bug Fixes
+* Persisting cache issues when changing users. Need page reload to reset cache.
+* Null issues when liking a post.
