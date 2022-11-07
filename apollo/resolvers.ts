@@ -7,6 +7,7 @@ import { setLoginSession, getLoginSession } from '../utils/auth'
 import { JwtPayload } from "jsonwebtoken"
 import { removeTokenCookie } from '../utils/authCookies'
 import { ObjectId } from "mongoose"
+import heapSort from "../utils/algos/heapsort"
 
 type UserInput = {
     username: string
@@ -244,8 +245,8 @@ export const resolvers = {
                             },
                             'likedBy'
                         ])
-
                         .sort({ createdAt: -1 })
+
                     return posts;
                 }
             } catch (error) {
@@ -333,8 +334,9 @@ export const resolvers = {
                             'likedBy'
                         ])
 
+                    heapSort(post.comments, 'createdAt', 'desc');
+
                     if (!post) throw new UserInputError(`Post not found.`);
-                    post.comments = post.comments.sort((a: any, b: any) => b.createdAt - a.createdAt);
                     return post
                 }
             } catch (error) {
@@ -527,7 +529,9 @@ export const resolvers = {
                         'outfit'
                     ])
                 if (!updatedPost) throw new UserInputError(`Post not found.`)
-                updatedPost.comments = updatedPost.comments.sort((a: any, b: any) => b.createdAt - a.createdAt)
+
+                heapSort(updatedPost.comments, 'createdAt', 'desc');
+
                 return updatedPost
             } catch (error) {
                 console.log(error)
@@ -894,7 +898,9 @@ export const resolvers = {
                         },
                         'likedBy'
                     ])
-                updatedPost.comments = updatedPost.comments.sort((a: any, b: any) => b.createdAt - a.createdAt);
+
+                heapSort(updatedPost.comments, 'createdAt', 'desc');
+
                 return updatedPost
             } catch (error) {
                 console.log(error)
@@ -927,7 +933,9 @@ export const resolvers = {
                         },
                         'likedBy'
                     ])
-                updatedPost.comments = updatedPost.comments.sort((a: any, b: any) => b.createdAt - a.createdAt);
+
+                heapSort(updatedPost.comments, 'createdAt', 'desc');
+
                 return updatedPost
             } catch (error) {
                 console.log(error)
