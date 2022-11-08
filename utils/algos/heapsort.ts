@@ -1,7 +1,15 @@
 // asc = maxheap, desc = minheap
 type Order = 'asc' | 'desc';
 
+// heapsort only for uniform objects with the same properties
+// preferably for database documents
 const heapSort = (arr: any, property: string, order: Order = 'asc') => {
+    // !beware! guard clause only checks for first index
+    if (!arr[0][property]) {
+        console.log(`Property '${property}' does not exist on document index 0 in array.`);
+        return;
+    }
+
     for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
         heapify(arr, arr.length, i, property, order);
     }
