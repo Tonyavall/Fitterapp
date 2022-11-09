@@ -110,7 +110,6 @@ query($postId: ID!) {
       _id
       commentBody
       userId {
-        _id
         username
         userImage
       }

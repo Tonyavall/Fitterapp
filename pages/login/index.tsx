@@ -22,6 +22,7 @@ const Login = () => {
         if (!formState.username || !formState.password) return
 
         try {
+            await client.resetStore()
             const { data } = await login({
                 variables: {
                     username: formState.username,
@@ -30,7 +31,6 @@ const Login = () => {
             });
 
             if (data.login) {
-                await client.resetStore()
                 setUserProfile(data.login)
                 Router.push('/')
             }

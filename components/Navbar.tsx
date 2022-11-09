@@ -55,10 +55,10 @@ const Navbar = () => {
     }, [userProfileData, setUserProfile])
 
     const handleLogout = async () => {
-        await client.resetStore()
         logout()
         setUserProfile(null)
         Router.push('/login')
+        await client.resetStore()
     }
 
     return (
