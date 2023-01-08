@@ -1,38 +1,17 @@
-import { ApolloServer } from 'apollo-server-micro'
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-import { typeDefs } from '../../apollo/typeDefs';
+import { ApolloServer } from '@apollo/server';
+import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { resolvers } from '../../apollo/resolvers';
-import { NextApiRequest, NextApiResponse } from 'next';
-import cors from 'micro-cors'
+import { typeDefs } from '../../apollo/typeDefs';
+import { getToken } from "next-auth/jwt";
 
-const Cors = cors({
-    allowCredentials: true,
-})
-
-const server = new ApolloServer({
+const apolloServer = new ApolloServer({ 
     resolvers,
     typeDefs,
-    // returning the context with each request
-    context(ctx) {
-        return ctx
-    },
-    introspection: true,
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground({})],
-})
+    csrfPrevention: true,
+});
 
-const startServer = server.start()
-const graphqlPath = '/api/graphql'
+// todo- custom handler and cors wrapper
 
-const startMongooseApollo = async (req: NextApiRequest, res: NextApiResponse) => {
-    await startServer
-    await server.createHandler({ path: graphqlPath })(req, res)
-}
-
-export const config = {
-    api: {
-        bodyParser: false
-    }
-}
-// @ts-ignore 
-// cookies still not being sent to server from client apollo
-export default Cors(startMongooseApollo)
+export default startServerAndCreateNextHandler(apolloServer, {
+    context: async (req, res) => ({ req, res, user: await getToken({ req })}),
+});

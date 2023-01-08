@@ -18,9 +18,6 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  // need to provide a next auth secret
-  // somehow it was provided automatically when
-  // compiling last project?
   secret: process.env.NEXTAUTH_SECRET,
 }
 
