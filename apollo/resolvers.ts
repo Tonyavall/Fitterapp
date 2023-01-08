@@ -3,9 +3,7 @@ import Post from "../models/Post"
 import Outfit from '../models/Outfit'
 import { UserInputError, AuthenticationError } from "apollo-server-micro"
 import connectDb from "../lib/connection"
-import { setLoginSession, getLoginSession } from '../utils/auth'
 import { JwtPayload } from "jsonwebtoken"
-import { removeTokenCookie } from '../utils/authCookies'
 import { ObjectId } from "mongoose"
 import heapSort from "../utils/algos/heapsort"
 
@@ -119,9 +117,9 @@ export const resolvers = {
                 const { data } = await getLoginSession(context.req) as JwtPayload
 
                 if (data) {
-                    const allUsers = await User.find()
+                    const allUsers = await User.find();
 
-                    return allUsers
+                    return allUsers;
                 }
             } catch (error) {
                 return error
