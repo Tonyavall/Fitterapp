@@ -4,17 +4,15 @@ import { ApolloProvider } from '@apollo/client';
 import Layout from '../components/layouts/main';
 import { Provider as JotaiProvider } from 'jotai';
 import { useApollo } from '../apollo/client';
-import cookie from 'next-cookies';
 import App from 'next/app';
 import { initializeS3, S3Vars } from '../utils/s3'
 
 interface AppPropsWithToken extends AppProps {
-  token: string
   s3Vars: S3Vars
 }
 
-function MyApp({ Component, pageProps, token, s3Vars }: AppPropsWithToken,) {
-  const client = useApollo(token, true, pageProps.initialApolloState)
+function MyApp({ Component, pageProps, s3Vars }: AppPropsWithToken,) {
+  const client = useApollo(pageProps.initialApolloState)
 
   if (s3Vars.accessKeyId && s3Vars.secretAccessKey && s3Vars.region) {
     initializeS3(s3Vars)
@@ -34,7 +32,6 @@ function MyApp({ Component, pageProps, token, s3Vars }: AppPropsWithToken,) {
 }
 
 MyApp.getInitialProps = async (appContext: any) => {
-  const token = cookie(appContext.ctx).token
   const appProps = await App.getInitialProps(appContext);
 
   const s3Vars = {
@@ -43,7 +40,7 @@ MyApp.getInitialProps = async (appContext: any) => {
     region: process.env.S3_REGION
   }
 
-  return { ...appProps, token, s3Vars }
+  return { ...appProps, s3Vars }
 }
 
 export default MyApp;

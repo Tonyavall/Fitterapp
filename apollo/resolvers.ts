@@ -1,9 +1,7 @@
 import User from "../models/User"
 import Post from "../models/Post"
 import Outfit from '../models/Outfit'
-import { UserInputError, AuthenticationError } from "apollo-server-micro"
 import connectDb from "../lib/connection"
-import { JwtPayload } from "jsonwebtoken"
 import { ObjectId } from "mongoose"
 import heapSort from "../utils/algos/heapsort"
 

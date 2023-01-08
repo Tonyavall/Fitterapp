@@ -1,12 +1,10 @@
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
-import { resolvers } from '../../apollo/resolvers';
-import { typeDefs } from '../../apollo/typeDefs';
+import { schema } from '../../apollo/schema';
 import { getToken } from "next-auth/jwt";
 
 const apolloServer = new ApolloServer({ 
-    resolvers,
-    typeDefs,
+    schema,
     csrfPrevention: true,
 });
 
